@@ -1,18 +1,24 @@
 function App() {
-  return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-4xl font-bold text-blue-600 mb-4">Utility</h1>
-        <p className="text-gray-700 mb-6">A modern cryptographic utility for some operations</p>
-        <div className="bg-white rounded-lg shadow-md p-6 border">
-          <h2 className="text-xl font-semibold text-gray-800 mb-3">Test Card</h2>
-          <button className="px-4 bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-md transition-colors">
-            Test Button
-          </button>
-        </div>
-      </div>
-    </div>
-  )
+	return (
+		<div className="min-h-screen bg-gray-50 p-8">
+			<div className="mx-auto max-w-4xl">
+				<h1 className="mb-4 text-4xl font-bold text-blue-600">
+					Utility
+				</h1>
+				<p className="mb-6 text-gray-700">
+					A modern cryptographic utility for some operations
+				</p>
+				<div className="rounded-lg border bg-white p-6 shadow-md">
+					<h2 className="mb-3 text-xl font-semibold text-gray-800">
+						Test Card
+					</h2>
+					<button className="rounded-md bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-600">
+						Test Button
+					</button>
+				</div>
+			</div>
+		</div>
+	)
 }
 
 export default App
