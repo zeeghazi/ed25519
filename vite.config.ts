@@ -11,4 +11,8 @@ export default defineConfig({
 		react(),
 		tailwindcss(),
 	],
+	base: '/ed25519/', // This is the key fix
+	build: {
+		outDir: 'dist',
+	},
 })
