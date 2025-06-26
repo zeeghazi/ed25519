@@ -1,6 +1,6 @@
-import { KeyGenerationComponent } from '../components/KeyGenerationComponent'
-import { MessageSigningComponent } from '../components/MessageSigningComponent'
-import { SignatureVerificationComponent } from '../components/SignatureVerificationComponent'
+import { KeyGeneration } from '../components/KeyGeneration'
+import { MessageSigning } from '../components/MessageSigning'
+import { SignatureVerification } from '../components/SignatureVerification'
 
 export function HomePage() {
 	return (
@@ -20,24 +20,45 @@ export function HomePage() {
 						&gt; ED25519 CRYPTO SUITE
 					</h1>
 					<p className="font-mono text-green-300">
-						[INFO] Elliptic Curve Digital Signature Algorithm | RFC 8032 Implementation
+						[INFO] Elliptic Curve Digital Signature Algorithm | RFC
+						8032 Implementation
 					</p>
-					<div className="mt-4 flex items-center gap-2 font-mono text-xs text-gray-500">
-						<span className="rounded bg-gray-700 px-2 py-1">SECURE</span>
-						<span className="rounded bg-gray-700 px-2 py-1">256-BIT</span>
-						<span className="rounded bg-gray-700 px-2 py-1">CURVE25519</span>
+					<div className="mt-4 flex flex-wrap items-center gap-2 font-mono text-xs">
+						<span className="rounded bg-gray-700 px-2 py-1 text-gray-500">
+							EdDSA
+						</span>
+						<span className="rounded bg-gray-700 px-2 py-1 text-gray-500">
+							CURVE25519
+						</span>
+						<span className="rounded bg-gray-700 px-2 py-1 text-gray-500">
+							SHA-512
+						</span>
+						<span className="rounded bg-gray-700 px-2 py-1 text-gray-500">
+							RFC 8032
+						</span>
+						<a
+							href="https://blog.mozilla.org/warner/2011/11/29/ed25519-keys/"
+							target="_blank"
+							rel="noopener noreferrer"
+							className="inline-flex items-center gap-1 rounded bg-green-900/30 px-2 py-1 text-green-400 hover:bg-green-900/50 hover:text-green-300 transition-colors"
+						>
+							<svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+							</svg>
+							Mozilla: "How do Ed25519 keys work?"
+						</a>
 					</div>
 				</div>
 
 				{/* Key Generation - Full Width */}
 				<div className="mb-6">
-					<KeyGenerationComponent />
+					<KeyGeneration />
 				</div>
 
 				{/* Sign and Verify - Side by Side */}
 				<div className="grid gap-6 lg:grid-cols-2">
-					<MessageSigningComponent />
-					<SignatureVerificationComponent />
+					<MessageSigning />
+					<SignatureVerification />
 				</div>
 			</div>
 		</div>
