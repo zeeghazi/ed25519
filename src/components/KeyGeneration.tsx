@@ -176,10 +176,14 @@ export function KeyGeneration() {
 								)}
 							</button>
 						</div>
-						<div className="flex w-full flex-grow resize-none items-center justify-start rounded border border-gray-600 bg-gray-900 p-3 font-mono text-xs text-gray-300 focus:outline-none">
-							{publicKey
-								? publicKey
-								: 'Ed25519 public key (64 hex characters) will appear here after generation...'}
+						<div className="flex flex-grow items-center justify-start rounded border border-gray-600 bg-gray-900 p-3">
+							<input
+								type="text"
+								value={publicKey || ''}
+								placeholder="Ed25519 public key (64 hex characters) will appear here after generation..."
+								readOnly
+								className="w-full bg-transparent font-mono text-xs text-gray-300 placeholder-gray-500 focus:outline-none"
+							/>
 						</div>
 					</div>
 
@@ -239,10 +243,14 @@ export function KeyGeneration() {
 								)}
 							</button>
 						</div>
-						<div className="flex w-full flex-grow resize-none items-center justify-start rounded border border-gray-600 bg-gray-900 p-3 font-mono text-xs text-gray-300 focus:outline-none">
-							{privateKey
-								? privateKey
-								: 'Ed25519 private key (64 hex characters) will appear here after generation...'}
+						<div className="flex flex-grow items-center justify-start rounded border border-gray-600 bg-gray-900 p-3">
+							<input
+								type="text"
+								value={privateKey || ''}
+								placeholder="Ed25519 private key (64 hex characters) will appear here after generation..."
+								readOnly
+								className="w-full bg-transparent font-mono text-xs text-gray-300 placeholder-gray-500 focus:outline-none"
+							/>
 						</div>
 					</div>
 				</div>
