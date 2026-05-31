@@ -46,11 +46,11 @@ no database. The contact endpoint is the only server-side surface.
 
 | Concern | Choice |
 |---|---|
-| Framework | Astro 5 (latest) |
+| Framework | Astro 6 (latest; 6.4.x at planning time) |
 | Language | TypeScript (strict) |
 | Package manager | pnpm |
 | Styling | Tailwind CSS v4 (CSS-first, via `@tailwindcss/vite`) |
-| Crypto | `@noble/ed25519` ^2.x + `@noble/hashes` ^1.x |
+| Crypto | `@noble/ed25519` ^3.x (async API uses built-in WebCrypto SHA-512 — no `@noble/hashes` needed) |
 | Content | Astro Content Collections + `@astrojs/mdx` |
 | Fonts | Geist + Geist Mono, self-hosted via Fontsource |
 | Sitemap | `@astrojs/sitemap` |
@@ -127,12 +127,16 @@ end, `@utility` for custom utilities, class-detection limits) are observed.
 
 ## 6. The crypto tool (vanilla TS, theme-adaptive)
 
-**`src/lib/ed25519.ts`** ports today's logic into pure, testable functions:
-- `sha512` wired into `@noble/ed25519` **once** at module load (fixes the current
-  triplicated `ed.etc.sha512Sync` setup).
-- `generateKeypair(): { privateKeyHex, publicKeyHex }`
-- `signMessage(message: string, privateKeyHex: string): string` (sig hex)
-- `verifySignature(signatureHex, message, publicKeyHex): boolean`
+**`src/lib/ed25519.ts`** ports today's logic into pure, testable functions.
+**Note (v3 reality, verified against the v3 `.d.ts`):** `@noble/ed25519` is now v3,
+a breaking change from the old app's v2 code. v3's **async** functions
+(`getPublicKeyAsync`, `signAsync`, `verifyAsync`) use a built-in WebCrypto SHA-512
+provider, so the old triplicated `ed.etc.sha512Sync` wiring is **removed entirely**
+and `@noble/hashes` is **not** a dependency. (Only the v3 *sync* API would require
+wiring `ed.hashes.sha512`; we deliberately use the async API.) The wrapper exposes:
+- `generateKeypair(): Promise<{ privateKeyHex, publicKeyHex }>`
+- `signMessage(message: string, privateKeyHex: string): Promise<string>` (sig hex)
+- `verifySignature(signatureHex, message, publicKeyHex): Promise<boolean>`
 - Validation: private/public key = 64 hex chars, signature = 128 hex chars;
   throws typed errors with human messages.
 - `src/lib/hex.ts`: `bytesToHex` / `hexToBytes` helpers.
