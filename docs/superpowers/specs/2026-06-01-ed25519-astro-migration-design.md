@@ -55,7 +55,7 @@ no database. The contact endpoint is the only server-side surface.
 | Fonts | Geist + Geist Mono, self-hosted via Fontsource |
 | Sitemap | `@astrojs/sitemap` |
 | Adapter | `@astrojs/cloudflare` (hybrid: static pages + 1 function) |
-| Email (contact) | Resend API (called from the Cloudflare Function) |
+| Email (contact) | Cloudflare Email Routing (`send_email` binding from the Function) |
 | Host | Cloudflare Pages |
 
 Exact current versions confirmed against the Astro docs/MCP at implementation time.
@@ -237,16 +237,22 @@ are auto-included in sitemap + RSS unless `draft`.
 | `PUBLIC_SITE_URL` | canonical/OG/sitemap base | 1 |
 | `PUBLIC_ADSENSE_ID` | AdSense publisher id (optional) | 1 (scaffold) |
 | `PUBLIC_ANALYTICS_ID` | analytics id (optional) | 1 (scaffold) |
-| `RESEND_API_KEY` | contact email (secret) | 2 |
-| `CONTACT_TO_EMAIL` | contact recipient | 2 |
+| `CONTACT_TO_EMAIL` | contact recipient (your verified Email Routing address) | 2 |
 
 ## 10. Contact endpoint (Phase 2)
 
 `src/pages/api/contact.ts` (`prerender = false`) → Cloudflare Function:
 validates name/email/message, honeypot field + minimal rate-limit, sends mail via
-Resend (`RESEND_API_KEY` → `CONTACT_TO_EMAIL`), returns JSON. The contact form
-posts normally (works without JS) and is enhanced with `fetch` for inline
-success/error states.
+the Cloudflare **Email Routing `send_email` binding** to `CONTACT_TO_EMAIL` (a
+verified Email Routing destination — the form only ever emails the site owner, so
+the "send to verified addresses only" limitation does not apply), returns JSON.
+The contact form posts normally (works without JS) and is enhanced with `fetch`
+for inline success/error states.
+
+Setup is free and single-vendor: enable Email Routing on the Cloudflare zone, add
++ verify the destination address, and declare the `send_email` binding in
+`wrangler.toml`. Cloudflare auto-adds the required MX/TXT records. The submitter's
+address is set as the email `reply-to` so replies go straight to them.
 
 ## 11. Error pages
 
@@ -272,7 +278,9 @@ convention. Prettier keeps the existing config + `prettier-plugin-astro`.
 Deliver `docs/DEPLOY.md` covering:
 - Connect repo to Cloudflare Pages; build command `pnpm build`, output dir
   `dist`, framework preset Astro.
-- `@astrojs/cloudflare` adapter config + `wrangler.toml`/compat flags.
+- `@astrojs/cloudflare` adapter config + `wrangler.toml`/compat flags, incl. the
+  Email Routing `send_email` binding.
+- Enabling Cloudflare Email Routing: add + verify the destination address.
 - Env vars & secrets (table in §9) set in the Pages dashboard.
 - Custom domain `ed25519.com` DNS steps (documented, **not** executed by us).
 - Local function parity via `wrangler pages dev`.
