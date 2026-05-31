@@ -80,7 +80,6 @@ src/
 ├── styles/        global.css   (@theme tokens, dark variant, base, components)
 └── consts.ts      SITE config: name, url, description, nav, socials (placeholders)
 public/            favicon set, manifest.json, robots.txt, ads.txt, og/*.png
-scripts/           new-post.mjs   (pnpm new:post)
 ```
 
 **Rendering model:** Astro static output by default; only `pages/api/contact.ts`
@@ -197,15 +196,16 @@ future feature (no analytics/telemetry on key material).
 }
 ```
 
-**Authoring paths (all low-friction):**
-- **By hand:** `pnpm new:post "My Title"` scaffolds
-  `src/content/blog/my-title.md` with correct frontmatter and today's date; write
-  Markdown; set `draft: false`; commit.
-- **AI-written:** paste the model's Markdown into a `.md` file, complete the
-  frontmatter, done — no reformatting (Markdown is the native LLM output format).
+**Authoring paths (all low-friction) — copy-an-existing-post workflow:**
+- **By hand:** duplicate any existing post in `src/content/blog/`, rename the file
+  (the filename becomes the slug), update the frontmatter (title, description,
+  `pubDate`, tags) and body, set `draft: false`, commit. No CLI/scaffold step.
+- **AI-written:** paste the model's Markdown into the body of a copied file and
+  fill the frontmatter — no reformatting (Markdown is the native LLM output format).
 - **Rich posts:** rename to `.mdx` to embed components/callouts or the live tool.
-- Slug derives from filename; `draft: true` hides from list, sitemap, and RSS.
-- A `docs/AUTHORING.md` documents the schema, the command, the SEO checklist, and
+- `draft: true` hides a post from the list, sitemap, and RSS until it's ready.
+- The 4 starter posts double as clean, commented templates to copy from. A short
+  `docs/AUTHORING.md` documents the frontmatter schema, the SEO checklist, and
   image conventions.
 
 **Per-post SEO:** canonical URL, meta description, `Article` + `BreadcrumbList`
@@ -263,7 +263,6 @@ build    astro build
 preview  astro preview        # or: wrangler pages dev for function parity
 check    astro check          # type + content checks
 format   prettier --write .
-new:post node scripts/new-post.mjs
 ```
 Removed: `gh-pages` dependency, `predeploy`/`deploy` scripts, the `docs/`-build
 convention. Prettier keeps the existing config + `prettier-plugin-astro`.
