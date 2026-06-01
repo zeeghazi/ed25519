@@ -11,10 +11,10 @@ export const SITE = {
 } as const
 
 export const NAV_LINKS = [
-	{ label: 'Tool', href: '/#tool' },
-	{ label: 'Blog', href: '/blog' },
+	{ label: 'About Us', href: '/about' },
+	{ label: 'Contact Us', href: '/contact' },
 	{ label: 'FAQ', href: '/faq' },
-	{ label: 'About', href: '/about' },
+	{ label: 'Blog', href: '/blog' },
 ] as const
 
 export const SOCIAL_LINKS = [
