@@ -1,0 +1,76 @@
+---
+// Icon copy button for tool outputs. Copies the text content of `target`
+// (a CSS selector) and briefly swaps the copy glyph for a check on success.
+// One shared click handler (below) wires every [data-copy] button on the page.
+interface Props {
+	target: string
+	label: string
+}
+const { target, label } = Astro.props
+---
+
+<button
+	type="button"
+	data-copy={target}
+	class="copy-btn mt-px shrink-0 rounded text-[var(--color-term-dim)] transition-colors hover:text-[var(--color-term-prompt)] focus-visible:text-[var(--color-term-prompt)] focus-visible:outline-none"
+	aria-label={label}
+>
+	<svg
+		class="copy-icon h-3.5 w-3.5"
+		viewBox="0 0 24 24"
+		fill="none"
+		stroke="currentColor"
+		stroke-width="2"
+		stroke-linecap="round"
+		stroke-linejoin="round"
+		aria-hidden="true"
+	>
+		<rect x="9" y="9" width="11" height="11" rx="2"></rect>
+		<path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+		></path>
+	</svg>
+	<svg
+		class="check-icon hidden h-3.5 w-3.5 text-[var(--color-term-prompt)]"
+		viewBox="0 0 24 24"
+		fill="none"
+		stroke="currentColor"
+		stroke-width="2.5"
+		stroke-linecap="round"
+		stroke-linejoin="round"
+		aria-hidden="true"
+	>
+		<path d="M20 6 9 17l-5-5"></path>
+	</svg>
+</button>
+
+<script>
+	import { copyText, toast } from '../../lib/clipboard'
+
+	document.querySelectorAll<HTMLButtonElement>('[data-copy]').forEach((b) => {
+		b.addEventListener('click', async () => {
+			const sel = b.dataset.copy
+			const text = sel
+				? document.querySelector(sel)?.textContent?.trim()
+				: ''
+			if (!text || text === '—') {
+				toast('Nothing to copy', 'error')
+				return
+			}
+			const ok = await copyText(text)
+			toast(ok ? 'Copied' : 'Copy failed', ok ? 'success' : 'error')
+			if (!ok) return
+
+			const copyIcon = b.querySelector('.copy-icon')
+			const checkIcon = b.querySelector('.check-icon')
+			copyIcon?.classList.add('hidden')
+			checkIcon?.classList.remove('hidden')
+			window.clearTimeout(Number(b.dataset.t))
+			b.dataset.t = String(
+				window.setTimeout(() => {
+					copyIcon?.classList.remove('hidden')
+					checkIcon?.classList.add('hidden')
+				}, 1500)
+			)
+		})
+	})
+</script>

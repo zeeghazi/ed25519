@@ -6,15 +6,25 @@ const { faqs } = Astro.props
 ---
 
 <div
-	class="divide-hairline border-hairline bg-canvas divide-y rounded-[8px] border"
+	class="divide-hairline border-hairline bg-canvas divide-y rounded-[8px] border shadow-[var(--shadow-e2)]"
 >
 	{
 		faqs.map((f) => (
 			<details class="group p-5">
 				<summary class="text-ink flex cursor-pointer list-none items-center justify-between gap-4 font-medium">
 					{f.q}
-					<span class="text-mute border-hairline group-open:border-hairline-strong group-open:text-ink inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-[4px] border font-mono text-sm transition-transform group-open:rotate-45">
-						+
+					<span class="text-mute border-hairline group-open:border-hairline-strong group-open:text-ink inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-[4px] border transition-transform duration-200 group-open:rotate-45">
+						<svg
+							class="h-3 w-3"
+							viewBox="0 0 12 12"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="1.5"
+							stroke-linecap="round"
+							aria-hidden="true"
+						>
+							<path d="M6 1.5v9M1.5 6h9" />
+						</svg>
 					</span>
 				</summary>
 				<p class="text-body mt-3 text-sm leading-relaxed">{f.a}</p>

@@ -1,5 +1,6 @@
 ---
 import Button from '../ui/Button.astro'
+import CopyButton from './CopyButton.astro'
 
 interface Props {
 	standalone?: boolean
@@ -72,11 +73,7 @@ const command =
 				class="block w-full font-mono text-xs break-all text-[var(--color-term-fg)]"
 				>—</output
 			>
-			<button
-				data-copy="#sign-output"
-				class="shrink-0 font-mono text-[11px] text-[var(--color-term-dim)] uppercase hover:text-[var(--color-term-prompt)]"
-				aria-label="Copy signature">copy</button
-			>
+			<CopyButton target="#sign-output" label="Copy signature" />
 		</div>
 	</div>
 </div>

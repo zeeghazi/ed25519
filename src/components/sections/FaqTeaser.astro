@@ -1,5 +1,6 @@
 ---
 import Button from '../ui/Button.astro'
+import FaqAccordion from '../ui/FaqAccordion.astro'
 const faqs = [
 	{
 		q: 'Are my keys sent anywhere?',
@@ -22,25 +23,7 @@ const faqs = [
 			// faq
 		</p>
 		<h2 class="display-lg mt-1">Questions, answered.</h2>
-		<div
-			class="divide-hairline border-hairline bg-canvas mt-3 divide-y rounded-[8px] border shadow-[var(--shadow-e2)]"
-		>
-			{
-				faqs.map((f) => (
-					<details class="group p-5">
-						<summary class="text-ink flex cursor-pointer list-none items-center justify-between gap-4 font-medium">
-							{f.q}
-							<span class="text-mute border-hairline group-open:border-hairline-strong group-open:text-ink inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-[4px] border font-mono text-sm transition-transform group-open:rotate-45">
-								+
-							</span>
-						</summary>
-						<p class="text-body mt-3 text-sm leading-relaxed">
-							{f.a}
-						</p>
-					</details>
-				))
-			}
-		</div>
+		<div class="mt-3"><FaqAccordion faqs={faqs} /></div>
 		<div class="mt-6 text-center">
 			<Button href="/faq" variant="secondary">See all FAQs</Button>
 		</div>

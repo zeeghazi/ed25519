@@ -13,7 +13,7 @@ components.
 
 ## Principles
 
-- **Both modes are first-class.** Every change is verified in light *and* dark;
+- **Both modes are first-class.** Every change is verified in light _and_ dark;
   nothing improves one at the other's expense. Terminal/console surfaces keep
   their fixed `--color-term-*` tokens (intentionally non-inverting).
 - **Minimal footprint.** Prefer changes to `global.css` tokens and shared
