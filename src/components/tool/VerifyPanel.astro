@@ -17,7 +17,7 @@ const command =
 	hidden={standalone ? undefined : true}
 >
 	<p
-		class="font-mono text-xs leading-relaxed text-[var(--color-term-accent)]"
+		class="font-mono text-sm leading-relaxed text-[var(--color-term-accent)]"
 	>
 		{command}
 	</p>
@@ -29,7 +29,7 @@ const command =
 		<div>
 			<label
 				for="verify-message"
-				class="font-mono text-[11px] tracking-[0.12em] text-[var(--color-term-dim)] uppercase"
+				class="font-mono text-xs tracking-[0.12em] text-[var(--color-term-dim)] uppercase"
 				>Original message</label
 			>
 			<textarea
@@ -41,26 +41,26 @@ const command =
 		<div>
 			<label
 				for="verify-public"
-				class="font-mono text-[11px] tracking-[0.12em] text-[var(--color-term-dim)] uppercase"
+				class="font-mono text-xs tracking-[0.12em] text-[var(--color-term-dim)] uppercase"
 				>Public key · 64 hex</label
 			>
 			<input
 				id="verify-public"
 				type="text"
-				class="mt-1.5 w-full rounded-[4px] border border-[var(--color-term-border)] bg-[var(--color-term-bg-2)] p-3 font-mono text-xs text-[var(--color-term-fg)] placeholder:text-[var(--color-term-dim)] focus:border-[var(--color-term-accent)] focus:outline-none"
+				class="mt-1.5 w-full rounded-[4px] border border-[var(--color-term-border)] bg-[var(--color-term-bg-2)] p-3 font-mono text-sm text-[var(--color-term-fg)] placeholder:text-[var(--color-term-dim)] focus:border-[var(--color-term-accent)] focus:outline-none"
 				placeholder="Paste the 64-hex public key…"
 			/>
 		</div>
 		<div>
 			<label
 				for="verify-signature"
-				class="font-mono text-[11px] tracking-[0.12em] text-[var(--color-term-dim)] uppercase"
+				class="font-mono text-xs tracking-[0.12em] text-[var(--color-term-dim)] uppercase"
 				>Signature · 128 hex</label
 			>
 			<textarea
 				id="verify-signature"
 				rows="2"
-				class="mt-1.5 w-full rounded-[4px] border border-[var(--color-term-border)] bg-[var(--color-term-bg-2)] p-3 font-mono text-xs text-[var(--color-term-fg)] placeholder:text-[var(--color-term-dim)] focus:border-[var(--color-term-accent)] focus:outline-none"
+				class="mt-1.5 w-full rounded-[4px] border border-[var(--color-term-border)] bg-[var(--color-term-bg-2)] p-3 font-mono text-sm text-[var(--color-term-fg)] placeholder:text-[var(--color-term-dim)] focus:border-[var(--color-term-accent)] focus:outline-none"
 				placeholder="Paste the 128-hex signature…"></textarea>
 		</div>
 	</div>

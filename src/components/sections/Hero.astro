@@ -36,13 +36,19 @@ const facts = ['no signup', 'no server', '100% client-side', 'open source']
 		>
 			{
 				facts.map((f) => (
-					<li class="inline-flex items-center gap-1.5">
-						<span
-							class="text-[var(--color-term-prompt)]"
+					<li class="inline-flex items-center gap-2">
+						<svg
+							class="h-[18px] w-[18px] shrink-0 text-[var(--color-term-prompt)]"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="3"
+							stroke-linecap="round"
+							stroke-linejoin="round"
 							aria-hidden="true"
 						>
-							✓
-						</span>
+							<path d="M20 6 9 17l-5-5" />
+						</svg>
 						{f}
 					</li>
 				))

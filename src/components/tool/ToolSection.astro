@@ -28,7 +28,7 @@ const tabs = [
 							data-tab={t.id}
 							aria-selected={i === 0 ? 'true' : 'false'}
 							aria-controls={t.id}
-							class="inline-flex h-10 items-center border-r border-[var(--color-term-border)] px-4 font-mono text-xs tracking-wide text-[var(--color-term-dim)] transition-colors hover:text-[var(--color-term-fg)] aria-selected:bg-[var(--color-term-bg)] aria-selected:text-[var(--color-term-fg)] aria-selected:shadow-[inset_0_-2px_0_0_var(--color-term-prompt)]"
+							class="inline-flex h-10 items-center border-r border-[var(--color-term-border)] px-4 font-mono text-sm tracking-wide text-[var(--color-term-dim)] transition-colors hover:text-[var(--color-term-fg)] aria-selected:bg-[var(--color-term-bg)] aria-selected:text-[var(--color-term-fg)] aria-selected:shadow-[inset_0_-2px_0_0_var(--color-term-prompt)]"
 						>
 							{t.label}
 						</button>
@@ -44,9 +44,7 @@ const tabs = [
 			</div>
 		</ConsoleFrame>
 
-		<p
-			class="text-mute mt-3 text-center font-mono text-[11px] tracking-wide"
-		>
+		<p class="text-mute mt-3 text-center font-mono text-xs tracking-wide">
 			RFC 8032 · EdDSA · built on @noble/ed25519 — keys never leave your
 			browser
 		</p>

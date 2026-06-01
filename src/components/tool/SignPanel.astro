@@ -18,7 +18,7 @@ const command =
 	hidden={standalone ? undefined : true}
 >
 	<p
-		class="font-mono text-xs leading-relaxed text-[var(--color-term-accent)]"
+		class="font-mono text-sm leading-relaxed text-[var(--color-term-accent)]"
 	>
 		{command}
 	</p>
@@ -30,7 +30,7 @@ const command =
 		<div>
 			<label
 				for="sign-message"
-				class="font-mono text-[11px] tracking-[0.12em] text-[var(--color-term-dim)] uppercase"
+				class="font-mono text-xs tracking-[0.12em] text-[var(--color-term-dim)] uppercase"
 				>Message</label
 			>
 			<textarea
@@ -42,13 +42,13 @@ const command =
 		<div>
 			<label
 				for="sign-private"
-				class="font-mono text-[11px] tracking-[0.12em] text-[var(--color-term-dim)] uppercase"
+				class="font-mono text-xs tracking-[0.12em] text-[var(--color-term-dim)] uppercase"
 				>Private key · 64 hex</label
 			>
 			<input
 				id="sign-private"
 				type="text"
-				class="mt-1.5 w-full rounded-[4px] border border-[var(--color-term-border)] bg-[var(--color-term-bg-2)] p-3 font-mono text-xs text-[var(--color-term-fg)] placeholder:text-[var(--color-term-dim)] focus:border-[var(--color-term-accent)] focus:outline-none"
+				class="mt-1.5 w-full rounded-[4px] border border-[var(--color-term-border)] bg-[var(--color-term-bg-2)] p-3 font-mono text-sm text-[var(--color-term-fg)] placeholder:text-[var(--color-term-dim)] focus:border-[var(--color-term-accent)] focus:outline-none"
 				placeholder="Paste your 64-hex private key…"
 			/>
 		</div>
@@ -58,19 +58,19 @@ const command =
 
 	<div class="mt-6">
 		<label
-			class="font-mono text-[11px] tracking-[0.12em] text-[var(--color-term-dim)] uppercase"
+			class="font-mono text-xs tracking-[0.12em] text-[var(--color-term-dim)] uppercase"
 			>Signature · 128 hex</label
 		>
 		<div
 			class="mt-1.5 flex items-start gap-3 rounded-[4px] border border-[var(--color-term-border)] bg-[var(--color-term-bg-2)] p-3"
 		>
 			<span
-				class="mt-px shrink-0 font-mono text-xs text-[var(--color-term-prompt)]"
+				class="mt-px shrink-0 font-mono text-sm text-[var(--color-term-prompt)]"
 				aria-hidden="true">sig</span
 			>
 			<output
 				id="sign-output"
-				class="block w-full font-mono text-xs break-all text-[var(--color-term-fg)]"
+				class="block w-full font-mono text-sm break-all text-[var(--color-term-fg)]"
 				>—</output
 			>
 			<CopyButton target="#sign-output" label="Copy signature" />
