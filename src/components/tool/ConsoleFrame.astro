@@ -1,0 +1,35 @@
+---
+interface Props {
+	label?: string
+	class?: string
+}
+const { label = 'ed25519 — secure key toolkit', class: cls = '' } = Astro.props
+---
+
+<div
+	class:list={[
+		'console-shadow overflow-hidden rounded-[10px] border border-[var(--color-term-border)] bg-[var(--color-term-bg)]',
+		cls,
+	]}
+>
+	<div
+		class="flex h-11 items-center gap-3 border-b border-[var(--color-term-border)] bg-[var(--color-term-bg-2)] px-4"
+	>
+		<div class="flex items-center gap-2" aria-hidden="true">
+			<span class="h-3 w-3 rounded-full bg-[#ff6b81]/70"></span>
+			<span class="h-3 w-3 rounded-full bg-[#f5a623]/70"></span>
+			<span class="h-3 w-3 rounded-full bg-[#2dd4a8]/80"></span>
+		</div>
+		<span class="font-mono text-xs text-[var(--color-term-dim)]"
+			>{label}</span
+		>
+		<span
+			class="ml-auto inline-flex items-center gap-1.5 font-mono text-[11px] tracking-wide text-[var(--color-term-dim)] uppercase"
+		>
+			<span class="h-1.5 w-1.5 rounded-full bg-[var(--color-term-prompt)]"
+			></span>
+			client-side
+		</span>
+	</div>
+	<slot />
+</div>
