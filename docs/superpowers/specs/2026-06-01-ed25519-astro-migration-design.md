@@ -7,7 +7,7 @@
 ## 1. Summary
 
 Migrate `ed25519.com` from a single-page React + Vite app to a multi-page
-**Astro 5** site, for SEO and Google AdSense eligibility. We keep the core
+**Astro 6** site, for SEO and Google AdSense eligibility. We keep the core
 Ed25519 business logic (key generation, signing, verification) but port it from
 React to **vanilla TypeScript** (zero client framework runtime). The visual
 language follows the Vercel-inspired design system in `DESIGN.md` (ink + near-white
@@ -72,7 +72,7 @@ src/
 ├── layouts/       BaseLayout, LegalLayout, PostLayout
 ├── lib/           ed25519.ts, hex.ts, clipboard.ts, theme.ts, seo.ts, reading-time.ts
 ├── content/       blog/*.md(x)
-├── content.config.ts   Astro 5 Content Layer collection + Zod schema
+├── content.config.ts   Astro Content Layer collection + Zod schema
 ├── pages/         index.astro, about.astro, contact.astro, faq.astro,
 │                  privacy.astro, terms.astro,
 │                  blog/index.astro, blog/[...slug].astro,
@@ -184,7 +184,7 @@ future feature (no analytics/telemetry on key material).
 
 ## 8. Blog authoring workflow
 
-**Content Collection** `blog`, defined via the Astro 5 Content Layer API in
+**Content Collection** `blog`, defined via the Astro Content Layer API in
 `src/content.config.ts` (posts in `src/content/blog/`), with a Zod schema:
 
 ```ts
