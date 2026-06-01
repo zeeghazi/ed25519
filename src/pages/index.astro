@@ -10,41 +10,28 @@ import { webApplicationJsonLd, websiteJsonLd } from '../lib/seo'
 ---
 
 <BaseLayout path="/" jsonLd={[websiteJsonLd(), webApplicationJsonLd()]}>
+	<!--
+		One continuous background spans the whole content column — hero, tool, and
+		every section — fading out just above the footer, which stays its own solid
+		block. Sections are transparent so this single backdrop shows through.
+	-->
 	<div class="relative isolate">
-		<!--
-			ONE continuous, pinned backdrop shared by the hero AND the tool. It
-			sticks to the top so the hero copy and the console scroll over the
-			same grid + glow — a single background with no seam. The opaque
-			content sheet below then rises and covers it.
-		-->
 		<div
-			class="pointer-events-none sticky top-0 -z-10 h-[100svh] overflow-hidden"
+			class="pointer-events-none absolute inset-0 -z-10 overflow-hidden"
 			aria-hidden="true"
 		>
-			<div class="grid-bg absolute inset-0"></div>
+			<div class="grid-bg-page absolute inset-0"></div>
 			<div
-				class="mesh-gradient absolute inset-x-0 top-0 h-[55%] opacity-15 blur-[90px]"
+				class="mesh-gradient absolute inset-x-0 top-0 h-[560px] opacity-15 blur-[90px]"
 			>
 			</div>
 		</div>
 
-		<!-- Pulled up to overlap the pinned backdrop. -->
-		<div class="-mt-[100svh]">
-			<Hero />
-			<ToolSection />
-
-			<!--
-				Opaque sheet: scrolls up over the pinned backdrop, covering it.
-				Rounded top + soft upward shadow give the "paper over hero" edge.
-			-->
-			<div
-				class="bg-canvas-soft relative z-10 mt-8 rounded-t-[22px] shadow-[0_-30px_60px_-30px_rgba(0,0,0,0.3)]"
-			>
-				<FeatureGrid />
-				<FaqTeaser />
-				<div class="px-4 pb-4 sm:px-6"><AdSlot /></div>
-				<CtaBand />
-			</div>
-		</div>
+		<Hero />
+		<ToolSection />
+		<FeatureGrid />
+		<FaqTeaser />
+		<div class="px-4 pb-4 sm:px-6"><AdSlot /></div>
+		<CtaBand />
 	</div>
 </BaseLayout>

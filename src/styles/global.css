@@ -187,6 +187,30 @@
 	);
 }
 
+/* Full-page engineering grid — runs the whole content column, fading out just
+   before the footer so the solid footer reads as a separate block. */
+@utility grid-bg-page {
+	background-image:
+		linear-gradient(
+			to right,
+			color-mix(in srgb, var(--color-hairline) 65%, transparent) 1px,
+			transparent 1px
+		),
+		linear-gradient(
+			to bottom,
+			color-mix(in srgb, var(--color-hairline) 65%, transparent) 1px,
+			transparent 1px
+		);
+	background-size: 38px 38px;
+	-webkit-mask-image: linear-gradient(
+		to bottom,
+		#000 0,
+		#000 88%,
+		transparent 100%
+	);
+	mask-image: linear-gradient(to bottom, #000 0, #000 88%, transparent 100%);
+}
+
 /* Depth shadow for the console window (works on the fixed-dark surface). */
 @utility console-shadow {
 	box-shadow:
