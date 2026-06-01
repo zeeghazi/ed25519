@@ -1,9 +1,11 @@
-# Ed25519.com Phase 3 — Design (DRAFT, scope in progress)
+# Ed25519.com Phase 3 — Design
 
-> **Status:** DRAFT. The "Dedicated tool pages" section below is **approved**. Phase 3 will
-> include **additional changes** the user will detail after Phase 2 (Tasks 15–17) is complete.
-> Do not write the implementation plan or build until the full Phase 3 scope is gathered and
-> the spec is finalized + user-approved.
+> **Status:** FINAL / approved. The "additional Phase 3 changes" the user mentioned were
+> delivered incrementally as interim polish after Phase 2 and are already committed (header nav
+> → About Us / Contact Us / FAQ / Blog; footer tool deep-links scroll the console into view then
+> switch the tab; secondary-page header↔content alignment + illustrated headers + About card
+> icons; removal of the `//` and the small eyebrow labels). What remains for Phase 3 — and what
+> this spec covers — is the **three dedicated tool pages** below.
 
 ## Goal
 
@@ -70,8 +72,29 @@ Each page is a real landing page that **embeds the live, client-side tool** for 
 - Full section set (how-to + RFC example + notes + FAQ + cross-links). ✅
 - Sequencing: **Phase 3, after Phase 2** finishes. ✅
 
-## Pending (to gather before finalizing this spec)
+## Worked-example values (correctness)
 
-- Additional Phase 3 changes — the user will provide these after Phase 2 (Tasks 15–17) is done.
-- Once gathered: finalize this spec, run the spec self-review, get user approval, then invoke
-  `writing-plans` for the Phase 3 implementation plan.
+The worked examples must use **real, verifying** Ed25519 values, not fabricated hex. Use the
+official **RFC 8032 §7.1** test vectors (TEST 1–3), which are public and reproducible:
+
+- TEST 1 — empty message; secret/public key + 64-byte signature.
+- TEST 2 — a 1-byte message (`0x72`).
+- TEST 3 — a 2-byte message (`0xaf82`).
+
+To guarantee the displayed values actually validate (and never drift), add a unit test that
+runs each displayed vector through `verifyAsync` and asserts it returns `true` (and that a
+one-byte tamper returns `false`). The verify page's example uses one of these vectors; the
+sign page shows the message → signature mapping; the generator page shows a seed → public key.
+
+## Build sequencing (implementation plan will detail)
+
+1. `howToJsonLd` builder in `src/lib/seo.ts` (+ reuse `webApplicationJsonLd` / `breadcrumbJsonLd`
+   / `faqPageJsonLd`).
+2. Extract `ConsoleFrame.astro` from `ToolSection.astro` (behavior-preserving); add the
+   standalone/visible prop to the three panels.
+3. RFC-8032 worked-example data module + the verifying unit test (TDD).
+4. The three pages (`/ed25519-key-generator`, `/ed25519-sign-message`,
+   `/ed25519-verify-signature`), each: header + live panel + how-to + example + notes + FAQ +
+   cross-links + structured data.
+5. Repoint the footer "Tools" links to the three pages.
+6. Full verification (check/test/build, sitemap includes the three URLs) + design audit.
