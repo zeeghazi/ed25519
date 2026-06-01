@@ -1,0 +1,165 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import PageHeader from '../components/sections/PageHeader.astro'
+import ConsoleFrame from '../components/tool/ConsoleFrame.astro'
+import KeygenPanel from '../components/tool/KeygenPanel.astro'
+import FaqAccordion from '../components/ui/FaqAccordion.astro'
+import RelatedTools from '../components/sections/RelatedTools.astro'
+import { EXAMPLE } from '../lib/example-vector'
+import {
+	webApplicationJsonLd,
+	howToJsonLd,
+	faqPageJsonLd,
+	breadcrumbJsonLd,
+} from '../lib/seo'
+
+const path = '/ed25519-key-generator'
+const title = 'Ed25519 key generator'
+const description =
+	'Generate a secure Ed25519 keypair (32-byte private + public key) in your browser. Keys are created locally with WebCrypto and never leave your device.'
+
+const steps = [
+	{
+		name: 'Generate',
+		text: 'Click "Generate keypair". A cryptographically secure 32-byte private key is created locally with the WebCrypto random source.',
+	},
+	{
+		name: 'Copy the public key',
+		text: 'The public key (64 hex characters) is derived from the private key. Share it freely — it reveals nothing about your secret.',
+	},
+	{
+		name: 'Store the private key safely',
+		text: 'Copy the private key (64 hex characters) and keep it secret. Anyone with it can sign as you.',
+	},
+]
+
+const faqs = [
+	{
+		q: 'Where is the key generated?',
+		a: 'Entirely in your browser using the WebCrypto secure random source. No key is sent to or stored on a server.',
+	},
+	{
+		q: 'How big is an Ed25519 key?',
+		a: 'The private and public keys are 32 bytes each, shown as 64 hexadecimal characters.',
+	},
+	{
+		q: 'Is it safe to reuse a keypair?',
+		a: 'A keypair is a long-term identity and can be reused to sign many messages. Keep the private key secret; rotate it if it may have been exposed.',
+	},
+]
+
+const jsonLd = [
+	webApplicationJsonLd(),
+	howToJsonLd({
+		name: 'How to generate an Ed25519 keypair',
+		description,
+		steps,
+	}),
+	faqPageJsonLd(faqs),
+	breadcrumbJsonLd([
+		{ name: 'Home', path: '/' },
+		{ name: 'Key generator', path },
+	]),
+]
+---
+
+<BaseLayout title={title} description={description} path={path} jsonLd={jsonLd}>
+	<PageHeader
+		title="Ed25519 key generator"
+		lead="Create a fresh Ed25519 keypair in your browser. The private key is generated locally and never leaves this page."
+		width="narrow"
+		illustration="private"
+	/>
+
+	<section class="px-4 pb-12 sm:px-6">
+		<div class="mx-auto max-w-[760px]">
+			<ConsoleFrame label="ed25519 — key generator">
+				<div class="p-5 sm:p-7">
+					<KeygenPanel standalone />
+				</div>
+			</ConsoleFrame>
+		</div>
+	</section>
+
+	<section class="px-4 pb-4 sm:px-6">
+		<div class="mx-auto max-w-[760px]">
+			<h2 class="display-md">How to generate a keypair</h2>
+			<ol
+				class="text-body mt-5 flex list-decimal flex-col gap-3 pl-5 leading-relaxed"
+			>
+				{steps.map((s) => <li>{s.text}</li>)}
+			</ol>
+		</div>
+	</section>
+
+	<section class="px-4 py-12 sm:px-6">
+		<div class="mx-auto max-w-[760px]">
+			<h2 class="display-md">Worked example</h2>
+			<p class="text-body mt-4 leading-relaxed">
+				A real keypair from the RFC 8032 test vectors. The public key is
+				derived from the private key — try pasting this private key into
+				the sign tool.
+			</p>
+			<dl class="mt-5 flex flex-col gap-3">
+				<div
+					class="rounded-[6px] border border-[var(--color-term-border)] bg-[var(--color-term-bg)] p-4"
+				>
+					<dt
+						class="font-mono text-[11px] tracking-[0.12em] text-[var(--color-term-dim)] uppercase"
+					>
+						Private key · 64 hex
+					</dt>
+					<dd
+						class="mt-1.5 font-mono text-xs break-all text-[var(--color-term-fg)]"
+					>
+						{EXAMPLE.privateKeyHex}
+					</dd>
+				</div>
+				<div
+					class="rounded-[6px] border border-[var(--color-term-border)] bg-[var(--color-term-bg)] p-4"
+				>
+					<dt
+						class="font-mono text-[11px] tracking-[0.12em] text-[var(--color-term-dim)] uppercase"
+					>
+						Public key · 64 hex
+					</dt>
+					<dd
+						class="mt-1.5 font-mono text-xs break-all text-[var(--color-term-prompt)]"
+					>
+						{EXAMPLE.publicKeyHex}
+					</dd>
+				</div>
+			</dl>
+		</div>
+	</section>
+
+	<section class="px-4 pb-12 sm:px-6">
+		<div class="mx-auto max-w-[760px]">
+			<h2 class="display-md">Good to know</h2>
+			<ul
+				class="text-body mt-5 flex list-disc flex-col gap-2 pl-5 leading-relaxed"
+			>
+				<li>
+					Keys are 32 bytes each, shown as 64 hexadecimal characters.
+				</li>
+				<li>
+					Generation uses the operating system's secure random source
+					via WebCrypto.
+				</li>
+				<li>
+					Nothing is stored or transmitted — reload the page and the
+					keys are gone unless you copied them.
+				</li>
+			</ul>
+		</div>
+	</section>
+
+	<section class="px-4 pb-16 sm:px-6">
+		<div class="mx-auto max-w-[760px]">
+			<h2 class="display-md">FAQ</h2>
+			<div class="mt-5"><FaqAccordion faqs={faqs} /></div>
+		</div>
+	</section>
+
+	<RelatedTools current="generate" />
+</BaseLayout>
