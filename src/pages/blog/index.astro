@@ -1,0 +1,69 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import PageHeader from '../../components/sections/PageHeader.astro'
+import { getCollection } from 'astro:content'
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
+	(a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime()
+)
+
+const fmt = (d: Date) =>
+	d.toLocaleDateString('en-US', {
+		year: 'numeric',
+		month: 'short',
+		day: 'numeric',
+	})
+---
+
+<BaseLayout
+	title="Blog"
+	description="Guides and explainers on Ed25519, digital signatures, and applied cryptography."
+	path="/blog"
+>
+	<PageHeader
+		eyebrow="blog"
+		title="Notes on Ed25519 & signatures."
+		lead="Plain-English guides to keys, signing, verification, and modern cryptography."
+	/>
+
+	<section class="px-4 pb-24 sm:px-6">
+		<div class="mx-auto max-w-[1100px]">
+			<ul
+				class="border-hairline bg-hairline grid gap-px overflow-hidden rounded-[8px] border sm:grid-cols-2"
+			>
+				{
+					posts.map((post) => (
+						<li class="bg-canvas hover:bg-canvas-soft group transition-colors">
+							<a
+								href={`/blog/${post.id}/`}
+								class="flex h-full flex-col p-7"
+							>
+								<div class="text-mute flex items-center gap-3 font-mono text-[11px] tracking-[0.14em] uppercase">
+									<time
+										datetime={post.data.pubDate.toISOString()}
+									>
+										{fmt(post.data.pubDate)}
+									</time>
+									{post.data.tags[0] && (
+										<span class="text-[var(--color-term-prompt)]">
+											#{post.data.tags[0]}
+										</span>
+									)}
+								</div>
+								<h2 class="text-ink mt-3 text-lg font-semibold tracking-tight group-hover:underline">
+									{post.data.title}
+								</h2>
+								<p class="text-body mt-2 text-sm leading-relaxed">
+									{post.data.description}
+								</p>
+								<span class="text-mute group-hover:text-ink mt-4 inline-flex items-center gap-1 font-mono text-xs uppercase">
+									Read →
+								</span>
+							</a>
+						</li>
+					))
+				}
+			</ul>
+		</div>
+	</section>
+</BaseLayout>
