@@ -1,11 +1,19 @@
 ---
-import '../styles/global.css'
+import BaseLayout from '../layouts/BaseLayout.astro'
+import Hero from '../components/sections/Hero.astro'
+import ToolSection from '../components/tool/ToolSection.astro'
+import FeatureGrid from '../components/sections/FeatureGrid.astro'
+import FaqTeaser from '../components/sections/FaqTeaser.astro'
+import CtaBand from '../components/sections/CtaBand.astro'
+import AdSlot from '../components/ui/AdSlot.astro'
+import { webApplicationJsonLd, websiteJsonLd } from '../lib/seo'
 ---
 
-<html lang="en">
-	<head><meta charset="utf-8" /><title>scaffold ok</title></head>
-	<body>
-		<h1 class="text-2xl font-bold">scaffold ok</h1>
-		<p class="display-md mesh-gradient">tokens ok</p>
-	</body>
-</html>
+<BaseLayout path="/" jsonLd={[websiteJsonLd(), webApplicationJsonLd()]}>
+	<Hero />
+	<ToolSection />
+	<div class="px-4 py-4 sm:px-6"><AdSlot /></div>
+	<FeatureGrid />
+	<FaqTeaser />
+	<CtaBand />
+</BaseLayout>
