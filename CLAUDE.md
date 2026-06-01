@@ -39,14 +39,19 @@ Uses **pnpm**.
 
 ## Hosting
 
-Cloudflare Pages, **static** (no adapter in Phase 1). All pages prerender to `dist/`.
-The `@astrojs/cloudflare` adapter + `wrangler.jsonc` are deferred to **Phase 2**, when the
-contact form (the first server route) is added. See `docs/DEPLOY.md`.
+Cloudflare via `@astrojs/cloudflare` (`wrangler.jsonc`). All pages are static except
+`src/pages/api/contact.ts` (`prerender = false`), the one server route — it emails the owner
+via the Cloudflare Email Routing `send_email` binding (`SEB`). Build emits static assets to
+`dist/client/` and the worker to `dist/server/` (the adapter writes a deploy-ready
+`dist/server/wrangler.json`; the root `wrangler.jsonc` omits `main` on purpose). The route
+reads bindings via `import { env } from 'cloudflare:workers'` — Astro v6 removed
+`Astro.locals.runtime.env`. See `docs/DEPLOY.md`.
 
-## Blog (Phase 2)
+## Blog
 
-Posts will be Markdown in `src/content/blog/`. To add one: copy an existing post, rename the
-file (filename = slug), edit frontmatter + body, set `draft: false`. No CLI.
+Posts are Markdown in `src/content/blog/`, defined as a Content Layer collection in
+`src/content.config.ts`. To add one: copy an existing post, rename the file (filename = slug),
+edit frontmatter + body, set `draft: false`. No CLI. See `docs/AUTHORING.md`.
 
 ## Specs & plans
 
