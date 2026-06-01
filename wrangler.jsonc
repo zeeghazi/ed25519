@@ -1,13 +1,16 @@
 {
 	// Workers-with-assets layout observed after `pnpm build` with adapter v13:
 	// - Static assets (HTML, CSS, JS, fonts) land in dist/client/
-	// - Server worker bundle lands in dist/server/index.js once a server route exists
-	// - dist/_worker.js/ and dist/_routes.json do NOT exist (not the old Workers layout)
+	// - The server worker bundle lands in dist/server/ (entry: dist/server/entry.mjs),
+	//   emitted because /api/contact is a server route (prerender = false).
+	// - The adapter writes a complete, deploy-ready config to dist/server/wrangler.json
+	//   (with "main": "entry.mjs" + "assets.directory": "../client"); THAT is the file
+	//   `wrangler deploy` / Workers Builds uses.
 	//
-	// NOTE: "main" is intentionally omitted here — the build is fully static (no server
-	// routes yet), so the CF vite plugin runs in assetsOnly mode and errors if "main"
-	// points to a non-existent file. Reinstate "main": "./dist/server/index.js" in
-	// Task 14 when the contact-form server route creates the worker bundle.
+	// Do NOT set "main" here. This source config is read by @cloudflare/vite-plugin at
+	// the START of `astro build`, which validates "main" against an existing file —
+	// pointing it at dist/server/entry.mjs (not emitted yet) breaks every clean build.
+	// Omitting it lets the adapter manage the entrypoint and generate dist/server/wrangler.json.
 	"name": "ed25519",
 	"compatibility_date": "2026-06-01",
 	"compatibility_flags": ["nodejs_compat"],

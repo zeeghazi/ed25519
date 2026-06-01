@@ -20,7 +20,8 @@
 		"@fontsource-variable/geist": "^5.2.9",
 		"@fontsource-variable/geist-mono": "^5.2.8",
 		"@noble/ed25519": "^3.1.0",
-		"astro": "^6.4.2"
+		"astro": "^6.4.2",
+		"mimetext": "^3.0.28"
 	},
 	"devDependencies": {
 		"@astrojs/check": "^0.9.9",
