@@ -14,10 +14,11 @@ const facts = ['no signup', 'no server', '100% client-side', 'open source']
 		<Badge dot>client-side EdDSA toolkit</Badge>
 
 		<div class="mt-7 grid gap-6 md:grid-cols-2 md:items-start md:gap-12">
-			<h1 class="display-xl text-balance">
-				Cryptographic trust, computed locally.<span
-					class="term-caret"
-					aria-hidden="true"></span>
+			<h1 class="display-xl">
+				Cryptographic trust.<br />
+				Just <span id="tw-word" class="text-[var(--color-term-prompt)]"
+					>generate</span
+				><span class="term-caret" aria-hidden="true"></span>
 			</h1>
 			<p
 				class="text-body md:border-hairline max-w-md text-base leading-relaxed md:border-l md:pt-1.5 md:pl-8"
@@ -47,3 +48,33 @@ const facts = ['no signup', 'no server', '100% client-side', 'open source']
 		</ul>
 	</div>
 </section>
+
+<script>
+	// Typewriter cycle for the last headline word: generate → sign → verify → …
+	const el = document.getElementById('tw-word')
+	const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+	if (el && !reduce) {
+		const words = ['generate', 'sign', 'verify']
+		let wi = 0
+		let ci = words[0].length
+		let deleting = false
+		const tick = () => {
+			const word = words[wi]
+			if (!deleting && ci === word.length) {
+				deleting = true
+				setTimeout(tick, 1500)
+				return
+			}
+			if (deleting && ci === 0) {
+				deleting = false
+				wi = (wi + 1) % words.length
+				setTimeout(tick, 280)
+				return
+			}
+			ci += deleting ? -1 : 1
+			el.textContent = words[wi].slice(0, ci)
+			setTimeout(tick, deleting ? 55 : 100)
+		}
+		setTimeout(tick, 1500)
+	}
+</script>
