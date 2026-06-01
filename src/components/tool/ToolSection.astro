@@ -129,15 +129,46 @@ const tabs = [
 	function syncFromHash(smooth = false) {
 		const tab = hashToTab[window.location.hash]
 		if (!tab) return
-		activate(tab)
-		// The hash (#keygen/#sign/#verify) isn't a real element id, so the browser
-		// won't scroll on its own — bring the tool section into view ourselves.
-		document
-			.getElementById('tool')
-			?.scrollIntoView({
-				behavior: smooth ? 'smooth' : 'auto',
-				block: 'start',
-			})
+
+		const isActive = tabEls.some(
+			(t) =>
+				t.dataset.tab === tab &&
+				t.getAttribute('aria-selected') === 'true'
+		)
+		const reduce = window.matchMedia(
+			'(prefers-reduced-motion: reduce)'
+		).matches
+		const animate = smooth && !reduce
+
+		// Move the user to the tool FIRST. (The hash isn't a real element id, so the
+		// browser won't scroll on its own.)
+		document.getElementById('tool')?.scrollIntoView({
+			behavior: animate ? 'smooth' : 'auto',
+			block: 'start',
+		})
+
+		// If it's already the open tab, nothing else changes.
+		if (isActive) return
+
+		// Otherwise switch the tab AFTER the user has arrived, so the change happens
+		// in view and feels user-driven rather than pre-empted.
+		if (!animate) {
+			activate(tab)
+			return
+		}
+		let done = false
+		const run = () => {
+			if (done) return
+			done = true
+			window.removeEventListener('scrollend', run)
+			activate(tab)
+		}
+		if ('onscrollend' in window) {
+			window.addEventListener('scrollend', run)
+			setTimeout(run, 700) // fallback if scrollend never fires (already in view)
+		} else {
+			setTimeout(run, 400)
+		}
 	}
 	syncFromHash()
 	window.addEventListener('hashchange', () => syncFromHash(true))
