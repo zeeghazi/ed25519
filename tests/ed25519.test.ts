@@ -28,6 +28,15 @@ describe('ed25519', () => {
 		expect(await verifySignature(sig, 'tampered', publicKeyHex)).toBe(false)
 	})
 
+	it('fails verification under a different public key', async () => {
+		const a = await generateKeypair()
+		const b = await generateKeypair()
+		const sig = await signMessage('shared message', a.privateKeyHex)
+		expect(
+			await verifySignature(sig, 'shared message', b.publicKeyHex)
+		).toBe(false)
+	})
+
 	it('rejects a private key that is not 64 hex chars', async () => {
 		await expect(signMessage('x', 'deadbeef')).rejects.toThrow(/64 hex/)
 	})
