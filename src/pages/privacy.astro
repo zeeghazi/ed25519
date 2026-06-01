@@ -1,0 +1,58 @@
+---
+import LegalLayout from '../layouts/LegalLayout.astro'
+import { SITE } from '../consts'
+const updated = 'June 1, 2026'
+---
+
+<LegalLayout
+	title="Privacy Policy"
+	description="How Ed25519.com handles data: cryptographic operations run locally in your browser and your keys are never transmitted."
+	path="/privacy"
+	updated={updated}
+>
+	<p>
+		This Privacy Policy explains how {SITE.name} ("we", "us") handles information
+		when you use this website. By using the site, you agree to this policy.
+	</p>
+
+	<h2>Cryptographic data stays on your device</h2>
+	<p>
+		All key generation, signing, and signature verification happen entirely
+		in your browser using the WebCrypto API. Your private keys, messages,
+		and signatures are never sent to or stored on our servers.
+	</p>
+
+	<h2>Information we collect</h2>
+	<p>
+		We do not require an account and do not ask for personal information to
+		use the tools. We may collect anonymous, aggregate usage statistics
+		(such as page views) through privacy-respecting analytics to understand
+		traffic.
+	</p>
+
+	<h2>Cookies and advertising</h2>
+	<p>
+		We may use cookies for basic site functionality and analytics. If
+		advertising is enabled, third-party vendors (including Google) may use
+		cookies to serve ads based on your prior visits to this or other
+		websites. You can opt out of personalized advertising via Google Ads
+		Settings.
+	</p>
+
+	<h2>Third-party services</h2>
+	<p>
+		The contact form sends your message to us by email. Analytics and
+		advertising, where enabled, are provided by third parties subject to
+		their own privacy policies.
+	</p>
+
+	<h2>Your choices</h2>
+	<p>
+		You can disable cookies in your browser and use browser or extension
+		controls to limit tracking. Disabling cookies does not affect the core
+		in-browser tools.
+	</p>
+
+	<h2>Contact</h2>
+	<p>Questions about this policy? Email us at {SITE.email}.</p>
+</LegalLayout>
