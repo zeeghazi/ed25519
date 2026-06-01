@@ -38,9 +38,9 @@ There is no test suite.
   three workflow components, and the global `<Toaster>` (react-hot-toast).
 - **Components** (`src/components/`) — each is a self-contained workflow step holding its own
   state, hex/byte conversion, validation, and toast feedback:
-  - `KeyGeneration.tsx` — generates a keypair (private key 64 hex chars, public key 64 hex chars)
-  - `MessageSigning.tsx` — signs a message with a private key (signature = 128 hex chars)
-  - `SignatureVerification.tsx` — verifies a signature against message + public key
+    - `KeyGeneration.tsx` — generates a keypair (private key 64 hex chars, public key 64 hex chars)
+    - `MessageSigning.tsx` — signs a message with a private key (signature = 128 hex chars)
+    - `SignatureVerification.tsx` — verifies a signature against message + public key
 
 ### Crypto setup — important
 

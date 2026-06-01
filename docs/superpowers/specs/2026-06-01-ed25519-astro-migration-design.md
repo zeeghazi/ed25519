@@ -23,6 +23,7 @@ fully working, deployable landing page. **Phase 2** delivers the remaining pages
 and the blog.
 
 ### Non-goals (YAGNI)
+
 No auth, no user accounts, no CMS (Markdown files only), no i18n, no e-commerce,
 no database. The contact endpoint is the only server-side surface.
 
@@ -44,19 +45,19 @@ no database. The contact endpoint is the only server-side surface.
 
 ## 3. Tech stack
 
-| Concern | Choice |
-|---|---|
-| Framework | Astro 6 (latest; 6.4.x at planning time) |
-| Language | TypeScript (strict) |
-| Package manager | pnpm |
-| Styling | Tailwind CSS v4 (CSS-first, via `@tailwindcss/vite`) |
-| Crypto | `@noble/ed25519` ^3.x (async API uses built-in WebCrypto SHA-512 — no `@noble/hashes` needed) |
-| Content | Astro Content Collections + `@astrojs/mdx` |
-| Fonts | Geist + Geist Mono, self-hosted via Fontsource |
-| Sitemap | `@astrojs/sitemap` |
-| Adapter | `@astrojs/cloudflare` (hybrid: static pages + 1 function) |
-| Email (contact) | Cloudflare Email Routing (`send_email` binding from the Function) |
-| Host | Cloudflare Pages |
+| Concern         | Choice                                                                                        |
+| --------------- | --------------------------------------------------------------------------------------------- |
+| Framework       | Astro 6 (latest; 6.4.x at planning time)                                                      |
+| Language        | TypeScript (strict)                                                                           |
+| Package manager | pnpm                                                                                          |
+| Styling         | Tailwind CSS v4 (CSS-first, via `@tailwindcss/vite`)                                          |
+| Crypto          | `@noble/ed25519` ^3.x (async API uses built-in WebCrypto SHA-512 — no `@noble/hashes` needed) |
+| Content         | Astro Content Collections + `@astrojs/mdx`                                                    |
+| Fonts           | Geist + Geist Mono, self-hosted via Fontsource                                                |
+| Sitemap         | `@astrojs/sitemap`                                                                            |
+| Adapter         | `@astrojs/cloudflare` (hybrid: static pages + 1 function)                                     |
+| Email (contact) | Cloudflare Email Routing (`send_email` binding from the Function)                             |
+| Host            | Cloudflare Pages                                                                              |
 
 Exact current versions confirmed against the Astro docs/MCP at implementation time.
 
@@ -87,6 +88,7 @@ sets `export const prerender = false`. The Cloudflare adapter packages that sing
 route as a Function; everything else is static HTML/CSS/JS on the CDN.
 
 ### Files removed from the old project
+
 `src/components/*.tsx`, `src/pages/HomePage.tsx`, `src/main.tsx`, `index.html`
 (root SPA), `vite.config.ts`, the React-oriented `eslint.config.js`, the
 `tsconfig.app.json`/`tsconfig.node.json` split, and React/Vite/`gh-pages`
@@ -114,6 +116,7 @@ Tokens defined as `@theme` variables in `src/styles/global.css`:
   never miniaturized, never reduced to one color (per DESIGN.md don'ts).
 
 **Dark mode strategy:**
+
 - `@custom-variant dark (&:where(.dark, .dark *));` in `global.css`.
 - An inline, render-blocking `<head>` script reads `localStorage.theme`, else
   `prefers-color-scheme`, and sets `.dark` on `<html>` **before first paint**
@@ -132,8 +135,9 @@ end, `@utility` for custom utilities, class-detection limits) are observed.
 a breaking change from the old app's v2 code. v3's **async** functions
 (`getPublicKeyAsync`, `signAsync`, `verifyAsync`) use a built-in WebCrypto SHA-512
 provider, so the old triplicated `ed.etc.sha512Sync` wiring is **removed entirely**
-and `@noble/hashes` is **not** a dependency. (Only the v3 *sync* API would require
+and `@noble/hashes` is **not** a dependency. (Only the v3 _sync_ API would require
 wiring `ed.hashes.sha512`; we deliberately use the async API.) The wrapper exposes:
+
 - `generateKeypair(): Promise<{ privateKeyHex, publicKeyHex }>`
 - `signMessage(message: string, privateKeyHex: string): Promise<string>` (sig hex)
 - `verifySignature(signatureHex, message, publicKeyHex): Promise<boolean>`
@@ -156,6 +160,7 @@ future feature (no analytics/telemetry on key material).
 ## 7. Pages & content
 
 ### Phase 1 (foundation + landing) — deployable
+
 - Project scaffold, Cloudflare adapter, Tailwind v4 tokens, Geist fonts, dark mode.
 - `BaseLayout`, `Nav` (responsive, hamburger + full-overlay on mobile), `Footer`
   (multi-column, mono eyebrows), `ThemeToggle`, `SEO` component.
@@ -167,6 +172,7 @@ future feature (no analytics/telemetry on key material).
   `WebApplication`/`WebSite`/`Organization` JSON-LD, OG defaults.
 
 ### Phase 2 (secondary pages + blog)
+
 - `about.astro` — project mission/what Ed25519.com is (placeholder-but-real copy).
 - `contact.astro` — accessible form posting to `api/contact.ts` (Cloudflare
   Function) + email/social links; progressive enhancement (works without JS).
@@ -177,10 +183,10 @@ future feature (no analytics/telemetry on key material).
 - `blog/[...slug].astro` — `PostLayout` with `Article` + `BreadcrumbList` JSON-LD.
 - `rss.xml.ts` — RSS feed.
 - 4 starter posts (Markdown, marked editable/replaceable):
-  1. *What is Ed25519? A plain-English guide to modern digital signatures*
-  2. *Ed25519 vs RSA vs ECDSA — which signature algorithm should you use?*
-  3. *How Ed25519 key generation actually works (and why it's safe)*
-  4. *Signing and verifying messages with Ed25519: a practical walkthrough*
+    1. _What is Ed25519? A plain-English guide to modern digital signatures_
+    2. _Ed25519 vs RSA vs ECDSA — which signature algorithm should you use?_
+    3. _How Ed25519 key generation actually works (and why it's safe)_
+    4. _Signing and verifying messages with Ed25519: a practical walkthrough_
 
 ## 8. Blog authoring workflow
 
@@ -201,6 +207,7 @@ future feature (no analytics/telemetry on key material).
 ```
 
 **Authoring paths (all low-friction) — copy-an-existing-post workflow:**
+
 - **By hand:** duplicate any existing post in `src/content/blog/`, rename the file
   (the filename becomes the slug), update the frontmatter (title, description,
   `pubDate`, tags) and body, set `draft: false`, commit. No CLI/scaffold step.
@@ -254,9 +261,10 @@ The contact form posts normally (works without JS) and is enhanced with `fetch`
 for inline success/error states.
 
 Setup is free and single-vendor: enable Email Routing on the Cloudflare zone, add
-+ verify the destination address, and declare the `send_email` binding in
-`wrangler.toml`. Cloudflare auto-adds the required MX/TXT records. The submitter's
-address is set as the email `reply-to` so replies go straight to them.
+
+- verify the destination address, and declare the `send_email` binding in
+  `wrangler.toml`. Cloudflare auto-adds the required MX/TXT records. The submitter's
+  address is set as the email `reply-to` so replies go straight to them.
 
 ## 11. Error pages
 
@@ -267,6 +275,7 @@ address is set as the email `reply-to` so replies go straight to them.
 ## 12. Tooling & scripts
 
 `package.json` scripts (GitHub Pages tooling removed):
+
 ```
 dev      astro dev
 build    astro build
@@ -274,12 +283,14 @@ preview  astro preview        # or: wrangler pages dev for function parity
 check    astro check          # type + content checks
 format   prettier --write .
 ```
+
 Removed: `gh-pages` dependency, `predeploy`/`deploy` scripts, the `docs/`-build
 convention. Prettier keeps the existing config + `prettier-plugin-astro`.
 
 ## 13. Deployment (Cloudflare Pages)
 
 Deliver `docs/DEPLOY.md` covering:
+
 - Connect repo to Cloudflare Pages; build command `pnpm build`, output dir
   `dist`, framework preset Astro.
 - `@astrojs/cloudflare` adapter config + `wrangler.toml`/compat flags, incl. the
@@ -307,4 +318,7 @@ Each phase becomes its own implementation plan via the writing-plans skill.
   content; ads inactive until approved.
 - **Cloudflare function vs static** — only the contact route is server-rendered;
   keeps the SEO surface fully static.
+
+```
+
 ```

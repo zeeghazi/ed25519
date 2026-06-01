@@ -261,7 +261,7 @@ For a CSS-first Tailwind v4 setup, this structure is usually sensible:
 - `base.css` for minimal element defaults
 - `utilities.css` for low-level project utilities and variants
 - `components.css` for a small stable component API
-  - Bigger components, e.g. `rich-text.css` for scoped uncontrolled HTML
+    - Bigger components, e.g. `rich-text.css` for scoped uncontrolled HTML
 
 ## Refactor heuristics
 
