@@ -1,0 +1,69 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import PageHeader from '../components/sections/PageHeader.astro'
+import { faqPageJsonLd } from '../lib/seo'
+
+const faqs = [
+	{
+		q: 'Are my keys sent anywhere?',
+		a: 'No. Key generation, signing, and verification run entirely in your browser using the WebCrypto API. No keys, messages, or signatures are ever transmitted to a server.',
+	},
+	{
+		q: 'What is Ed25519?',
+		a: 'Ed25519 is an EdDSA digital signature scheme using the Curve25519 elliptic curve. It offers strong security with small 32-byte keys and fast verification, and is standardized in RFC 8032.',
+	},
+	{
+		q: 'What are the key and signature sizes?',
+		a: 'Private and public keys are 32 bytes each (64 hex characters). Signatures are 64 bytes (128 hex characters).',
+	},
+	{
+		q: 'Is Ed25519 better than RSA or ECDSA?',
+		a: 'For most new systems, yes. Ed25519 is faster, has much smaller keys than RSA, and avoids the random-number pitfalls that can compromise ECDSA. RSA or ECDSA may still be required for compatibility with older systems.',
+	},
+	{
+		q: 'Can I trust this tool with real keys?',
+		a: 'The cryptography uses the audited @noble/ed25519 library and runs locally. That said, for high-value production keys, generate and store them in a dedicated, offline-capable tool or hardware device.',
+	},
+	{
+		q: 'Why do the keys look like hexadecimal?',
+		a: 'Keys and signatures are raw bytes. We display them as hexadecimal (0-9, a-f) because it is a compact, copy-paste-friendly text encoding of those bytes.',
+	},
+	{
+		q: 'Does this work offline?',
+		a: 'Once the page has loaded, all operations are local and work without a network connection.',
+	},
+]
+---
+
+<BaseLayout
+	title="FAQ"
+	description="Frequently asked questions about Ed25519, digital signatures, and how this in-browser tool keeps your keys private."
+	path="/faq"
+	jsonLd={faqPageJsonLd(faqs)}
+>
+	<PageHeader eyebrow="faq" title="Frequently asked questions." />
+
+	<section class="px-4 pb-24 sm:px-6">
+		<div class="mx-auto max-w-[760px]">
+			<div
+				class="divide-hairline border-hairline bg-canvas divide-y rounded-[8px] border"
+			>
+				{
+					faqs.map((f) => (
+						<details class="group p-5">
+							<summary class="text-ink flex cursor-pointer list-none items-center justify-between gap-4 font-medium">
+								{f.q}
+								<span class="text-mute border-hairline group-open:border-hairline-strong group-open:text-ink inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-[4px] border font-mono text-sm transition-transform group-open:rotate-45">
+									+
+								</span>
+							</summary>
+							<p class="text-body mt-3 text-sm leading-relaxed">
+								{f.a}
+							</p>
+						</details>
+					))
+				}
+			</div>
+		</div>
+	</section>
+</BaseLayout>
