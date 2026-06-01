@@ -78,6 +78,7 @@ docs/
 **Why now:** Phase 1 deferred the adapter because, with zero server routes, adapter v13 produced a Workers-style layout that broke `dist/` greps. Phase 2 introduces the first server route (the contact form), so the adapter is required. This task adds it and **empirically confirms** the emitted output layout (which differs by adapter mode), then writes `wrangler.jsonc`/`DEPLOY.md` to match reality rather than assumption.
 
 **Files:**
+
 - Modify: `astro.config.mjs`, `src/env.d.ts`
 - Create: `wrangler.jsonc`
 
@@ -90,17 +91,17 @@ pnpm add @astrojs/cloudflare@^13.6.0
 - [ ] **Step 2: Add the adapter to `astro.config.mjs`** (keep existing sitemap + tailwind)
 
 ```js
-import { defineConfig } from 'astro/config';
-import tailwindcss from '@tailwindcss/vite';
-import sitemap from '@astrojs/sitemap';
-import cloudflare from '@astrojs/cloudflare';
+import { defineConfig } from 'astro/config'
+import tailwindcss from '@tailwindcss/vite'
+import sitemap from '@astrojs/sitemap'
+import cloudflare from '@astrojs/cloudflare'
 
 export default defineConfig({
-  site: 'https://ed25519.com',
-  adapter: cloudflare({ imageService: 'passthrough' }),
-  integrations: [sitemap()],
-  vite: { plugins: [tailwindcss()] },
-});
+	site: 'https://ed25519.com',
+	adapter: cloudflare({ imageService: 'passthrough' }),
+	integrations: [sitemap()],
+	vite: { plugins: [tailwindcss()] },
+})
 ```
 
 > `imageService: 'passthrough'` avoids the adapter pulling in a Workers-incompatible image service (we ship no Astro `<Image>` optimization in this project). Default page mode stays static; only routes that set `prerender = false` become server routes.
@@ -110,10 +111,11 @@ export default defineConfig({
 Create `src/pages/api/_probe.ts`:
 
 ```ts
-export const prerender = false;
-export const GET = () => new Response(JSON.stringify({ ok: true }), {
-  headers: { 'content-type': 'application/json' },
-});
+export const prerender = false
+export const GET = () =>
+	new Response(JSON.stringify({ ok: true }), {
+		headers: { 'content-type': 'application/json' },
+	})
 ```
 
 - [ ] **Step 4: Build and INSPECT the actual output layout**
@@ -127,12 +129,14 @@ If static assets are at the `dist/` root with a `_worker.js` (Workers-with-asset
 
 ```jsonc
 {
-  "name": "ed25519",
-  "compatibility_date": "2026-06-01",
-  "compatibility_flags": ["nodejs_compat"],
-  "main": "./dist/_worker.js/index.js",
-  "assets": { "directory": "./dist", "binding": "ASSETS" },
-  "send_email": [{ "name": "SEB", "destination_address": "hello@ed25519.com" }]
+	"name": "ed25519",
+	"compatibility_date": "2026-06-01",
+	"compatibility_flags": ["nodejs_compat"],
+	"main": "./dist/_worker.js/index.js",
+	"assets": { "directory": "./dist", "binding": "ASSETS" },
+	"send_email": [
+		{ "name": "SEB", "destination_address": "hello@ed25519.com" },
+	],
 }
 ```
 
@@ -140,11 +144,13 @@ If instead the adapter emitted a Pages layout (`dist/` of static files, no `_wor
 
 ```jsonc
 {
-  "name": "ed25519",
-  "compatibility_date": "2026-06-01",
-  "compatibility_flags": ["nodejs_compat"],
-  "pages_build_output_dir": "./dist",
-  "send_email": [{ "name": "SEB", "destination_address": "hello@ed25519.com" }]
+	"name": "ed25519",
+	"compatibility_date": "2026-06-01",
+	"compatibility_flags": ["nodejs_compat"],
+	"pages_build_output_dir": "./dist",
+	"send_email": [
+		{ "name": "SEB", "destination_address": "hello@ed25519.com" },
+	],
 }
 ```
 
@@ -156,14 +162,14 @@ If instead the adapter emitted a Pages layout (`dist/` of static files, no `_wor
 /// <reference types="astro/client" />
 
 interface Env {
-  SEB: { send(message: unknown): Promise<void> };
-  CONTACT_TO_EMAIL: string;
+	SEB: { send(message: unknown): Promise<void> }
+	CONTACT_TO_EMAIL: string
 }
 
-type Runtime = import('@astrojs/cloudflare').Runtime<Env>;
+type Runtime = import('@astrojs/cloudflare').Runtime<Env>
 
 declare namespace App {
-  interface Locals extends Runtime {}
+	interface Locals extends Runtime {}
 }
 ```
 
@@ -193,6 +199,7 @@ git commit -m "feat: re-add Cloudflare adapter + wrangler config (deferred from 
 ## Task 2: `src/lib/reading-time.ts` (TDD)
 
 **Files:**
+
 - Create: `src/lib/reading-time.ts`, `tests/reading-time.test.ts`
 
 - [ ] **Step 1: Write failing tests**
@@ -200,23 +207,23 @@ git commit -m "feat: re-add Cloudflare adapter + wrangler config (deferred from 
 `tests/reading-time.test.ts`:
 
 ```ts
-import { describe, it, expect } from 'vitest';
-import { readingTime } from '../src/lib/reading-time';
+import { describe, it, expect } from 'vitest'
+import { readingTime } from '../src/lib/reading-time'
 
 describe('readingTime', () => {
-  it('returns at least 1 min for short text', () => {
-    expect(readingTime('hello world')).toBe('1 min read');
-  });
+	it('returns at least 1 min for short text', () => {
+		expect(readingTime('hello world')).toBe('1 min read')
+	})
 
-  it('rounds up to whole minutes at ~200 wpm', () => {
-    const words = Array.from({ length: 450 }, () => 'word').join(' ');
-    expect(readingTime(words)).toBe('3 min read');
-  });
+	it('rounds up to whole minutes at ~200 wpm', () => {
+		const words = Array.from({ length: 450 }, () => 'word').join(' ')
+		expect(readingTime(words)).toBe('3 min read')
+	})
 
-  it('ignores markdown punctuation when counting words', () => {
-    expect(readingTime('# Title\n\nOne, two; three.')).toBe('1 min read');
-  });
-});
+	it('ignores markdown punctuation when counting words', () => {
+		expect(readingTime('# Title\n\nOne, two; three.')).toBe('1 min read')
+	})
+})
 ```
 
 - [ ] **Step 2: Run tests — verify they fail**
@@ -227,12 +234,12 @@ Expected: FAIL (`Cannot find module '../src/lib/reading-time'`).
 - [ ] **Step 3: Implement `src/lib/reading-time.ts`**
 
 ```ts
-const WPM = 200;
+const WPM = 200
 
 export function readingTime(content: string): string {
-  const words = content.trim().split(/\s+/).filter(Boolean).length;
-  const minutes = Math.max(1, Math.ceil(words / WPM));
-  return `${minutes} min read`;
+	const words = content.trim().split(/\s+/).filter(Boolean).length
+	const minutes = Math.max(1, Math.ceil(words / WPM))
+	return `${minutes} min read`
 }
 ```
 
@@ -254,6 +261,7 @@ git commit -m "feat: reading-time helper (TDD)"
 ## Task 3: Blog content collection + MDX
 
 **Files:**
+
 - Create: `src/content.config.ts`
 - Modify: `astro.config.mjs`, `package.json`
 
@@ -266,41 +274,41 @@ pnpm add @astrojs/mdx@^6.0.1
 - [ ] **Step 2: Add MDX to `astro.config.mjs` integrations**
 
 ```js
-import { defineConfig } from 'astro/config';
-import tailwindcss from '@tailwindcss/vite';
-import sitemap from '@astrojs/sitemap';
-import mdx from '@astrojs/mdx';
-import cloudflare from '@astrojs/cloudflare';
+import { defineConfig } from 'astro/config'
+import tailwindcss from '@tailwindcss/vite'
+import sitemap from '@astrojs/sitemap'
+import mdx from '@astrojs/mdx'
+import cloudflare from '@astrojs/cloudflare'
 
 export default defineConfig({
-  site: 'https://ed25519.com',
-  adapter: cloudflare({ imageService: 'passthrough' }),
-  integrations: [sitemap(), mdx()],
-  vite: { plugins: [tailwindcss()] },
-});
+	site: 'https://ed25519.com',
+	adapter: cloudflare({ imageService: 'passthrough' }),
+	integrations: [sitemap(), mdx()],
+	vite: { plugins: [tailwindcss()] },
+})
 ```
 
 - [ ] **Step 3: Create `src/content.config.ts`** (Content Layer glob loader + Zod schema)
 
 ```ts
-import { defineCollection, z } from 'astro:content';
-import { glob } from 'astro/loaders';
+import { defineCollection, z } from 'astro:content'
+import { glob } from 'astro/loaders'
 
 const blog = defineCollection({
-  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/blog' }),
-  schema: z.object({
-    title: z.string().max(70),
-    description: z.string().min(50).max(170),
-    pubDate: z.coerce.date(),
-    updatedDate: z.coerce.date().optional(),
-    tags: z.array(z.string()).default([]),
-    author: z.string().default('Ed25519.com'),
-    ogImage: z.string().optional(),
-    draft: z.boolean().default(false),
-  }),
-});
+	loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/blog' }),
+	schema: z.object({
+		title: z.string().max(70),
+		description: z.string().min(50).max(170),
+		pubDate: z.coerce.date(),
+		updatedDate: z.coerce.date().optional(),
+		tags: z.array(z.string()).default([]),
+		author: z.string().default('Ed25519.com'),
+		ogImage: z.string().optional(),
+		draft: z.boolean().default(false),
+	}),
+})
 
-export const collections = { blog };
+export const collections = { blog }
 ```
 
 - [ ] **Step 4: Verify the collection type-checks (no posts yet is fine)**
@@ -321,6 +329,7 @@ git commit -m "feat: blog content collection (Content Layer + Zod) + MDX integra
 ## Task 4: Four starter blog posts
 
 **Files:**
+
 - Create: `src/content/blog/what-is-ed25519.md`, `ed25519-vs-rsa-vs-ecdsa.md`, `how-ed25519-key-generation-works.md`, `signing-and-verifying-with-ed25519.md`
 
 > These double as copy-from templates for the user's own posts. Keep frontmatter complete and bodies real (every post is genuine, indexable content for AdSense review). Dates staggered so ordering is deterministic.
@@ -392,12 +401,12 @@ Three signature algorithms dominate modern systems: **RSA**, **ECDSA**, and
 
 ## At a glance
 
-| | Ed25519 | ECDSA (P-256) | RSA (2048) |
-|---|---|---|---|
-| Public key size | 32 bytes | 33–65 bytes | 256 bytes |
-| Signature size | 64 bytes | ~64–72 bytes | 256 bytes |
-| Signing speed | Very fast | Fast | Slow |
-| Safe defaults | Excellent | Easy to misuse | Reasonable |
+|                 | Ed25519   | ECDSA (P-256)  | RSA (2048) |
+| --------------- | --------- | -------------- | ---------- |
+| Public key size | 32 bytes  | 33–65 bytes    | 256 bytes  |
+| Signature size  | 64 bytes  | ~64–72 bytes   | 256 bytes  |
+| Signing speed   | Very fast | Fast           | Slow       |
+| Safe defaults   | Excellent | Easy to misuse | Reasonable |
 
 ## RSA
 
@@ -528,58 +537,59 @@ git commit -m "content: four starter blog posts"
 ## Task 5: SEO JSON-LD builders for articles, breadcrumbs, FAQ
 
 **Files:**
+
 - Modify: `src/lib/seo.ts`
 
 - [ ] **Step 1: Append builders to `src/lib/seo.ts`** (after the existing exports; keep tabs/quotes)
 
 ```ts
 export function articleJsonLd(opts: {
-  title: string;
-  description: string;
-  path: string;
-  pubDate: Date;
-  updatedDate?: Date;
-  author?: string;
-  ogImage?: string;
+	title: string
+	description: string
+	path: string
+	pubDate: Date
+	updatedDate?: Date
+	author?: string
+	ogImage?: string
 }) {
-  return {
-    '@context': 'https://schema.org',
-    '@type': 'BlogPosting',
-    headline: opts.title,
-    description: opts.description,
-    url: new URL(opts.path, SITE.url).href,
-    mainEntityOfPage: new URL(opts.path, SITE.url).href,
-    datePublished: opts.pubDate.toISOString(),
-    dateModified: (opts.updatedDate ?? opts.pubDate).toISOString(),
-    author: { '@type': 'Organization', name: opts.author ?? SITE.author },
-    publisher: { '@type': 'Organization', name: SITE.name },
-    image: new URL(opts.ogImage ?? '/og/default.png', SITE.url).href,
-  };
+	return {
+		'@context': 'https://schema.org',
+		'@type': 'BlogPosting',
+		headline: opts.title,
+		description: opts.description,
+		url: new URL(opts.path, SITE.url).href,
+		mainEntityOfPage: new URL(opts.path, SITE.url).href,
+		datePublished: opts.pubDate.toISOString(),
+		dateModified: (opts.updatedDate ?? opts.pubDate).toISOString(),
+		author: { '@type': 'Organization', name: opts.author ?? SITE.author },
+		publisher: { '@type': 'Organization', name: SITE.name },
+		image: new URL(opts.ogImage ?? '/og/default.png', SITE.url).href,
+	}
 }
 
 export function breadcrumbJsonLd(items: { name: string; path: string }[]) {
-  return {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
-    itemListElement: items.map((item, i) => ({
-      '@type': 'ListItem',
-      position: i + 1,
-      name: item.name,
-      item: new URL(item.path, SITE.url).href,
-    })),
-  };
+	return {
+		'@context': 'https://schema.org',
+		'@type': 'BreadcrumbList',
+		itemListElement: items.map((item, i) => ({
+			'@type': 'ListItem',
+			position: i + 1,
+			name: item.name,
+			item: new URL(item.path, SITE.url).href,
+		})),
+	}
 }
 
 export function faqPageJsonLd(faqs: { q: string; a: string }[]) {
-  return {
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    mainEntity: faqs.map((f) => ({
-      '@type': 'Question',
-      name: f.q,
-      acceptedAnswer: { '@type': 'Answer', text: f.a },
-    })),
-  };
+	return {
+		'@context': 'https://schema.org',
+		'@type': 'FAQPage',
+		mainEntity: faqs.map((f) => ({
+			'@type': 'Question',
+			name: f.q,
+			acceptedAnswer: { '@type': 'Answer', text: f.a },
+		})),
+	}
 }
 ```
 
@@ -601,6 +611,7 @@ git commit -m "feat: article/breadcrumb/FAQ JSON-LD builders"
 ## Task 6: `PageHeader` + `Prose` shared components
 
 **Files:**
+
 - Create: `src/components/sections/PageHeader.astro`, `src/components/ui/Prose.astro`
 
 - [ ] **Step 1: `PageHeader.astro`** (shared hero for secondary pages — eyebrow + title + lead)
@@ -608,18 +619,27 @@ git commit -m "feat: article/breadcrumb/FAQ JSON-LD builders"
 ```astro
 ---
 interface Props {
-  eyebrow: string;
-  title: string;
-  lead?: string;
+	eyebrow: string
+	title: string
+	lead?: string
 }
-const { eyebrow, title, lead } = Astro.props;
+const { eyebrow, title, lead } = Astro.props
 ---
+
 <header class="px-4 pt-20 pb-10 sm:px-6">
-  <div class="mx-auto max-w-[1100px]">
-    <p class="text-mute font-mono text-xs tracking-[0.18em] uppercase">// {eyebrow}</p>
-    <h1 class="display-xl mt-2 max-w-3xl">{title}</h1>
-    {lead && <p class="text-body mt-4 max-w-2xl text-lg leading-relaxed">{lead}</p>}
-  </div>
+	<div class="mx-auto max-w-[1100px]">
+		<p class="text-mute font-mono text-xs tracking-[0.18em] uppercase">
+			// {eyebrow}
+		</p>
+		<h1 class="display-xl mt-2 max-w-3xl">{title}</h1>
+		{
+			lead && (
+				<p class="text-body mt-4 max-w-2xl text-lg leading-relaxed">
+					{lead}
+				</p>
+			)
+		}
+	</div>
 </header>
 ```
 
@@ -630,55 +650,56 @@ const { eyebrow, title, lead } = Astro.props;
 // Scoped rich-text wrapper for rendered Markdown (blog posts, legal pages).
 // Styling is scoped to .prose so we don't globally style every h2/p/ul.
 ---
+
 <div class="prose"><slot /></div>
 
 <style>
-  @reference '../../styles/global.css';
+	@reference '../../styles/global.css';
 
-  .prose {
-    @apply text-body max-w-none text-base leading-relaxed;
-  }
-  .prose :global(h2) {
-    @apply text-ink mt-12 mb-3 text-2xl font-semibold tracking-tight;
-  }
-  .prose :global(h3) {
-    @apply text-ink mt-8 mb-2 text-xl font-semibold tracking-tight;
-  }
-  .prose :global(p) {
-    @apply mt-4;
-  }
-  .prose :global(ul),
-  .prose :global(ol) {
-    @apply mt-4 flex flex-col gap-2 pl-5;
-  }
-  .prose :global(ul) {
-    @apply list-disc;
-  }
-  .prose :global(ol) {
-    @apply list-decimal;
-  }
-  .prose :global(a) {
-    @apply text-link underline underline-offset-2 hover:opacity-80;
-  }
-  .prose :global(strong) {
-    @apply text-ink font-semibold;
-  }
-  .prose :global(code) {
-    @apply bg-canvas-soft-2 text-ink rounded-[4px] px-1.5 py-0.5 font-mono text-sm;
-  }
-  .prose :global(table) {
-    @apply mt-6 w-full border-collapse text-sm;
-  }
-  .prose :global(th),
-  .prose :global(td) {
-    @apply border-hairline border px-3 py-2 text-left;
-  }
-  .prose :global(th) {
-    @apply bg-canvas-soft text-ink font-mono text-xs tracking-wide uppercase;
-  }
-  .prose :global(blockquote) {
-    @apply border-hairline-strong text-body mt-4 border-l-2 pl-4 italic;
-  }
+	.prose {
+		@apply text-body max-w-none text-base leading-relaxed;
+	}
+	.prose :global(h2) {
+		@apply text-ink mt-12 mb-3 text-2xl font-semibold tracking-tight;
+	}
+	.prose :global(h3) {
+		@apply text-ink mt-8 mb-2 text-xl font-semibold tracking-tight;
+	}
+	.prose :global(p) {
+		@apply mt-4;
+	}
+	.prose :global(ul),
+	.prose :global(ol) {
+		@apply mt-4 flex flex-col gap-2 pl-5;
+	}
+	.prose :global(ul) {
+		@apply list-disc;
+	}
+	.prose :global(ol) {
+		@apply list-decimal;
+	}
+	.prose :global(a) {
+		@apply text-link underline underline-offset-2 hover:opacity-80;
+	}
+	.prose :global(strong) {
+		@apply text-ink font-semibold;
+	}
+	.prose :global(code) {
+		@apply bg-canvas-soft-2 text-ink rounded-[4px] px-1.5 py-0.5 font-mono text-sm;
+	}
+	.prose :global(table) {
+		@apply mt-6 w-full border-collapse text-sm;
+	}
+	.prose :global(th),
+	.prose :global(td) {
+		@apply border-hairline border px-3 py-2 text-left;
+	}
+	.prose :global(th) {
+		@apply bg-canvas-soft text-ink font-mono text-xs tracking-wide uppercase;
+	}
+	.prose :global(blockquote) {
+		@apply border-hairline-strong text-body mt-4 border-l-2 pl-4 italic;
+	}
 </style>
 ```
 
@@ -702,57 +723,80 @@ git commit -m "feat: PageHeader + scoped Prose components"
 ## Task 7: Blog index — `src/pages/blog/index.astro`
 
 **Files:**
+
 - Create: `src/pages/blog/index.astro`
 
 - [ ] **Step 1: Implement the blog index** (lists non-draft posts, newest first)
 
 ```astro
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import PageHeader from '../../components/sections/PageHeader.astro';
-import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import PageHeader from '../../components/sections/PageHeader.astro'
+import { getCollection } from 'astro:content'
 
 const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
-  (a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime()
-);
+	(a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime()
+)
 
 const fmt = (d: Date) =>
-  d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+	d.toLocaleDateString('en-US', {
+		year: 'numeric',
+		month: 'short',
+		day: 'numeric',
+	})
 ---
-<BaseLayout
-  title="Blog"
-  description="Guides and explainers on Ed25519, digital signatures, and applied cryptography."
-  path="/blog"
->
-  <PageHeader
-    eyebrow="blog"
-    title="Notes on Ed25519 & signatures."
-    lead="Plain-English guides to keys, signing, verification, and modern cryptography."
-  />
 
-  <section class="px-4 pb-24 sm:px-6">
-    <div class="mx-auto max-w-[1100px]">
-      <ul class="border-hairline bg-hairline grid gap-px overflow-hidden rounded-[8px] border sm:grid-cols-2">
-        {posts.map((post) => (
-          <li class="bg-canvas hover:bg-canvas-soft group transition-colors">
-            <a href={`/blog/${post.id}/`} class="flex h-full flex-col p-7">
-              <div class="flex items-center gap-3 font-mono text-[11px] tracking-[0.14em] text-mute uppercase">
-                <time datetime={post.data.pubDate.toISOString()}>{fmt(post.data.pubDate)}</time>
-                {post.data.tags[0] && <span class="text-term-prompt">#{post.data.tags[0]}</span>}
-              </div>
-              <h2 class="text-ink mt-3 text-lg font-semibold tracking-tight group-hover:underline">
-                {post.data.title}
-              </h2>
-              <p class="text-body mt-2 text-sm leading-relaxed">{post.data.description}</p>
-              <span class="text-mute group-hover:text-ink mt-4 inline-flex items-center gap-1 font-mono text-xs uppercase">
-                Read →
-              </span>
-            </a>
-          </li>
-        ))}
-      </ul>
-    </div>
-  </section>
+<BaseLayout
+	title="Blog"
+	description="Guides and explainers on Ed25519, digital signatures, and applied cryptography."
+	path="/blog"
+>
+	<PageHeader
+		eyebrow="blog"
+		title="Notes on Ed25519 & signatures."
+		lead="Plain-English guides to keys, signing, verification, and modern cryptography."
+	/>
+
+	<section class="px-4 pb-24 sm:px-6">
+		<div class="mx-auto max-w-[1100px]">
+			<ul
+				class="border-hairline bg-hairline grid gap-px overflow-hidden rounded-[8px] border sm:grid-cols-2"
+			>
+				{
+					posts.map((post) => (
+						<li class="bg-canvas hover:bg-canvas-soft group transition-colors">
+							<a
+								href={`/blog/${post.id}/`}
+								class="flex h-full flex-col p-7"
+							>
+								<div class="text-mute flex items-center gap-3 font-mono text-[11px] tracking-[0.14em] uppercase">
+									<time
+										datetime={post.data.pubDate.toISOString()}
+									>
+										{fmt(post.data.pubDate)}
+									</time>
+									{post.data.tags[0] && (
+										<span class="text-term-prompt">
+											#{post.data.tags[0]}
+										</span>
+									)}
+								</div>
+								<h2 class="text-ink mt-3 text-lg font-semibold tracking-tight group-hover:underline">
+									{post.data.title}
+								</h2>
+								<p class="text-body mt-2 text-sm leading-relaxed">
+									{post.data.description}
+								</p>
+								<span class="text-mute group-hover:text-ink mt-4 inline-flex items-center gap-1 font-mono text-xs uppercase">
+									Read →
+								</span>
+							</a>
+						</li>
+					))
+				}
+			</ul>
+		</div>
+	</section>
 </BaseLayout>
 ```
 
@@ -776,65 +820,100 @@ git commit -m "feat: blog index page"
 ## Task 8: `PostLayout` + blog post route — `src/pages/blog/[...slug].astro`
 
 **Files:**
+
 - Create: `src/layouts/PostLayout.astro`, `src/pages/blog/[...slug].astro`
 
 - [ ] **Step 1: `PostLayout.astro`** (post chrome: breadcrumb, title, meta, prose slot, back link)
 
 ```astro
 ---
-import BaseLayout from './BaseLayout.astro';
-import Prose from '../components/ui/Prose.astro';
-import { readingTime } from '../lib/reading-time';
-import { articleJsonLd, breadcrumbJsonLd } from '../lib/seo';
+import BaseLayout from './BaseLayout.astro'
+import Prose from '../components/ui/Prose.astro'
+import { readingTime } from '../lib/reading-time'
+import { articleJsonLd, breadcrumbJsonLd } from '../lib/seo'
 
 interface Props {
-  title: string;
-  description: string;
-  path: string;
-  pubDate: Date;
-  updatedDate?: Date;
-  author: string;
-  tags: string[];
-  ogImage?: string;
-  body: string;
+	title: string
+	description: string
+	path: string
+	pubDate: Date
+	updatedDate?: Date
+	author: string
+	tags: string[]
+	ogImage?: string
+	body: string
 }
-const { title, description, path, pubDate, updatedDate, author, tags, ogImage, body } =
-  Astro.props;
+const {
+	title,
+	description,
+	path,
+	pubDate,
+	updatedDate,
+	author,
+	tags,
+	ogImage,
+	body,
+} = Astro.props
 
 const fmt = (d: Date) =>
-  d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+	d.toLocaleDateString('en-US', {
+		year: 'numeric',
+		month: 'long',
+		day: 'numeric',
+	})
 
 const jsonLd = [
-  articleJsonLd({ title, description, path, pubDate, updatedDate, author, ogImage }),
-  breadcrumbJsonLd([
-    { name: 'Home', path: '/' },
-    { name: 'Blog', path: '/blog' },
-    { name: title, path },
-  ]),
-];
+	articleJsonLd({
+		title,
+		description,
+		path,
+		pubDate,
+		updatedDate,
+		author,
+		ogImage,
+	}),
+	breadcrumbJsonLd([
+		{ name: 'Home', path: '/' },
+		{ name: 'Blog', path: '/blog' },
+		{ name: title, path },
+	]),
+]
 ---
-<BaseLayout title={title} description={description} path={path} ogImage={ogImage} jsonLd={jsonLd}>
-  <article class="px-4 pt-20 pb-24 sm:px-6">
-    <div class="mx-auto max-w-[760px]">
-      <a href="/blog" class="text-mute hover:text-ink font-mono text-xs tracking-wide uppercase">← Blog</a>
 
-      <div class="mt-6 flex flex-wrap items-center gap-3 font-mono text-[11px] tracking-[0.14em] text-mute uppercase">
-        <time datetime={pubDate.toISOString()}>{fmt(pubDate)}</time>
-        <span aria-hidden="true">·</span>
-        <span>{readingTime(body)}</span>
-        {tags.map((t) => <span class="text-term-prompt">#{t}</span>)}
-      </div>
+<BaseLayout
+	title={title}
+	description={description}
+	path={path}
+	ogImage={ogImage}
+	jsonLd={jsonLd}
+>
+	<article class="px-4 pt-20 pb-24 sm:px-6">
+		<div class="mx-auto max-w-[760px]">
+			<a
+				href="/blog"
+				class="text-mute hover:text-ink font-mono text-xs tracking-wide uppercase"
+				>← Blog</a
+			>
 
-      <h1 class="display-lg mt-3">{title}</h1>
-      <p class="text-body mt-3 text-lg leading-relaxed">{description}</p>
+			<div
+				class="text-mute mt-6 flex flex-wrap items-center gap-3 font-mono text-[11px] tracking-[0.14em] uppercase"
+			>
+				<time datetime={pubDate.toISOString()}>{fmt(pubDate)}</time>
+				<span aria-hidden="true">·</span>
+				<span>{readingTime(body)}</span>
+				{tags.map((t) => <span class="text-term-prompt">#{t}</span>)}
+			</div>
 
-      <hr class="border-hairline my-8" />
+			<h1 class="display-lg mt-3">{title}</h1>
+			<p class="text-body mt-3 text-lg leading-relaxed">{description}</p>
 
-      <Prose>
-        <slot />
-      </Prose>
-    </div>
-  </article>
+			<hr class="border-hairline my-8" />
+
+			<Prose>
+				<slot />
+			</Prose>
+		</div>
+	</article>
 </BaseLayout>
 ```
 
@@ -842,30 +921,31 @@ const jsonLd = [
 
 ```astro
 ---
-import { getCollection, render } from 'astro:content';
-import PostLayout from '../../layouts/PostLayout.astro';
+import { getCollection, render } from 'astro:content'
+import PostLayout from '../../layouts/PostLayout.astro'
 
 export async function getStaticPaths() {
-  const posts = await getCollection('blog', ({ data }) => !data.draft);
-  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+	const posts = await getCollection('blog', ({ data }) => !data.draft)
+	return posts.map((post) => ({ params: { slug: post.id }, props: { post } }))
 }
 
-const { post } = Astro.props;
-const { Content, body } = await render(post);
-const path = `/blog/${post.id}/`;
+const { post } = Astro.props
+const { Content, body } = await render(post)
+const path = `/blog/${post.id}/`
 ---
+
 <PostLayout
-  title={post.data.title}
-  description={post.data.description}
-  path={path}
-  pubDate={post.data.pubDate}
-  updatedDate={post.data.updatedDate}
-  author={post.data.author}
-  tags={post.data.tags}
-  ogImage={post.data.ogImage}
-  body={body ?? ''}
+	title={post.data.title}
+	description={post.data.description}
+	path={path}
+	pubDate={post.data.pubDate}
+	updatedDate={post.data.updatedDate}
+	author={post.data.author}
+	tags={post.data.tags}
+	ogImage={post.data.ogImage}
+	body={body ?? ''}
 >
-  <Content />
+	<Content />
 </PostLayout>
 ```
 
@@ -894,6 +974,7 @@ git commit -m "feat: blog post layout + dynamic post route (Article/Breadcrumb J
 ## Task 9: RSS feed — `src/pages/rss.xml.ts`
 
 **Files:**
+
 - Create: `src/pages/rss.xml.ts`
 - Modify: `package.json`
 
@@ -906,26 +987,26 @@ pnpm add @astrojs/rss@^4.0.18
 - [ ] **Step 2: Implement `src/pages/rss.xml.ts`**
 
 ```ts
-import rss from '@astrojs/rss';
-import { getCollection } from 'astro:content';
-import { SITE } from '../consts';
-import type { APIContext } from 'astro';
+import rss from '@astrojs/rss'
+import { getCollection } from 'astro:content'
+import { SITE } from '../consts'
+import type { APIContext } from 'astro'
 
 export async function GET(context: APIContext) {
-  const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
-    (a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime()
-  );
-  return rss({
-    title: SITE.name,
-    description: SITE.description,
-    site: context.site ?? SITE.url,
-    items: posts.map((post) => ({
-      title: post.data.title,
-      description: post.data.description,
-      pubDate: post.data.pubDate,
-      link: `/blog/${post.id}/`,
-    })),
-  });
+	const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
+		(a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime()
+	)
+	return rss({
+		title: SITE.name,
+		description: SITE.description,
+		site: context.site ?? SITE.url,
+		items: posts.map((post) => ({
+			title: post.data.title,
+			description: post.data.description,
+			pubDate: post.data.pubDate,
+			link: `/blog/${post.id}/`,
+		})),
+	})
 }
 ```
 
@@ -947,49 +1028,80 @@ git commit -m "feat: RSS feed for blog"
 ## Task 10: FAQ page — `src/pages/faq.astro`
 
 **Files:**
+
 - Create: `src/pages/faq.astro`
 
 - [ ] **Step 1: Implement the FAQ page** (shared FAQ data, native `<details>`, FAQPage JSON-LD)
 
 ```astro
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import PageHeader from '../components/sections/PageHeader.astro';
-import { faqPageJsonLd } from '../lib/seo';
+import BaseLayout from '../layouts/BaseLayout.astro'
+import PageHeader from '../components/sections/PageHeader.astro'
+import { faqPageJsonLd } from '../lib/seo'
 
 const faqs = [
-  { q: 'Are my keys sent anywhere?', a: 'No. Key generation, signing, and verification run entirely in your browser using the WebCrypto API. No keys, messages, or signatures are ever transmitted to a server.' },
-  { q: 'What is Ed25519?', a: 'Ed25519 is an EdDSA digital signature scheme using the Curve25519 elliptic curve. It offers strong security with small 32-byte keys and fast verification, and is standardized in RFC 8032.' },
-  { q: 'What are the key and signature sizes?', a: 'Private and public keys are 32 bytes each (64 hex characters). Signatures are 64 bytes (128 hex characters).' },
-  { q: 'Is Ed25519 better than RSA or ECDSA?', a: 'For most new systems, yes. Ed25519 is faster, has much smaller keys than RSA, and avoids the random-number pitfalls that can compromise ECDSA. RSA or ECDSA may still be required for compatibility with older systems.' },
-  { q: 'Can I trust this tool with real keys?', a: 'The cryptography uses the audited @noble/ed25519 library and runs locally. That said, for high-value production keys, generate and store them in a dedicated, offline-capable tool or hardware device.' },
-  { q: 'Why do the keys look like hexadecimal?', a: 'Keys and signatures are raw bytes. We display them as hexadecimal (0-9, a-f) because it is a compact, copy-paste-friendly text encoding of those bytes.' },
-  { q: 'Does this work offline?', a: 'Once the page has loaded, all operations are local and work without a network connection.' },
-];
+	{
+		q: 'Are my keys sent anywhere?',
+		a: 'No. Key generation, signing, and verification run entirely in your browser using the WebCrypto API. No keys, messages, or signatures are ever transmitted to a server.',
+	},
+	{
+		q: 'What is Ed25519?',
+		a: 'Ed25519 is an EdDSA digital signature scheme using the Curve25519 elliptic curve. It offers strong security with small 32-byte keys and fast verification, and is standardized in RFC 8032.',
+	},
+	{
+		q: 'What are the key and signature sizes?',
+		a: 'Private and public keys are 32 bytes each (64 hex characters). Signatures are 64 bytes (128 hex characters).',
+	},
+	{
+		q: 'Is Ed25519 better than RSA or ECDSA?',
+		a: 'For most new systems, yes. Ed25519 is faster, has much smaller keys than RSA, and avoids the random-number pitfalls that can compromise ECDSA. RSA or ECDSA may still be required for compatibility with older systems.',
+	},
+	{
+		q: 'Can I trust this tool with real keys?',
+		a: 'The cryptography uses the audited @noble/ed25519 library and runs locally. That said, for high-value production keys, generate and store them in a dedicated, offline-capable tool or hardware device.',
+	},
+	{
+		q: 'Why do the keys look like hexadecimal?',
+		a: 'Keys and signatures are raw bytes. We display them as hexadecimal (0-9, a-f) because it is a compact, copy-paste-friendly text encoding of those bytes.',
+	},
+	{
+		q: 'Does this work offline?',
+		a: 'Once the page has loaded, all operations are local and work without a network connection.',
+	},
+]
 ---
-<BaseLayout
-  title="FAQ"
-  description="Frequently asked questions about Ed25519, digital signatures, and how this in-browser tool keeps your keys private."
-  path="/faq"
-  jsonLd={faqPageJsonLd(faqs)}
->
-  <PageHeader eyebrow="faq" title="Frequently asked questions." />
 
-  <section class="px-4 pb-24 sm:px-6">
-    <div class="mx-auto max-w-[760px]">
-      <div class="divide-hairline border-hairline bg-canvas divide-y rounded-[8px] border">
-        {faqs.map((f) => (
-          <details class="group p-5">
-            <summary class="text-ink flex cursor-pointer list-none items-center justify-between gap-4 font-medium">
-              {f.q}
-              <span class="text-mute border-hairline group-open:border-hairline-strong group-open:text-ink inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-[4px] border font-mono text-sm transition-transform group-open:rotate-45">+</span>
-            </summary>
-            <p class="text-body mt-3 text-sm leading-relaxed">{f.a}</p>
-          </details>
-        ))}
-      </div>
-    </div>
-  </section>
+<BaseLayout
+	title="FAQ"
+	description="Frequently asked questions about Ed25519, digital signatures, and how this in-browser tool keeps your keys private."
+	path="/faq"
+	jsonLd={faqPageJsonLd(faqs)}
+>
+	<PageHeader eyebrow="faq" title="Frequently asked questions." />
+
+	<section class="px-4 pb-24 sm:px-6">
+		<div class="mx-auto max-w-[760px]">
+			<div
+				class="divide-hairline border-hairline bg-canvas divide-y rounded-[8px] border"
+			>
+				{
+					faqs.map((f) => (
+						<details class="group p-5">
+							<summary class="text-ink flex cursor-pointer list-none items-center justify-between gap-4 font-medium">
+								{f.q}
+								<span class="text-mute border-hairline group-open:border-hairline-strong group-open:text-ink inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-[4px] border font-mono text-sm transition-transform group-open:rotate-45">
+									+
+								</span>
+							</summary>
+							<p class="text-body mt-3 text-sm leading-relaxed">
+								{f.a}
+							</p>
+						</details>
+					))
+				}
+			</div>
+		</div>
+	</section>
 </BaseLayout>
 ```
 
@@ -1011,66 +1123,92 @@ git commit -m "feat: FAQ page with FAQPage structured data"
 ## Task 11: About page — `src/pages/about.astro`
 
 **Files:**
+
 - Create: `src/pages/about.astro`
 
 - [ ] **Step 1: Implement the About page** (mission + how-it-works + privacy stance; reuses hairline grid)
 
 ```astro
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import PageHeader from '../components/sections/PageHeader.astro';
-import Button from '../components/ui/Button.astro';
+import BaseLayout from '../layouts/BaseLayout.astro'
+import PageHeader from '../components/sections/PageHeader.astro'
+import Button from '../components/ui/Button.astro'
 
 const principles = [
-  { tag: 'local-first', title: 'Your keys stay yours.', body: 'Every operation runs in your browser via WebCrypto. We have no server that could see your keys — by design.' },
-  { tag: 'open', title: 'Built on audited code.', body: 'Signing and verification use the well-reviewed @noble/ed25519 library, following RFC 8032 exactly.' },
-  { tag: 'fast', title: 'No accounts, no friction.', body: 'No signup, no tracking of your inputs, no waiting. Open the tool and go.' },
-];
+	{
+		tag: 'local-first',
+		title: 'Your keys stay yours.',
+		body: 'Every operation runs in your browser via WebCrypto. We have no server that could see your keys — by design.',
+	},
+	{
+		tag: 'open',
+		title: 'Built on audited code.',
+		body: 'Signing and verification use the well-reviewed @noble/ed25519 library, following RFC 8032 exactly.',
+	},
+	{
+		tag: 'fast',
+		title: 'No accounts, no friction.',
+		body: 'No signup, no tracking of your inputs, no waiting. Open the tool and go.',
+	},
+]
 ---
+
 <BaseLayout
-  title="About"
-  description="Ed25519.com is a free, private, in-browser toolkit for Ed25519 digital signatures. Learn what it is and the principles behind it."
-  path="/about"
+	title="About"
+	description="Ed25519.com is a free, private, in-browser toolkit for Ed25519 digital signatures. Learn what it is and the principles behind it."
+	path="/about"
 >
-  <PageHeader
-    eyebrow="about"
-    title="A private toolkit for modern signatures."
-    lead="Ed25519.com is a free, in-browser suite for generating keypairs, signing messages, and verifying signatures — with cryptography that never leaves your device."
-  />
+	<PageHeader
+		eyebrow="about"
+		title="A private toolkit for modern signatures."
+		lead="Ed25519.com is a free, in-browser suite for generating keypairs, signing messages, and verifying signatures — with cryptography that never leaves your device."
+	/>
 
-  <section class="px-4 pb-12 sm:px-6">
-    <div class="mx-auto max-w-[1100px]">
-      <div class="border-hairline bg-hairline grid gap-px overflow-hidden rounded-[8px] border md:grid-cols-3">
-        {principles.map((p) => (
-          <article class="bg-canvas p-7">
-            <p class="text-mute font-mono text-[11px] tracking-[0.14em] uppercase">{p.tag}</p>
-            <h2 class="text-ink mt-2 text-lg font-semibold tracking-tight">{p.title}</h2>
-            <p class="text-body mt-2 text-sm leading-relaxed">{p.body}</p>
-          </article>
-        ))}
-      </div>
-    </div>
-  </section>
+	<section class="px-4 pb-12 sm:px-6">
+		<div class="mx-auto max-w-[1100px]">
+			<div
+				class="border-hairline bg-hairline grid gap-px overflow-hidden rounded-[8px] border md:grid-cols-3"
+			>
+				{
+					principles.map((p) => (
+						<article class="bg-canvas p-7">
+							<p class="text-mute font-mono text-[11px] tracking-[0.14em] uppercase">
+								{p.tag}
+							</p>
+							<h2 class="text-ink mt-2 text-lg font-semibold tracking-tight">
+								{p.title}
+							</h2>
+							<p class="text-body mt-2 text-sm leading-relaxed">
+								{p.body}
+							</p>
+						</article>
+					))
+				}
+			</div>
+		</div>
+	</section>
 
-  <section class="px-4 pb-24 sm:px-6">
-    <div class="mx-auto max-w-[760px]">
-      <h2 class="display-md">Why we built it.</h2>
-      <p class="text-body mt-4 leading-relaxed">
-        Most "online crypto tools" ask you to trust a server with your secrets. Ed25519 is
-        fast enough to run entirely in the browser, so there is no reason to send anything
-        anywhere. We wanted a clean, modern tool that proves it: open the network tab and
-        you will see your keys never leave the page.
-      </p>
-      <p class="text-body mt-4 leading-relaxed">
-        It is meant for learning, prototyping, and quick verification tasks. For
-        high-value production keys, use a dedicated offline or hardware-backed tool.
-      </p>
-      <div class="mt-8 flex flex-wrap gap-3">
-        <Button href="/#tool" variant="primary">Open the tool</Button>
-        <Button href="/blog" variant="secondary">Read the blog</Button>
-      </div>
-    </div>
-  </section>
+	<section class="px-4 pb-24 sm:px-6">
+		<div class="mx-auto max-w-[760px]">
+			<h2 class="display-md">Why we built it.</h2>
+			<p class="text-body mt-4 leading-relaxed">
+				Most "online crypto tools" ask you to trust a server with your
+				secrets. Ed25519 is fast enough to run entirely in the browser,
+				so there is no reason to send anything anywhere. We wanted a
+				clean, modern tool that proves it: open the network tab and you
+				will see your keys never leave the page.
+			</p>
+			<p class="text-body mt-4 leading-relaxed">
+				It is meant for learning, prototyping, and quick verification
+				tasks. For high-value production keys, use a dedicated offline
+				or hardware-backed tool.
+			</p>
+			<div class="mt-8 flex flex-wrap gap-3">
+				<Button href="/#tool" variant="primary">Open the tool</Button>
+				<Button href="/blog" variant="secondary">Read the blog</Button>
+			</div>
+		</div>
+	</section>
 </BaseLayout>
 ```
 
@@ -1092,6 +1230,7 @@ git commit -m "feat: about page"
 ## Task 12: Legal pages — `LegalLayout` + Privacy + Terms
 
 **Files:**
+
 - Create: `src/layouts/LegalLayout.astro`, `src/pages/privacy.astro`, `src/pages/terms.astro`
 
 > Legal copy is real, AdSense-appropriate placeholder text (covers cookies/ads/analytics and the client-side nature). The user should review with counsel before launch — a banner note says so, and the date uses the build date.
@@ -1100,26 +1239,29 @@ git commit -m "feat: about page"
 
 ```astro
 ---
-import BaseLayout from './BaseLayout.astro';
-import PageHeader from '../components/sections/PageHeader.astro';
-import Prose from '../components/ui/Prose.astro';
+import BaseLayout from './BaseLayout.astro'
+import PageHeader from '../components/sections/PageHeader.astro'
+import Prose from '../components/ui/Prose.astro'
 
 interface Props {
-  title: string;
-  description: string;
-  path: string;
-  updated: string;
+	title: string
+	description: string
+	path: string
+	updated: string
 }
-const { title, description, path, updated } = Astro.props;
+const { title, description, path, updated } = Astro.props
 ---
+
 <BaseLayout title={title} description={description} path={path} noindex={false}>
-  <PageHeader eyebrow="legal" title={title} />
-  <section class="px-4 pb-24 sm:px-6">
-    <div class="mx-auto max-w-[760px]">
-      <p class="text-mute font-mono text-xs tracking-wide uppercase">Last updated: {updated}</p>
-      <div class="mt-8"><Prose><slot /></Prose></div>
-    </div>
-  </section>
+	<PageHeader eyebrow="legal" title={title} />
+	<section class="px-4 pb-24 sm:px-6">
+		<div class="mx-auto max-w-[760px]">
+			<p class="text-mute font-mono text-xs tracking-wide uppercase">
+				Last updated: {updated}
+			</p>
+			<div class="mt-8"><Prose><slot /></Prose></div>
+		</div>
+	</section>
 </BaseLayout>
 ```
 
@@ -1127,57 +1269,62 @@ const { title, description, path, updated } = Astro.props;
 
 ```astro
 ---
-import LegalLayout from '../layouts/LegalLayout.astro';
-import { SITE } from '../consts';
-const updated = 'June 1, 2026';
+import LegalLayout from '../layouts/LegalLayout.astro'
+import { SITE } from '../consts'
+const updated = 'June 1, 2026'
 ---
+
 <LegalLayout
-  title="Privacy Policy"
-  description="How Ed25519.com handles data: cryptographic operations run locally in your browser and your keys are never transmitted."
-  path="/privacy"
-  updated={updated}
+	title="Privacy Policy"
+	description="How Ed25519.com handles data: cryptographic operations run locally in your browser and your keys are never transmitted."
+	path="/privacy"
+	updated={updated}
 >
-  <p>
-    This Privacy Policy explains how {SITE.name} ("we", "us") handles information when you
-    use this website. By using the site, you agree to this policy.
-  </p>
+	<p>
+		This Privacy Policy explains how {SITE.name} ("we", "us") handles information
+		when you use this website. By using the site, you agree to this policy.
+	</p>
 
-  <h2>Cryptographic data stays on your device</h2>
-  <p>
-    All key generation, signing, and signature verification happen entirely in your browser
-    using the WebCrypto API. Your private keys, messages, and signatures are never sent to
-    or stored on our servers.
-  </p>
+	<h2>Cryptographic data stays on your device</h2>
+	<p>
+		All key generation, signing, and signature verification happen entirely
+		in your browser using the WebCrypto API. Your private keys, messages,
+		and signatures are never sent to or stored on our servers.
+	</p>
 
-  <h2>Information we collect</h2>
-  <p>
-    We do not require an account and do not ask for personal information to use the tools.
-    We may collect anonymous, aggregate usage statistics (such as page views) through
-    privacy-respecting analytics to understand traffic.
-  </p>
+	<h2>Information we collect</h2>
+	<p>
+		We do not require an account and do not ask for personal information to
+		use the tools. We may collect anonymous, aggregate usage statistics
+		(such as page views) through privacy-respecting analytics to understand
+		traffic.
+	</p>
 
-  <h2>Cookies and advertising</h2>
-  <p>
-    We may use cookies for basic site functionality and analytics. If advertising is
-    enabled, third-party vendors (including Google) may use cookies to serve ads based on
-    your prior visits to this or other websites. You can opt out of personalized
-    advertising via Google Ads Settings.
-  </p>
+	<h2>Cookies and advertising</h2>
+	<p>
+		We may use cookies for basic site functionality and analytics. If
+		advertising is enabled, third-party vendors (including Google) may use
+		cookies to serve ads based on your prior visits to this or other
+		websites. You can opt out of personalized advertising via Google Ads
+		Settings.
+	</p>
 
-  <h2>Third-party services</h2>
-  <p>
-    The contact form sends your message to us by email. Analytics and advertising, where
-    enabled, are provided by third parties subject to their own privacy policies.
-  </p>
+	<h2>Third-party services</h2>
+	<p>
+		The contact form sends your message to us by email. Analytics and
+		advertising, where enabled, are provided by third parties subject to
+		their own privacy policies.
+	</p>
 
-  <h2>Your choices</h2>
-  <p>
-    You can disable cookies in your browser and use browser or extension controls to limit
-    tracking. Disabling cookies does not affect the core in-browser tools.
-  </p>
+	<h2>Your choices</h2>
+	<p>
+		You can disable cookies in your browser and use browser or extension
+		controls to limit tracking. Disabling cookies does not affect the core
+		in-browser tools.
+	</p>
 
-  <h2>Contact</h2>
-  <p>Questions about this policy? Email us at {SITE.email}.</p>
+	<h2>Contact</h2>
+	<p>Questions about this policy? Email us at {SITE.email}.</p>
 </LegalLayout>
 ```
 
@@ -1185,54 +1332,57 @@ const updated = 'June 1, 2026';
 
 ```astro
 ---
-import LegalLayout from '../layouts/LegalLayout.astro';
-import { SITE } from '../consts';
-const updated = 'June 1, 2026';
+import LegalLayout from '../layouts/LegalLayout.astro'
+import { SITE } from '../consts'
+const updated = 'June 1, 2026'
 ---
+
 <LegalLayout
-  title="Terms of Service"
-  description="The terms governing your use of Ed25519.com, a free in-browser cryptographic toolkit provided as-is."
-  path="/terms"
-  updated={updated}
+	title="Terms of Service"
+	description="The terms governing your use of Ed25519.com, a free in-browser cryptographic toolkit provided as-is."
+	path="/terms"
+	updated={updated}
 >
-  <p>
-    These Terms of Service govern your use of {SITE.name}. By using the site, you agree to
-    these terms.
-  </p>
+	<p>
+		These Terms of Service govern your use of {SITE.name}. By using the
+		site, you agree to these terms.
+	</p>
 
-  <h2>Use of the service</h2>
-  <p>
-    {SITE.name} provides free, in-browser tools for Ed25519 key generation, signing, and
-    verification. You may use them for lawful purposes only.
-  </p>
+	<h2>Use of the service</h2>
+	<p>
+		{SITE.name} provides free, in-browser tools for Ed25519 key generation, signing,
+		and verification. You may use them for lawful purposes only.
+	</p>
 
-  <h2>No warranty</h2>
-  <p>
-    The service is provided "as is", without warranties of any kind, express or implied. We
-    do not warrant that the service will be uninterrupted, error-free, or suitable for
-    securing high-value assets. You are responsible for safeguarding any keys you generate.
-  </p>
+	<h2>No warranty</h2>
+	<p>
+		The service is provided "as is", without warranties of any kind, express
+		or implied. We do not warrant that the service will be uninterrupted,
+		error-free, or suitable for securing high-value assets. You are
+		responsible for safeguarding any keys you generate.
+	</p>
 
-  <h2>Limitation of liability</h2>
-  <p>
-    To the fullest extent permitted by law, we are not liable for any loss or damage arising
-    from your use of the service, including loss of keys, data, or funds.
-  </p>
+	<h2>Limitation of liability</h2>
+	<p>
+		To the fullest extent permitted by law, we are not liable for any loss
+		or damage arising from your use of the service, including loss of keys,
+		data, or funds.
+	</p>
 
-  <h2>Intellectual property</h2>
-  <p>
-    The site's content and design are owned by {SITE.name}. Third-party libraries are used
-    under their respective licenses.
-  </p>
+	<h2>Intellectual property</h2>
+	<p>
+		The site's content and design are owned by {SITE.name}. Third-party
+		libraries are used under their respective licenses.
+	</p>
 
-  <h2>Changes</h2>
-  <p>
-    We may update these terms from time to time. Continued use after changes constitutes
-    acceptance of the updated terms.
-  </p>
+	<h2>Changes</h2>
+	<p>
+		We may update these terms from time to time. Continued use after changes
+		constitutes acceptance of the updated terms.
+	</p>
 
-  <h2>Contact</h2>
-  <p>Questions about these terms? Email us at {SITE.email}.</p>
+	<h2>Contact</h2>
+	<p>Questions about these terms? Email us at {SITE.email}.</p>
 </LegalLayout>
 ```
 
@@ -1254,6 +1404,7 @@ git commit -m "feat: legal layout + privacy & terms pages"
 ## Task 13: Contact page — `src/pages/contact.astro`
 
 **Files:**
+
 - Create: `src/pages/contact.astro`
 
 > The form posts to `/api/contact` (built in Task 14). It works without JS (native form POST) and is enhanced with `fetch` for inline status. Includes a honeypot field.
@@ -1262,93 +1413,165 @@ git commit -m "feat: legal layout + privacy & terms pages"
 
 ```astro
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import PageHeader from '../components/sections/PageHeader.astro';
-import Button from '../components/ui/Button.astro';
-import { SITE } from '../consts';
+import BaseLayout from '../layouts/BaseLayout.astro'
+import PageHeader from '../components/sections/PageHeader.astro'
+import Button from '../components/ui/Button.astro'
+import { SITE } from '../consts'
 ---
+
 <BaseLayout
-  title="Contact"
-  description="Get in touch with the Ed25519.com team — questions, feedback, or bug reports."
-  path="/contact"
+	title="Contact"
+	description="Get in touch with the Ed25519.com team — questions, feedback, or bug reports."
+	path="/contact"
 >
-  <PageHeader
-    eyebrow="contact"
-    title="Get in touch."
-    lead="Questions, feedback, or a bug to report? Send a message and we'll get back to you."
-  />
+	<PageHeader
+		eyebrow="contact"
+		title="Get in touch."
+		lead="Questions, feedback, or a bug to report? Send a message and we'll get back to you."
+	/>
 
-  <section class="px-4 pb-24 sm:px-6">
-    <div class="mx-auto grid max-w-[1100px] gap-10 md:grid-cols-[1.4fr_1fr]">
-      <form id="contact-form" method="POST" action="/api/contact" class="flex flex-col gap-5" novalidate>
-        <div>
-          <label for="name" class="text-mute font-mono text-xs tracking-wide uppercase">Name</label>
-          <input id="name" name="name" type="text" required class="border-hairline bg-canvas text-ink focus:border-hairline-strong mt-1 w-full rounded-[6px] border px-3 py-2.5 text-sm focus:outline-none" />
-        </div>
-        <div>
-          <label for="email" class="text-mute font-mono text-xs tracking-wide uppercase">Email</label>
-          <input id="email" name="email" type="email" required class="border-hairline bg-canvas text-ink focus:border-hairline-strong mt-1 w-full rounded-[6px] border px-3 py-2.5 text-sm focus:outline-none" />
-        </div>
-        <div>
-          <label for="message" class="text-mute font-mono text-xs tracking-wide uppercase">Message</label>
-          <textarea id="message" name="message" rows="6" required class="border-hairline bg-canvas text-ink focus:border-hairline-strong mt-1 w-full rounded-[6px] border px-3 py-2.5 text-sm focus:outline-none"></textarea>
-        </div>
-        {/* Honeypot — hidden from humans, bots fill it. */}
-        <input type="text" name="company" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true" />
+	<section class="px-4 pb-24 sm:px-6">
+		<div
+			class="mx-auto grid max-w-[1100px] gap-10 md:grid-cols-[1.4fr_1fr]"
+		>
+			<form
+				id="contact-form"
+				method="POST"
+				action="/api/contact"
+				class="flex flex-col gap-5"
+				novalidate
+			>
+				<div>
+					<label
+						for="name"
+						class="text-mute font-mono text-xs tracking-wide uppercase"
+						>Name</label
+					>
+					<input
+						id="name"
+						name="name"
+						type="text"
+						required
+						class="border-hairline bg-canvas text-ink focus:border-hairline-strong mt-1 w-full rounded-[6px] border px-3 py-2.5 text-sm focus:outline-none"
+					/>
+				</div>
+				<div>
+					<label
+						for="email"
+						class="text-mute font-mono text-xs tracking-wide uppercase"
+						>Email</label
+					>
+					<input
+						id="email"
+						name="email"
+						type="email"
+						required
+						class="border-hairline bg-canvas text-ink focus:border-hairline-strong mt-1 w-full rounded-[6px] border px-3 py-2.5 text-sm focus:outline-none"
+					/>
+				</div>
+				<div>
+					<label
+						for="message"
+						class="text-mute font-mono text-xs tracking-wide uppercase"
+						>Message</label
+					>
+					<textarea
+						id="message"
+						name="message"
+						rows="6"
+						required
+						class="border-hairline bg-canvas text-ink focus:border-hairline-strong mt-1 w-full rounded-[6px] border px-3 py-2.5 text-sm focus:outline-none"
+					></textarea>
+				</div>
+				{/* Honeypot — hidden from humans, bots fill it. */}
+				<input
+					type="text"
+					name="company"
+					tabindex="-1"
+					autocomplete="off"
+					class="hidden"
+					aria-hidden="true"
+				/>
 
-        <div class="flex items-center gap-4">
-          <Button id="contact-submit" type="submit" variant="primary">Send message</Button>
-          <p id="contact-status" role="status" aria-live="polite" class="text-sm"></p>
-        </div>
-      </form>
+				<div class="flex items-center gap-4">
+					<Button id="contact-submit" type="submit" variant="primary"
+						>Send message</Button
+					>
+					<p
+						id="contact-status"
+						role="status"
+						aria-live="polite"
+						class="text-sm"
+					>
+					</p>
+				</div>
+			</form>
 
-      <aside class="border-hairline bg-canvas-soft rounded-[8px] border p-6">
-        <p class="text-mute font-mono text-xs tracking-[0.14em] uppercase">// direct</p>
-        <p class="text-body mt-3 text-sm leading-relaxed">
-          Prefer email? Reach us at
-          <a href={`mailto:${SITE.email}`} class="text-link underline underline-offset-2">{SITE.email}</a>.
-        </p>
-        <p class="text-body mt-4 text-sm leading-relaxed">
-          We read every message but can't offer security audits or recover lost keys.
-        </p>
-      </aside>
-    </div>
-  </section>
+			<aside
+				class="border-hairline bg-canvas-soft rounded-[8px] border p-6"
+			>
+				<p
+					class="text-mute font-mono text-xs tracking-[0.14em] uppercase"
+				>
+					// direct
+				</p>
+				<p class="text-body mt-3 text-sm leading-relaxed">
+					Prefer email? Reach us at
+					<a
+						href={`mailto:${SITE.email}`}
+						class="text-link underline underline-offset-2"
+						>{SITE.email}</a
+					>.
+				</p>
+				<p class="text-body mt-4 text-sm leading-relaxed">
+					We read every message but can't offer security audits or
+					recover lost keys.
+				</p>
+			</aside>
+		</div>
+	</section>
 </BaseLayout>
 
 <script>
-  const form = document.getElementById('contact-form') as HTMLFormElement | null;
-  const status = document.getElementById('contact-status');
-  const submit = document.getElementById('contact-submit') as HTMLButtonElement | null;
+	const form = document.getElementById(
+		'contact-form'
+	) as HTMLFormElement | null
+	const status = document.getElementById('contact-status')
+	const submit = document.getElementById(
+		'contact-submit'
+	) as HTMLButtonElement | null
 
-  form?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    if (!status || !submit) return;
-    status.textContent = 'Sending…';
-    status.className = 'text-body text-sm';
-    submit.disabled = true;
-    try {
-      const res = await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify(Object.fromEntries(new FormData(form))),
-      });
-      if (res.ok) {
-        form.reset();
-        status.textContent = 'Thanks — your message was sent.';
-        status.className = 'text-sm text-[var(--color-success)]';
-      } else {
-        const data = (await res.json().catch(() => ({}))) as { error?: string };
-        status.textContent = data.error ?? 'Something went wrong. Please try again.';
-        status.className = 'text-sm text-[var(--color-error)]';
-      }
-    } catch {
-      status.textContent = 'Network error. Please try again.';
-      status.className = 'text-sm text-[var(--color-error)]';
-    } finally {
-      submit.disabled = false;
-    }
-  });
+	form?.addEventListener('submit', async (e) => {
+		e.preventDefault()
+		if (!status || !submit) return
+		status.textContent = 'Sending…'
+		status.className = 'text-body text-sm'
+		submit.disabled = true
+		try {
+			const res = await fetch('/api/contact', {
+				method: 'POST',
+				headers: { 'content-type': 'application/json' },
+				body: JSON.stringify(Object.fromEntries(new FormData(form))),
+			})
+			if (res.ok) {
+				form.reset()
+				status.textContent = 'Thanks — your message was sent.'
+				status.className = 'text-sm text-[var(--color-success)]'
+			} else {
+				const data = (await res.json().catch(() => ({}))) as {
+					error?: string
+				}
+				status.textContent =
+					data.error ?? 'Something went wrong. Please try again.'
+				status.className = 'text-sm text-[var(--color-error)]'
+			}
+		} catch {
+			status.textContent = 'Network error. Please try again.'
+			status.className = 'text-sm text-[var(--color-error)]'
+		} finally {
+			submit.disabled = false
+		}
+	})
 </script>
 ```
 
@@ -1370,6 +1593,7 @@ git commit -m "feat: contact page with progressively-enhanced form"
 ## Task 14: Contact API route — `src/pages/api/contact.ts` (Cloudflare Email Routing)
 
 **Files:**
+
 - Create: `src/pages/api/contact.ts`
 - Modify: `package.json`
 
@@ -1384,85 +1608,99 @@ pnpm add mimetext
 - [ ] **Step 2: Implement `src/pages/api/contact.ts`**
 
 ```ts
-import type { APIContext } from 'astro';
+import type { APIContext } from 'astro'
 
-export const prerender = false;
+export const prerender = false
 
 interface ContactPayload {
-  name?: string;
-  email?: string;
-  message?: string;
-  company?: string; // honeypot
+	name?: string
+	email?: string
+	message?: string
+	company?: string // honeypot
 }
 
 function json(body: Record<string, unknown>, status: number) {
-  return new Response(JSON.stringify(body), {
-    status,
-    headers: { 'content-type': 'application/json' },
-  });
+	return new Response(JSON.stringify(body), {
+		status,
+		headers: { 'content-type': 'application/json' },
+	})
 }
 
 async function readPayload(request: Request): Promise<ContactPayload> {
-  const type = request.headers.get('content-type') ?? '';
-  if (type.includes('application/json')) {
-    return (await request.json()) as ContactPayload;
-  }
-  const form = await request.formData();
-  return Object.fromEntries(form) as ContactPayload;
+	const type = request.headers.get('content-type') ?? ''
+	if (type.includes('application/json')) {
+		return (await request.json()) as ContactPayload
+	}
+	const form = await request.formData()
+	return Object.fromEntries(form) as ContactPayload
 }
 
-const isEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+const isEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)
 
 export async function POST({ request, locals }: APIContext) {
-  let data: ContactPayload;
-  try {
-    data = await readPayload(request);
-  } catch {
-    return json({ error: 'Invalid request.' }, 400);
-  }
+	let data: ContactPayload
+	try {
+		data = await readPayload(request)
+	} catch {
+		return json({ error: 'Invalid request.' }, 400)
+	}
 
-  // Honeypot: silently succeed so bots don't learn anything.
-  if (data.company) return json({ ok: true }, 200);
+	// Honeypot: silently succeed so bots don't learn anything.
+	if (data.company) return json({ ok: true }, 200)
 
-  const name = (data.name ?? '').trim();
-  const email = (data.email ?? '').trim();
-  const message = (data.message ?? '').trim();
+	const name = (data.name ?? '').trim()
+	const email = (data.email ?? '').trim()
+	const message = (data.message ?? '').trim()
 
-  if (!name || !email || !message) return json({ error: 'All fields are required.' }, 400);
-  if (!isEmail(email)) return json({ error: 'Please enter a valid email address.' }, 400);
-  if (message.length > 5000) return json({ error: 'Message is too long.' }, 400);
+	if (!name || !email || !message)
+		return json({ error: 'All fields are required.' }, 400)
+	if (!isEmail(email))
+		return json({ error: 'Please enter a valid email address.' }, 400)
+	if (message.length > 5000)
+		return json({ error: 'Message is too long.' }, 400)
 
-  const env = locals.runtime?.env;
-  if (!env?.SEB || !env.CONTACT_TO_EMAIL) {
-    return json({ error: 'Contact is not configured. Email us directly.' }, 503);
-  }
+	const env = locals.runtime?.env
+	if (!env?.SEB || !env.CONTACT_TO_EMAIL) {
+		return json(
+			{ error: 'Contact is not configured. Email us directly.' },
+			503
+		)
+	}
 
-  // Built lazily so non-Cloudflare environments (e.g. unit runners) don't import the binding module.
-  const { EmailMessage } = await import('cloudflare:email');
-  const { createMimeMessage } = await import('mimetext');
+	// Built lazily so non-Cloudflare environments (e.g. unit runners) don't import the binding module.
+	const { EmailMessage } = await import('cloudflare:email')
+	const { createMimeMessage } = await import('mimetext')
 
-  const sender = `noreply@ed25519.com`;
-  const msg = createMimeMessage();
-  msg.setSender({ name: 'Ed25519.com contact', addr: sender });
-  msg.setRecipient(env.CONTACT_TO_EMAIL);
-  msg.setHeader('Reply-To', `${name} <${email}>`);
-  msg.setSubject(`Contact form: ${name}`);
-  msg.addMessage({
-    contentType: 'text/plain',
-    data: `From: ${name} <${email}>\n\n${message}`,
-  });
+	const sender = `noreply@ed25519.com`
+	const msg = createMimeMessage()
+	msg.setSender({ name: 'Ed25519.com contact', addr: sender })
+	msg.setRecipient(env.CONTACT_TO_EMAIL)
+	msg.setHeader('Reply-To', `${name} <${email}>`)
+	msg.setSubject(`Contact form: ${name}`)
+	msg.addMessage({
+		contentType: 'text/plain',
+		data: `From: ${name} <${email}>\n\n${message}`,
+	})
 
-  try {
-    const emailMessage = new EmailMessage(sender, env.CONTACT_TO_EMAIL, msg.asRaw());
-    await env.SEB.send(emailMessage);
-    return json({ ok: true }, 200);
-  } catch (e) {
-    return json({ error: 'Could not send your message. Please email us directly.' }, 502);
-  }
+	try {
+		const emailMessage = new EmailMessage(
+			sender,
+			env.CONTACT_TO_EMAIL,
+			msg.asRaw()
+		)
+		await env.SEB.send(emailMessage)
+		return json({ ok: true }, 200)
+	} catch (e) {
+		return json(
+			{ error: 'Could not send your message. Please email us directly.' },
+			502
+		)
+	}
 }
 ```
 
 > Notes for the implementer:
+>
 > - `cloudflare:email` only resolves in the Workers runtime; the dynamic `import()` keeps `pnpm build`/`pnpm check` from trying to statically resolve it in a Node context. If `pnpm check` still complains about the module, add `// @ts-expect-error cloudflare runtime module` directly above that import line.
 > - The `sender` address must belong to a domain verified in Cloudflare Email Routing. `noreply@ed25519.com` works once the domain is set up (documented in Task 16). Locally, sending will fail with a clear error — that's expected; the route still builds.
 
@@ -1495,6 +1733,7 @@ git commit -m "feat: contact API route via Cloudflare Email Routing"
 ## Task 15: Error page — `src/pages/500.astro`
 
 **Files:**
+
 - Create: `src/pages/500.astro`
 
 > Phase 1 already ships `404.astro`. This adds the 500 fallback for server-route errors.
@@ -1503,19 +1742,25 @@ git commit -m "feat: contact API route via Cloudflare Email Routing"
 
 ```astro
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import Button from '../components/ui/Button.astro';
+import BaseLayout from '../layouts/BaseLayout.astro'
+import Button from '../components/ui/Button.astro'
 ---
+
 <BaseLayout title="Something went wrong" path="/500" noindex={true}>
-  <section class="mx-auto flex max-w-2xl flex-col items-center px-4 py-32 text-center sm:px-6">
-    <p class="text-mute font-mono text-sm">500</p>
-    <h1 class="display-xl mt-4">Something went wrong.</h1>
-    <p class="text-body mt-4 max-w-md">An unexpected error occurred. Please try again — the tools themselves run entirely in your browser and are unaffected.</p>
-    <div class="mt-8 flex flex-wrap justify-center gap-3">
-      <Button href="/" variant="primary">Back home</Button>
-      <Button href="/#tool" variant="secondary">Open the tool</Button>
-    </div>
-  </section>
+	<section
+		class="mx-auto flex max-w-2xl flex-col items-center px-4 py-32 text-center sm:px-6"
+	>
+		<p class="text-mute font-mono text-sm">500</p>
+		<h1 class="display-xl mt-4">Something went wrong.</h1>
+		<p class="text-body mt-4 max-w-md">
+			An unexpected error occurred. Please try again — the tools
+			themselves run entirely in your browser and are unaffected.
+		</p>
+		<div class="mt-8 flex flex-wrap justify-center gap-3">
+			<Button href="/" variant="primary">Back home</Button>
+			<Button href="/#tool" variant="secondary">Open the tool</Button>
+		</div>
+	</section>
 </BaseLayout>
 ```
 
@@ -1537,12 +1782,13 @@ git commit -m "feat: 500 error page"
 ## Task 16: Docs — DEPLOY (Email Routing + adapter) + AUTHORING + CLAUDE
 
 **Files:**
+
 - Modify: `docs/DEPLOY.md`, `CLAUDE.md`
 - Create: `docs/AUTHORING.md`
 
 - [ ] **Step 1: Update `docs/DEPLOY.md`** — replace the deferred-adapter note with the real adapter + Email Routing steps. Append:
 
-````markdown
+```markdown
 ## Cloudflare adapter (Phase 2)
 
 The site now uses `@astrojs/cloudflare`. All pages are static except
@@ -1564,13 +1810,13 @@ returns a clear "not configured" response, which is expected.
 
 ## Environment variables (full list)
 
-| Name | Value | Notes |
-|---|---|---|
-| `PUBLIC_SITE_URL` | https://ed25519.com | canonical/OG base |
-| `PUBLIC_ADSENSE_ID` | (pub-id) | optional; enables AdSense |
-| `PUBLIC_ANALYTICS_ID` | (GA4/Plausible id) | optional |
-| `CONTACT_TO_EMAIL` | your verified address | required for the contact form |
-````
+| Name                  | Value                 | Notes                         |
+| --------------------- | --------------------- | ----------------------------- |
+| `PUBLIC_SITE_URL`     | https://ed25519.com   | canonical/OG base             |
+| `PUBLIC_ADSENSE_ID`   | (pub-id)              | optional; enables AdSense     |
+| `PUBLIC_ANALYTICS_ID` | (GA4/Plausible id)    | optional                      |
+| `CONTACT_TO_EMAIL`    | your verified address | required for the contact form |
+```
 
 - [ ] **Step 2: Create `docs/AUTHORING.md`**
 
@@ -1593,11 +1839,11 @@ Posts live in `src/content/blog/` as Markdown (`.md`) or MDX (`.mdx`).
 title: 'Under ~70 characters for search results'
 description: 'Meta description, roughly 50–170 characters.'
 pubDate: 2026-06-01
-updatedDate: 2026-06-10   # optional
+updatedDate: 2026-06-10 # optional
 tags: ['basics', 'tutorial']
-author: 'Ed25519.com'     # optional, defaults to site author
+author: 'Ed25519.com' # optional, defaults to site author
 ogImage: '/og/my-post.png' # optional, defaults to /og/default.png
-draft: false              # true hides it from the build
+draft: false # true hides it from the build
 ---
 ```
 
@@ -1690,4 +1936,7 @@ The full multi-page site is complete and deployable to Cloudflare Pages: landing
 - **Type consistency:** `readingTime(content: string)` (T2) is called with `body` in `PostLayout` (T8); `articleJsonLd`/`breadcrumbJsonLd`/`faqPageJsonLd` signatures (T5) match their callers (T8/T10); `App.Locals` runtime + `Env` (`SEB`, `CONTACT_TO_EMAIL`) defined in T1 are consumed in T14; the `SEB` binding name matches `wrangler.jsonc`.
 - **Placeholder scan:** no TBD/TODO/"add validation" hand-waves; every code step is complete. Identity values (`hello@ed25519.com`, twitter, GitHub) are intentional, labeled placeholders carried over from Phase 1; legal copy is intentionally generic and flagged for counsel review.
 - **Cloudflare module caveat:** `cloudflare:email` is imported dynamically inside the route to avoid breaking `pnpm check`/`build` in Node; a fallback `@ts-expect-error` is documented if needed.
+
+```
+
 ```
