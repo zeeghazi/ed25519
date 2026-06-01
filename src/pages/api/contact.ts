@@ -38,14 +38,17 @@ export async function POST({ request }: APIContext) {
 	// Honeypot: silently succeed so bots don't learn anything.
 	if (data.company) return json({ ok: true }, 200)
 
-	const name = (data.name ?? '').trim()
-	const email = (data.email ?? '').trim()
-	const message = (data.message ?? '').trim()
+	// Coerce defensively: form fields can arrive as File/array, not just string.
+	const name = typeof data.name === 'string' ? data.name.trim() : ''
+	const email = typeof data.email === 'string' ? data.email.trim() : ''
+	const message = typeof data.message === 'string' ? data.message.trim() : ''
 
 	if (!name || !email || !message)
 		return json({ error: 'All fields are required.' }, 400)
 	if (!isEmail(email))
 		return json({ error: 'Please enter a valid email address.' }, 400)
+	if (name.length > 200 || email.length > 254)
+		return json({ error: 'Name or email is too long.' }, 400)
 	if (message.length > 5000)
 		return json({ error: 'Message is too long.' }, 400)
 
@@ -60,22 +63,24 @@ export async function POST({ request }: APIContext) {
 		)
 	}
 
-	// @ts-expect-error cloudflare runtime module
-	const { EmailMessage } = await import('cloudflare:email')
-	const { createMimeMessage } = await import('mimetext')
-
-	const sender = 'noreply@ed25519.com'
-	const msg = createMimeMessage()
-	msg.setSender({ name: 'Ed25519.com contact', addr: sender })
-	msg.setRecipient(env.CONTACT_TO_EMAIL)
-	msg.setHeader('Reply-To', `${name} <${email}>`)
-	msg.setSubject(`Contact form: ${name}`)
-	msg.addMessage({
-		contentType: 'text/plain',
-		data: `From: ${name} <${email}>\n\n${message}`,
-	})
-
 	try {
+		// @ts-expect-error cloudflare runtime module
+		const { EmailMessage } = await import('cloudflare:email')
+		const { createMimeMessage, Mailbox } = await import('mimetext')
+
+		const sender = 'noreply@ed25519.com'
+		const msg = createMimeMessage()
+		msg.setSender({ name: 'Ed25519.com contact', addr: sender })
+		msg.setRecipient(env.CONTACT_TO_EMAIL)
+		// Use a Mailbox (not a raw string): mimetext base64-encodes the display
+		// name, which neutralizes CRLF header-injection via the name field.
+		msg.setHeader('Reply-To', new Mailbox({ addr: email, name }))
+		msg.setSubject(`Contact form: ${name}`)
+		msg.addMessage({
+			contentType: 'text/plain',
+			data: `From: ${name} <${email}>\n\n${message}`,
+		})
+
 		const emailMessage = new EmailMessage(
 			sender,
 			env.CONTACT_TO_EMAIL,
