@@ -1,0 +1,35 @@
+---
+import Card from '../ui/Card.astro'
+import Icon from '../ui/Icon.astro'
+const features = [
+	{
+		icon: 'shield',
+		title: 'Private by design.',
+		body: 'All cryptography runs locally via WebCrypto. No keys, messages, or signatures are ever transmitted.',
+	},
+	{
+		icon: 'key',
+		title: 'Modern & fast.',
+		body: 'Ed25519 is a state-of-the-art elliptic-curve signature scheme — small keys, fast verification, strong security.',
+	},
+	{
+		icon: 'verify',
+		title: 'Standards-based.',
+		body: 'A faithful RFC 8032 EdDSA implementation built on the audited @noble/ed25519 library.',
+	},
+] as const
+---
+
+<section class="mx-auto max-w-[1200px] px-4 py-16 sm:px-6">
+	<div class="grid gap-6 md:grid-cols-3">
+		{
+			features.map((f) => (
+				<Card elevation={2}>
+					<Icon name={f.icon} class="text-ink h-6 w-6" />
+					<h3 class="display-md mt-4">{f.title}</h3>
+					<p class="text-body mt-2 text-sm">{f.body}</p>
+				</Card>
+			))
+		}
+	</div>
+</section>

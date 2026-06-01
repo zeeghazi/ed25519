@@ -1,0 +1,24 @@
+---
+import Button from '../ui/Button.astro'
+import Badge from '../ui/Badge.astro'
+import MeshGradient from '../ui/MeshGradient.astro'
+---
+
+<section class="relative overflow-hidden">
+	<MeshGradient class="h-[60%]" />
+	<div class="mx-auto max-w-[1200px] px-4 py-24 text-center sm:px-6 md:py-32">
+		<Badge>Free · Open · Client-side</Badge>
+		<h1 class="display-xl mx-auto mt-5 max-w-3xl text-balance">
+			Generate, sign, and verify Ed25519 keys.
+		</h1>
+		<p class="text-body mx-auto mt-5 max-w-xl text-lg">
+			A fast, private toolkit for modern digital signatures. RFC 8032
+			EdDSA, computed entirely in your browser — your private keys never
+			touch a server.
+		</p>
+		<div class="mt-8 flex flex-wrap items-center justify-center gap-3">
+			<Button href="/#tool" variant="primary">Open the tool</Button>
+			<Button href="/blog" variant="secondary">Learn Ed25519</Button>
+		</div>
+	</div>
+</section>

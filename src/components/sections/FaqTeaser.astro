@@ -1,0 +1,41 @@
+---
+import Button from '../ui/Button.astro'
+const faqs = [
+	{
+		q: 'Are my keys sent anywhere?',
+		a: 'No. Key generation, signing, and verification run entirely in your browser using the WebCrypto API. Nothing is uploaded.',
+	},
+	{
+		q: 'What is Ed25519?',
+		a: 'Ed25519 is an EdDSA signature scheme using Curve25519. It offers high security with small (32-byte) keys and fast verification.',
+	},
+	{
+		q: 'What are the key and signature sizes?',
+		a: 'Private and public keys are 32 bytes (64 hex characters). Signatures are 64 bytes (128 hex characters).',
+	},
+] as const
+---
+
+<section class="mx-auto max-w-3xl px-4 py-16 sm:px-6">
+	<h2 class="display-lg text-center">Questions, answered.</h2>
+	<div
+		class="divide-hairline border-hairline bg-canvas mt-8 divide-y rounded-lg border"
+	>
+		{
+			faqs.map((f) => (
+				<details class="group p-5">
+					<summary class="text-ink flex cursor-pointer list-none items-center justify-between font-medium">
+						{f.q}
+						<span class="text-mute transition-transform group-open:rotate-45">
+							+
+						</span>
+					</summary>
+					<p class="text-body mt-3 text-sm">{f.a}</p>
+				</details>
+			))
+		}
+	</div>
+	<div class="mt-6 text-center">
+		<Button href="/faq" variant="secondary">See all FAQs</Button>
+	</div>
+</section>
