@@ -1,0 +1,162 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import PageHeader from '../components/sections/PageHeader.astro'
+import ConsoleFrame from '../components/tool/ConsoleFrame.astro'
+import SignPanel from '../components/tool/SignPanel.astro'
+import FaqAccordion from '../components/ui/FaqAccordion.astro'
+import RelatedTools from '../components/sections/RelatedTools.astro'
+import { EXAMPLE } from '../lib/example-vector'
+import {
+	webApplicationJsonLd,
+	howToJsonLd,
+	faqPageJsonLd,
+	breadcrumbJsonLd,
+} from '../lib/seo'
+
+const path = '/ed25519-sign-message'
+const title = 'Sign a message with Ed25519'
+const description =
+	'Sign any message with your Ed25519 private key, in your browser. Produces a 64-byte EdDSA signature. Your private key never leaves your device.'
+
+const steps = [
+	{
+		name: 'Enter your message',
+		text: 'Type or paste the exact text you want to sign.',
+	},
+	{
+		name: 'Paste your private key',
+		text: 'Provide your 64-hex (32-byte) Ed25519 private key. It stays in the page and is never transmitted.',
+	},
+	{
+		name: 'Sign',
+		text: 'Click "Sign message" to produce a 128-hex (64-byte) signature unique to that message and key.',
+	},
+]
+
+const faqs = [
+	{
+		q: 'Does my private key get sent anywhere?',
+		a: 'No. Signing runs entirely in your browser; the private key never leaves the page.',
+	},
+	{
+		q: 'How long is an Ed25519 signature?',
+		a: '64 bytes, shown as 128 hexadecimal characters.',
+	},
+	{
+		q: 'Will the same message always give the same signature?',
+		a: 'Yes. Ed25519 is deterministic, so signing the same message with the same key always yields the same signature.',
+	},
+]
+
+const jsonLd = [
+	webApplicationJsonLd(),
+	howToJsonLd({
+		name: 'How to sign a message with Ed25519',
+		description,
+		steps,
+	}),
+	faqPageJsonLd(faqs),
+	breadcrumbJsonLd([
+		{ name: 'Home', path: '/' },
+		{ name: 'Sign a message', path },
+	]),
+]
+---
+
+<BaseLayout title={title} description={description} path={path} jsonLd={jsonLd}>
+	<PageHeader
+		title="Sign a message with Ed25519"
+		lead="Produce an EdDSA signature with your private key — entirely in your browser."
+		width="narrow"
+		illustration="standards"
+	/>
+
+	<section class="px-4 pb-12 sm:px-6">
+		<div class="mx-auto max-w-[760px]">
+			<ConsoleFrame label="ed25519 — sign">
+				<div class="p-5 sm:p-7">
+					<SignPanel standalone />
+				</div>
+			</ConsoleFrame>
+		</div>
+	</section>
+
+	<section class="px-4 pb-4 sm:px-6">
+		<div class="mx-auto max-w-[760px]">
+			<h2 class="display-md">How to sign a message</h2>
+			<ol
+				class="text-body mt-5 flex list-decimal flex-col gap-3 pl-5 leading-relaxed"
+			>
+				{steps.map((s) => <li>{s.text}</li>)}
+			</ol>
+		</div>
+	</section>
+
+	<section class="px-4 py-12 sm:px-6">
+		<div class="mx-auto max-w-[760px]">
+			<h2 class="display-md">Worked example</h2>
+			<p class="text-body mt-4 leading-relaxed">
+				Sign the message <code
+					class="bg-canvas-soft-2 text-ink rounded-[4px] px-1.5 py-0.5 font-mono text-sm"
+					>{EXAMPLE.message}</code
+				> with the private key below and you get exactly this signature (an
+				RFC 8032 test vector — try it in the tool above).
+			</p>
+			<dl class="mt-5 flex flex-col gap-3">
+				<div
+					class="rounded-[6px] border border-[var(--color-term-border)] bg-[var(--color-term-bg)] p-4"
+				>
+					<dt
+						class="font-mono text-[11px] tracking-[0.12em] text-[var(--color-term-dim)] uppercase"
+					>
+						Private key · 64 hex
+					</dt>
+					<dd
+						class="mt-1.5 font-mono text-xs break-all text-[var(--color-term-fg)]"
+					>
+						{EXAMPLE.privateKeyHex}
+					</dd>
+				</div>
+				<div
+					class="rounded-[6px] border border-[var(--color-term-border)] bg-[var(--color-term-bg)] p-4"
+				>
+					<dt
+						class="font-mono text-[11px] tracking-[0.12em] text-[var(--color-term-dim)] uppercase"
+					>
+						Signature · 128 hex
+					</dt>
+					<dd
+						class="mt-1.5 font-mono text-xs break-all text-[var(--color-term-prompt)]"
+					>
+						{EXAMPLE.signatureHex}
+					</dd>
+				</div>
+			</dl>
+		</div>
+	</section>
+
+	<section class="px-4 pb-12 sm:px-6">
+		<div class="mx-auto max-w-[760px]">
+			<h2 class="display-md">Good to know</h2>
+			<ul
+				class="text-body mt-5 flex list-disc flex-col gap-2 pl-5 leading-relaxed"
+			>
+				<li>The signature is 64 bytes (128 hex characters).</li>
+				<li>
+					Change one character of the message and the signature
+					changes completely.
+				</li>
+				<li>The private key never leaves your browser.</li>
+			</ul>
+		</div>
+	</section>
+
+	<section class="px-4 pb-16 sm:px-6">
+		<div class="mx-auto max-w-[760px]">
+			<h2 class="display-md">FAQ</h2>
+			<div class="mt-5"><FaqAccordion faqs={faqs} /></div>
+		</div>
+	</section>
+
+	<RelatedTools current="sign" />
+</BaseLayout>
