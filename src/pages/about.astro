@@ -1,0 +1,81 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import PageHeader from '../components/sections/PageHeader.astro'
+import Button from '../components/ui/Button.astro'
+
+const principles = [
+	{
+		tag: 'local-first',
+		title: 'Your keys stay yours.',
+		body: 'Every operation runs in your browser via WebCrypto. We have no server that could see your keys — by design.',
+	},
+	{
+		tag: 'open',
+		title: 'Built on audited code.',
+		body: 'Signing and verification use the well-reviewed @noble/ed25519 library, following RFC 8032 exactly.',
+	},
+	{
+		tag: 'fast',
+		title: 'No accounts, no friction.',
+		body: 'No signup, no tracking of your inputs, no waiting. Open the tool and go.',
+	},
+]
+---
+
+<BaseLayout
+	title="About"
+	description="Ed25519.com is a free, private, in-browser toolkit for Ed25519 digital signatures. Learn what it is and the principles behind it."
+	path="/about"
+>
+	<PageHeader
+		eyebrow="about"
+		title="A private toolkit for modern signatures."
+		lead="Ed25519.com is a free, in-browser suite for generating keypairs, signing messages, and verifying signatures — with cryptography that never leaves your device."
+	/>
+
+	<section class="px-4 pb-12 sm:px-6">
+		<div class="mx-auto max-w-[1100px]">
+			<div
+				class="border-hairline bg-hairline grid gap-px overflow-hidden rounded-[8px] border md:grid-cols-3"
+			>
+				{
+					principles.map((p) => (
+						<article class="bg-canvas p-7">
+							<p class="text-mute font-mono text-[11px] tracking-[0.14em] uppercase">
+								{p.tag}
+							</p>
+							<h2 class="text-ink mt-2 text-lg font-semibold tracking-tight">
+								{p.title}
+							</h2>
+							<p class="text-body mt-2 text-sm leading-relaxed">
+								{p.body}
+							</p>
+						</article>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<section class="px-4 pb-24 sm:px-6">
+		<div class="mx-auto max-w-[760px]">
+			<h2 class="display-md">Why we built it.</h2>
+			<p class="text-body mt-4 leading-relaxed">
+				Most "online crypto tools" ask you to trust a server with your
+				secrets. Ed25519 is fast enough to run entirely in the browser,
+				so there is no reason to send anything anywhere. We wanted a
+				clean, modern tool that proves it: open the network tab and you
+				will see your keys never leave the page.
+			</p>
+			<p class="text-body mt-4 leading-relaxed">
+				It is meant for learning, prototyping, and quick verification
+				tasks. For high-value production keys, use a dedicated offline
+				or hardware-backed tool.
+			</p>
+			<div class="mt-8 flex flex-wrap gap-3">
+				<Button href="/#tool" variant="primary">Open the tool</Button>
+				<Button href="/blog" variant="secondary">Read the blog</Button>
+			</div>
+		</div>
+	</section>
+</BaseLayout>
