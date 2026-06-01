@@ -126,10 +126,19 @@ const tabs = [
 		'#sign': 'sign',
 		'#verify': 'verify',
 	}
-	function syncFromHash() {
+	function syncFromHash(smooth = false) {
 		const tab = hashToTab[window.location.hash]
-		if (tab) activate(tab)
+		if (!tab) return
+		activate(tab)
+		// The hash (#keygen/#sign/#verify) isn't a real element id, so the browser
+		// won't scroll on its own — bring the tool section into view ourselves.
+		document
+			.getElementById('tool')
+			?.scrollIntoView({
+				behavior: smooth ? 'smooth' : 'auto',
+				block: 'start',
+			})
 	}
 	syncFromHash()
-	window.addEventListener('hashchange', syncFromHash)
+	window.addEventListener('hashchange', () => syncFromHash(true))
 </script>
