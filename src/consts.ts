@@ -25,9 +25,9 @@ export const FOOTER_SECTIONS = [
 	{
 		title: 'Tools',
 		links: [
-			{ label: 'Generate keys', href: '/#keygen' },
-			{ label: 'Sign message', href: '/#sign' },
-			{ label: 'Verify signature', href: '/#verify' },
+			{ label: 'Key generator', href: '/ed25519-key-generator' },
+			{ label: 'Sign a message', href: '/ed25519-sign-message' },
+			{ label: 'Verify a signature', href: '/ed25519-verify-signature' },
 		],
 	},
 	{
