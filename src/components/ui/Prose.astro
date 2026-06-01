@@ -1,0 +1,55 @@
+---
+// Scoped rich-text wrapper for rendered Markdown (blog posts, legal pages).
+// Styling is scoped to .prose so we don't globally style every h2/p/ul.
+---
+
+<div class="prose"><slot /></div>
+
+<style>
+	@reference '../../styles/global.css';
+
+	.prose {
+		@apply text-body max-w-none text-base leading-relaxed;
+	}
+	.prose :global(h2) {
+		@apply text-ink mt-12 mb-3 text-2xl font-semibold tracking-tight;
+	}
+	.prose :global(h3) {
+		@apply text-ink mt-8 mb-2 text-xl font-semibold tracking-tight;
+	}
+	.prose :global(p) {
+		@apply mt-4;
+	}
+	.prose :global(ul),
+	.prose :global(ol) {
+		@apply mt-4 flex flex-col gap-2 pl-5;
+	}
+	.prose :global(ul) {
+		@apply list-disc;
+	}
+	.prose :global(ol) {
+		@apply list-decimal;
+	}
+	.prose :global(a) {
+		@apply text-link underline underline-offset-2 hover:opacity-80;
+	}
+	.prose :global(strong) {
+		@apply text-ink font-semibold;
+	}
+	.prose :global(code) {
+		@apply bg-canvas-soft-2 text-ink rounded-[4px] px-1.5 py-0.5 font-mono text-sm;
+	}
+	.prose :global(table) {
+		@apply mt-6 w-full border-collapse text-sm;
+	}
+	.prose :global(th),
+	.prose :global(td) {
+		@apply border-hairline border px-3 py-2 text-left;
+	}
+	.prose :global(th) {
+		@apply bg-canvas-soft text-ink font-mono text-xs tracking-wide uppercase;
+	}
+	.prose :global(blockquote) {
+		@apply border-hairline-strong text-body mt-4 border-l-2 pl-4 italic;
+	}
+</style>
