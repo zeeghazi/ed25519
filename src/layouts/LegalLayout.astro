@@ -14,12 +14,7 @@ const { title, description, path, updated, illustration } = Astro.props
 ---
 
 <BaseLayout title={title} description={description} path={path} noindex={false}>
-	<PageHeader
-		eyebrow="legal"
-		title={title}
-		width="narrow"
-		illustration={illustration}
-	/>
+	<PageHeader title={title} width="narrow" illustration={illustration} />
 	<section class="px-4 pb-24 sm:px-6">
 		<div class="mx-auto max-w-[760px]">
 			<p class="text-mute font-mono text-xs tracking-wide uppercase">
