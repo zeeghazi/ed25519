@@ -1,0 +1,59 @@
+---
+import { SITE, FOOTER_SECTIONS, SOCIAL_LINKS } from '../../consts'
+const year = new Date().getFullYear()
+---
+
+<footer class="border-hairline bg-canvas border-t">
+	<div
+		class="mx-auto grid max-w-[1200px] gap-10 px-4 py-16 sm:px-6 md:grid-cols-[1.5fr_repeat(3,1fr)]"
+	>
+		<div>
+			<p class="text-ink font-mono text-sm font-medium">{SITE.name}</p>
+			<p class="text-body mt-3 max-w-xs text-sm">{SITE.description}</p>
+		</div>
+		{
+			FOOTER_SECTIONS.map((section) => (
+				<div>
+					<p class="text-mute font-mono text-xs tracking-wide uppercase">
+						{section.title}
+					</p>
+					<ul class="mt-4 flex flex-col gap-2">
+						{section.links.map((l) => (
+							<li>
+								<a
+									href={l.href}
+									class="text-body hover:text-ink text-sm transition-colors"
+								>
+									{l.label}
+								</a>
+							</li>
+						))}
+					</ul>
+				</div>
+			))
+		}
+	</div>
+	<div
+		class="border-hairline mx-auto flex max-w-[1200px] flex-col items-center justify-between gap-3 border-t px-4 py-6 sm:flex-row sm:px-6"
+	>
+		<p class="text-mute text-xs">
+			© {year}
+			{SITE.name}. All client-side. Keys never leave your browser.
+		</p>
+		<ul class="flex gap-4">
+			{
+				SOCIAL_LINKS.map((l) => (
+					<li>
+						<a
+							href={l.href}
+							class="text-body hover:text-ink text-xs"
+							rel="noopener"
+						>
+							{l.label}
+						</a>
+					</li>
+				))
+			}
+		</ul>
+	</div>
+</footer>
