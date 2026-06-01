@@ -4,79 +4,50 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-A **client-side-only** Ed25519 cryptographic toolkit (live at https://ed25519.com). It's a
-React 19 + TypeScript single-page app built with Vite 7. There is **no backend** — all key
-generation, signing, and verification happen in the browser via
-[`@noble/ed25519`](https://github.com/paulmillr/noble-ed25519). Keys and secrets never leave
-the page. Keep it that way: any feature that would send key material off-device breaks the
-core security promise of the app.
-
-The UI is terminal-inspired and walks through the canonical Ed25519 workflow:
-**generate → sign → verify**.
+A client-side-only Ed25519 toolkit (https://ed25519.com), a multi-page **Astro 6**
+site (migrated from a React SPA for SEO/AdSense). Key generation, signing, and verification
+run entirely in the browser — keys never leave the device. Don't add anything that sends key
+material off-device.
 
 ## Commands
 
-Uses **pnpm** (`pnpm-lock.yaml` is committed).
+Uses **pnpm**.
 
-```bash
-pnpm install        # install dependencies
-pnpm dev            # Vite dev server with HMR
-pnpm build          # type-check (tsc -b) + production build to dist/
-pnpm preview        # serve the production build locally
-pnpm lint           # ESLint (flat config, eslint.config.js)
-pnpm format         # Prettier --write . (sorts Tailwind classes)
-pnpm deploy         # build, then publish dist/ to the gh-pages branch
-```
-
-There is no test suite.
+    pnpm dev       # Astro dev server
+    pnpm build     # production build → dist/ (static)
+    pnpm preview   # preview the build
+    pnpm check     # astro check (type + content)
+    pnpm test      # Vitest unit tests for src/lib
+    pnpm format    # Prettier (tabs, single quotes, no semicolons)
 
 ## Architecture
 
-- **Entry:** `index.html` (heavy SEO/OpenGraph/JSON-LD `<head>`) loads `src/main.tsx`, which
-  mounts the React app and imports `src/index.css`.
-- **Page:** `src/pages/HomePage.tsx` is the only page — it renders the terminal header, the
-  three workflow components, and the global `<Toaster>` (react-hot-toast).
-- **Components** (`src/components/`) — each is a self-contained workflow step holding its own
-  state, hex/byte conversion, validation, and toast feedback:
-    - `KeyGeneration.tsx` — generates a keypair (private key 64 hex chars, public key 64 hex chars)
-    - `MessageSigning.tsx` — signs a message with a private key (signature = 128 hex chars)
-    - `SignatureVerification.tsx` — verifies a signature against message + public key
+- **Crypto:** `src/lib/ed25519.ts` wraps `@noble/ed25519` **v3** using the **async** API
+  (`getPublicKeyAsync`/`signAsync`/`verifyAsync`), which uses built-in WebCrypto SHA-512.
+  Do NOT import `@noble/hashes` or set `ed.hashes.sha512` — that's only for the sync API.
+  `src/lib/hex.ts` handles hex↔bytes; both are unit-tested under `tests/`.
+- **Design system:** tokens from `DESIGN.md` live in `src/styles/global.css` as Tailwind v4
+  `@theme` variables. Dark mode = a `.dark` class on `<html>` set pre-paint by an inline head
+  script in `BaseLayout.astro`; tokens are overridden under `.dark`. The tool/console uses a
+  separate set of **fixed** `--color-term-*` tokens so it stays a dark terminal in both themes.
+- **Pages:** Astro pages in `src/pages/`; shared chrome in `src/layouts/BaseLayout.astro`;
+  components in `src/components/{ui,sections,tool}`. The landing page (`src/pages/index.astro`)
+  is tool-first: a slim hero over a tabbed terminal **console** (generate/sign/verify), on one
+  continuous grid+glow backdrop, with the footer as a separate block.
+- **The tool** (`src/components/tool/*`) is vanilla TS in `.astro` `<script>` blocks — no UI
+  framework ships to the browser. All sections share a single `max-w-[1100px]` column.
 
-### Crypto setup — important
+## Hosting
 
-`@noble/ed25519` v2 ships **without** a hash function, so synchronous Ed25519 needs SHA-512
-wired in manually. Each crypto component does this at module scope:
+Cloudflare Pages, **static** (no adapter in Phase 1). All pages prerender to `dist/`.
+The `@astrojs/cloudflare` adapter + `wrangler.jsonc` are deferred to **Phase 2**, when the
+contact form (the first server route) is added. See `docs/DEPLOY.md`.
 
-```ts
-import * as ed from '@noble/ed25519'
-import { sha512 } from '@noble/hashes/sha512'
-ed.etc.sha512Sync = (...m) => sha512(ed.etc.concatBytes(...m))
-```
+## Blog (Phase 2)
 
-This line is currently **duplicated in all three components**. When adding a new component
-that calls `ed.sign`/`ed.getPublicKey`/`ed.verify`, you must set `ed.etc.sha512Sync` again or
-the call will throw — or refactor it into a shared module imported once.
+Posts will be Markdown in `src/content/blog/`. To add one: copy an existing post, rename the
+file (filename = slug), edit frontmatter + body, set `draft: false`. No CLI.
 
-Keys/signatures are passed around as hex strings and converted to/from `Uint8Array` inline in
-each component; messages are encoded with `new TextEncoder()`.
+## Specs & plans
 
-## Styling
-
-Tailwind CSS **v4** via the `@tailwindcss/vite` plugin (configured in `vite.config.ts`) — there
-is no `tailwind.config.js`. The aesthetic is a dark terminal theme, with each component
-color-coded (keygen = cyan, sign = emerald, verify = violet). `prettier-plugin-tailwindcss`
-auto-sorts class names, so run `pnpm format` after editing markup.
-
-## TypeScript config
-
-Project-references layout: `tsconfig.json` only references `tsconfig.app.json` (browser code
-under `src/`, strict mode, `noUnusedLocals`/`noUnusedParameters`) and `tsconfig.node.json`
-(Vite tooling). Edit `tsconfig.app.json` for app-code settings.
-
-## Deployment
-
-GitHub Pages on the custom domain `ed25519.com`. `pnpm deploy` runs `predeploy` (the build)
-then `gh-pages -d dist`, pushing the built `dist/` to the `gh-pages` branch. Because of the
-custom domain, the Vite `base` is left as the default `/` (see the commented-out `base` in
-`vite.config.ts`). Don't hardcode a `/ed25519` base path — it would break the custom-domain
-deploy.
+Design spec and phased implementation plans live in `docs/superpowers/`.
