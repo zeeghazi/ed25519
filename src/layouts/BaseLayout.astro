@@ -1,0 +1,80 @@
+---
+import '../styles/global.css'
+import Seo from '../components/ui/Seo.astro'
+import Nav from '../components/sections/Nav.astro'
+import Footer from '../components/sections/Footer.astro'
+import Toast from '../components/ui/Toast.astro'
+import type { SeoInput } from '../lib/seo'
+
+interface Props extends SeoInput {
+	jsonLd?: Record<string, unknown> | Record<string, unknown>[]
+}
+const props = Astro.props
+const adsenseId = import.meta.env.PUBLIC_ADSENSE_ID
+const analyticsId = import.meta.env.PUBLIC_ANALYTICS_ID
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="manifest" href="/manifest.json" />
+		<meta
+			name="theme-color"
+			content="#ffffff"
+			media="(prefers-color-scheme: light)"
+		/>
+		<meta
+			name="theme-color"
+			content="#0a0a0a"
+			media="(prefers-color-scheme: dark)"
+		/>
+
+		{/* No-FOUC theme init — must run before paint. */}
+		<script is:inline>
+			;(function () {
+				try {
+					var t = localStorage.getItem('theme')
+					if (t !== 'light' && t !== 'dark') {
+						t = window.matchMedia('(prefers-color-scheme: dark)')
+							.matches
+							? 'dark'
+							: 'light'
+					}
+					if (t === 'dark')
+						document.documentElement.classList.add('dark')
+				} catch (e) {}
+			})()
+		</script>
+
+		<Seo {...props} />
+
+		{
+			adsenseId && (
+				<script
+					async
+					src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseId}`}
+					crossorigin="anonymous"
+				/>
+			)
+		}
+		{
+			analyticsId && (
+				<script
+					async
+					src={`https://www.googletagmanager.com/gtag/js?id=${analyticsId}`}
+				/>
+			)
+		}
+	</head>
+	<body class="bg-canvas-soft text-ink min-h-screen">
+		<Nav />
+		<main>
+			<slot />
+		</main>
+		<Footer />
+		<Toast />
+	</body>
+</html>
