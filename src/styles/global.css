@@ -202,13 +202,25 @@
 			transparent 1px
 		);
 	background-size: 38px 38px;
+	/* Full strength behind the hero + tool, then eased back (~55%) for the
+	   lower sections so the grid never competes with that content, fading out
+	   entirely just above the footer. (mask is alpha-based) */
 	-webkit-mask-image: linear-gradient(
 		to bottom,
 		#000 0,
-		#000 88%,
+		#000 40%,
+		rgba(0, 0, 0, 0.55) 52%,
+		rgba(0, 0, 0, 0.55) 92%,
 		transparent 100%
 	);
-	mask-image: linear-gradient(to bottom, #000 0, #000 88%, transparent 100%);
+	mask-image: linear-gradient(
+		to bottom,
+		#000 0,
+		#000 40%,
+		rgba(0, 0, 0, 0.55) 52%,
+		rgba(0, 0, 0, 0.55) 92%,
+		transparent 100%
+	);
 }
 
 /* Depth shadow for the console window (works on the fixed-dark surface). */
