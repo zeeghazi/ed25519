@@ -17,11 +17,11 @@ Each page is a real landing page that **embeds the live, client-side tool** for 
 
 ### Pages & URLs (keyword-rich slugs)
 
-| URL | H1 / search intent | Embedded panel |
-|---|---|---|
-| `/ed25519-key-generator` | "Ed25519 key generator" | Generate (`KeygenPanel`) |
-| `/ed25519-sign-message` | "Sign a message with Ed25519" | Sign (`SignPanel`) |
-| `/ed25519-verify-signature` | "Verify an Ed25519 signature" | Verify (`VerifyPanel`) |
+| URL                         | H1 / search intent            | Embedded panel           |
+| --------------------------- | ----------------------------- | ------------------------ |
+| `/ed25519-key-generator`    | "Ed25519 key generator"       | Generate (`KeygenPanel`) |
+| `/ed25519-sign-message`     | "Sign a message with Ed25519" | Sign (`SignPanel`)       |
+| `/ed25519-verify-signature` | "Verify an Ed25519 signature" | Verify (`VerifyPanel`)   |
 
 - The **home page keeps its full tabbed console** (the tool-first hub). These three are
   additional, focused pages.
@@ -35,7 +35,7 @@ Each page is a real landing page that **embeds the live, client-side tool** for 
 1. `PageHeader` — eyebrow + H1 + one-line lead.
 2. **Live working tool** — the real panel for that action, fully client-side.
 3. **How it works** — 3–4 numbered steps → `HowTo` structured data.
-4. **Worked example** — a *real, verified* sample in copyable code blocks, using
+4. **Worked example** — a _real, verified_ sample in copyable code blocks, using
    **RFC 8032 §7.1 test vectors** (authoritative; anyone can re-verify). e.g. the verify page
    shows a known public key + message + valid signature, and notes that flipping one byte
    fails verification. No screenshots (live tool + indexable text example instead).
