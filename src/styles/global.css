@@ -202,23 +202,23 @@
 			transparent 1px
 		);
 	background-size: 38px 38px;
-	/* Full strength behind the hero + tool, then eased back (~55%) for the
-	   lower sections so the grid never competes with that content, fading out
-	   entirely just above the footer. (mask is alpha-based) */
+	/* Full grid behind the hero + tool, then ease the lines back to ~40% from
+	   the "why ed25519" section down so they don't compete with the content,
+	   and fade out entirely just above the footer. */
 	-webkit-mask-image: linear-gradient(
 		to bottom,
 		#000 0,
-		#000 40%,
-		rgba(0, 0, 0, 0.55) 52%,
-		rgba(0, 0, 0, 0.55) 92%,
+		#000 30%,
+		rgba(0, 0, 0, 0.4) 52%,
+		rgba(0, 0, 0, 0.4) 90%,
 		transparent 100%
 	);
 	mask-image: linear-gradient(
 		to bottom,
 		#000 0,
-		#000 40%,
-		rgba(0, 0, 0, 0.55) 52%,
-		rgba(0, 0, 0, 0.55) 92%,
+		#000 30%,
+		rgba(0, 0, 0, 0.4) 52%,
+		rgba(0, 0, 0, 0.4) 90%,
 		transparent 100%
 	);
 }
