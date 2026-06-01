@@ -1,0 +1,18 @@
+{
+	// Workers-with-assets layout observed after `pnpm build` with adapter v13:
+	// - Static assets (HTML, CSS, JS, fonts) land in dist/client/
+	// - Server worker bundle lands in dist/server/index.js once a server route exists
+	// - dist/_worker.js/ and dist/_routes.json do NOT exist (not the old Workers layout)
+	//
+	// NOTE: "main" is intentionally omitted here — the build is fully static (no server
+	// routes yet), so the CF vite plugin runs in assetsOnly mode and errors if "main"
+	// points to a non-existent file. Reinstate "main": "./dist/server/index.js" in
+	// Task 14 when the contact-form server route creates the worker bundle.
+	"name": "ed25519",
+	"compatibility_date": "2026-06-01",
+	"compatibility_flags": ["nodejs_compat"],
+	"assets": { "directory": "./dist/client", "binding": "ASSETS" },
+	"send_email": [
+		{ "name": "SEB", "destination_address": "hello@ed25519.com" },
+	],
+}
