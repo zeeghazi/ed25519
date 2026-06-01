@@ -1,0 +1,36 @@
+---
+// Fixed toast region. Other scripts call toast() from lib/clipboard, which dispatches
+// a 'toast' CustomEvent that this listener renders.
+---
+
+<div
+	id="toast-region"
+	aria-live="polite"
+	aria-atomic="true"
+	class="pointer-events-none fixed top-4 right-4 z-50 flex flex-col gap-2"
+>
+</div>
+
+<script>
+	type ToastDetail = { message: string; type?: 'success' | 'error' }
+	const region = document.getElementById('toast-region')
+	window.addEventListener('toast' as any, (e) => {
+		if (!region) return
+		const { message, type = 'success' } = (e as CustomEvent<ToastDetail>)
+			.detail
+		const el = document.createElement('div')
+		el.setAttribute('role', 'status')
+		el.className =
+			'pointer-events-auto rounded-md border px-3 py-2 font-mono text-sm shadow-[var(--shadow-e4)] ' +
+			(type === 'error'
+				? 'border-error/40 bg-canvas text-error'
+				: 'border-hairline bg-canvas text-ink')
+		el.textContent = message
+		region.appendChild(el)
+		setTimeout(() => {
+			el.style.transition = 'opacity 200ms'
+			el.style.opacity = '0'
+			setTimeout(() => el.remove(), 220)
+		}, 2600)
+	})
+</script>
