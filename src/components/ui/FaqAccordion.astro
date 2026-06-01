@@ -1,0 +1,24 @@
+---
+interface Props {
+	faqs: { q: string; a: string }[]
+}
+const { faqs } = Astro.props
+---
+
+<div
+	class="divide-hairline border-hairline bg-canvas divide-y rounded-[8px] border"
+>
+	{
+		faqs.map((f) => (
+			<details class="group p-5">
+				<summary class="text-ink flex cursor-pointer list-none items-center justify-between gap-4 font-medium">
+					{f.q}
+					<span class="text-mute border-hairline group-open:border-hairline-strong group-open:text-ink inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-[4px] border font-mono text-sm transition-transform group-open:rotate-45">
+						+
+					</span>
+				</summary>
+				<p class="text-body mt-3 text-sm leading-relaxed">{f.a}</p>
+			</details>
+		))
+	}
+</div>
