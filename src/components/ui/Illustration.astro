@@ -3,7 +3,7 @@
 // strokes use currentColor (so they adapt to light/dark via the parent text
 // color); a single accent stroke uses the terminal prompt color for emphasis.
 interface Props {
-	name: 'private' | 'fast' | 'standards'
+	name: 'private' | 'fast' | 'standards' | 'mail' | 'chat'
 	class?: string
 }
 const { name, class: cls = 'h-16 w-16' } = Astro.props
@@ -57,6 +57,27 @@ const accent = 'var(--color-term-prompt)'
 				/>
 				<circle cx="78" cy="78" r="14" stroke={accent} />
 				<path d="M72 78l4 4 8-8" stroke={accent} />
+			</>
+		)
+	}
+	{
+		name === 'mail' && (
+			<>
+				<rect x="22" y="34" width="76" height="52" rx="6" />
+				<path
+					class="text-hairline-strong"
+					d="M28 80 52 60M92 80 68 60"
+				/>
+				<path d="M24 38 60 64 96 38" stroke={accent} />
+			</>
+		)
+	}
+	{
+		name === 'chat' && (
+			<>
+				<path d="M28 30h64a8 8 0 0 1 8 8v30a8 8 0 0 1-8 8H54L36 90V76h-8a8 8 0 0 1-8-8V38a8 8 0 0 1 8-8Z" />
+				<path class="text-hairline-strong" d="M38 46h44M38 58h30" />
+				<circle cx="90" cy="34" r="7" stroke={accent} />
 			</>
 		)
 	}

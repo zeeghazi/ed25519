@@ -14,11 +14,12 @@ import { SITE } from '../consts'
 		eyebrow="contact"
 		title="Get in touch."
 		lead="Questions, feedback, or a bug to report? Send a message and we'll get back to you."
+		illustration="mail"
 	/>
 
 	<section class="px-4 pb-24 sm:px-6">
 		<div
-			class="mx-auto grid max-w-[1100px] gap-10 md:grid-cols-[1.4fr_1fr]"
+			class="mx-auto grid max-w-[1100px] gap-10 md:grid-cols-[1.4fr_1fr] md:items-start"
 		>
 			<form
 				id="contact-form"
@@ -99,7 +100,7 @@ import { SITE } from '../consts'
 				<p
 					class="text-mute font-mono text-xs tracking-[0.14em] uppercase"
 				>
-					// direct
+					Email us directly
 				</p>
 				<p class="text-body mt-3 text-sm leading-relaxed">
 					Prefer email? Reach us at
@@ -109,10 +110,33 @@ import { SITE } from '../consts'
 						>{SITE.email}</a
 					>.
 				</p>
-				<p class="text-body mt-4 text-sm leading-relaxed">
-					We read every message but can't offer security audits or
-					recover lost keys.
+
+				<hr class="border-hairline my-5" />
+
+				<p
+					class="text-mute font-mono text-xs tracking-[0.14em] uppercase"
+				>
+					Response time
 				</p>
+				<p class="text-body mt-3 text-sm leading-relaxed">
+					We read every message and usually reply within a few days.
+					We can't offer security audits or recover lost keys.
+				</p>
+
+				<hr class="border-hairline my-5" />
+
+				<p
+					class="text-mute font-mono text-xs tracking-[0.14em] uppercase"
+				>
+					Before you write
+				</p>
+				<ul
+					class="text-body mt-3 flex list-disc flex-col gap-1.5 pl-4 text-sm leading-relaxed"
+				>
+					<li>For a bug, include steps to reproduce it.</li>
+					<li>Mention your browser and operating system.</li>
+					<li>Never send us your private keys.</li>
+				</ul>
 			</aside>
 		</div>
 	</section>

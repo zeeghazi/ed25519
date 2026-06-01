@@ -1,24 +1,43 @@
 ---
+import Illustration from '../ui/Illustration.astro'
+
 interface Props {
 	eyebrow: string
 	title: string
 	lead?: string
+	width?: 'wide' | 'narrow'
+	illustration?: 'private' | 'fast' | 'standards' | 'mail' | 'chat'
 }
-const { eyebrow, title, lead } = Astro.props
+const { eyebrow, title, lead, width = 'wide', illustration } = Astro.props
+const maxW = width === 'narrow' ? 'max-w-[760px]' : 'max-w-[1100px]'
 ---
 
 <header class="px-4 pt-20 pb-10 sm:px-6">
-	<div class="mx-auto max-w-[1100px]">
-		<p class="text-mute font-mono text-xs tracking-[0.18em] uppercase">
-			// {eyebrow}
-		</p>
-		<h1 class="display-xl mt-2 max-w-3xl">{title}</h1>
-		{
-			lead && (
-				<p class="text-body mt-4 max-w-2xl text-lg leading-relaxed">
-					{lead}
+	<div class={`mx-auto ${maxW}`}>
+		<div class="flex items-start justify-between gap-10">
+			<div class="min-w-0">
+				<p
+					class="text-mute font-mono text-xs tracking-[0.18em] uppercase"
+				>
+					{eyebrow}
 				</p>
-			)
-		}
+				<h1 class="display-xl mt-2 max-w-3xl">{title}</h1>
+				{
+					lead && (
+						<p class="text-body mt-4 max-w-2xl text-lg leading-relaxed">
+							{lead}
+						</p>
+					)
+				}
+			</div>
+			{
+				illustration && (
+					<Illustration
+						name={illustration}
+						class="text-mute hidden h-20 w-20 shrink-0 md:block"
+					/>
+				)
+			}
+		</div>
 	</div>
 </header>
