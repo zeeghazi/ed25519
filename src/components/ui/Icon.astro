@@ -1,0 +1,25 @@
+---
+interface Props {
+	name: 'key' | 'sign' | 'verify' | 'shield' | 'arrow'
+	class?: string
+}
+const { name, class: cls = 'h-5 w-5' } = Astro.props
+const paths: Record<string, string> = {
+	key: 'M15 7a4 4 0 1 0-3.9 5l-1.6 1.6V16H8v2H6v2H3v-3l6.1-6.1A4 4 0 0 0 15 7Z',
+	sign: 'M4 20h16M4 16l9-9 4 4-9 9H4v-4Z',
+	verify: 'M9 12l2 2 4-4M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z',
+	shield: 'M12 3l8 3v6c0 4.4-3.4 7.8-8 9-4.6-1.2-8-4.6-8-9V6l8-3Z',
+	arrow: 'M5 12h14M13 6l6 6-6 6',
+}
+---
+
+<svg
+	class={cls}
+	viewBox="0 0 24 24"
+	fill="none"
+	stroke="currentColor"
+	stroke-width="2"
+	aria-hidden="true"
+>
+	<path stroke-linecap="round" stroke-linejoin="round" d={paths[name]}></path>
+</svg>

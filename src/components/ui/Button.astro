@@ -1,0 +1,35 @@
+---
+interface Props {
+	variant?: 'primary' | 'secondary'
+	href?: string
+	type?: 'button' | 'submit'
+	class?: string
+	id?: string
+}
+const {
+	variant = 'primary',
+	href,
+	type = 'button',
+	class: cls = '',
+	id,
+} = Astro.props
+const base =
+	'inline-flex h-11 items-center justify-center gap-2 rounded-pill px-5 text-base font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed'
+const styles =
+	variant === 'primary'
+		? 'bg-ink text-on-primary hover:bg-ink/90'
+		: 'bg-canvas text-ink border border-hairline hover:bg-canvas-soft-2'
+const klass = `${base} ${styles} ${cls}`
+---
+
+{
+	href ? (
+		<a href={href} class={klass} id={id}>
+			<slot />
+		</a>
+	) : (
+		<button type={type} class={klass} id={id}>
+			<slot />
+		</button>
+	)
+}

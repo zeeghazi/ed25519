@@ -1,0 +1,36 @@
+---
+interface Props {
+	slot?: string
+	minHeight?: number
+	class?: string
+}
+const { slot, minHeight = 280, class: cls = '' } = Astro.props
+const adsenseId = import.meta.env.PUBLIC_ADSENSE_ID
+---
+
+<div
+	class={`mx-auto w-full max-w-3xl ${cls}`}
+	style={`min-height:${minHeight}px`}
+>
+	{
+		adsenseId ? (
+			<>
+				<ins
+					class="adsbygoogle block"
+					style={`display:block;min-height:${minHeight}px`}
+					data-ad-client={adsenseId}
+					data-ad-slot={slot}
+					data-ad-format="auto"
+					data-full-width-responsive="true"
+				/>
+				<script is:inline>
+					(adsbygoogle = window.adsbygoogle || []).push({});
+				</script>
+			</>
+		) : (
+			<div class="border-hairline text-mute flex h-full min-h-[inherit] items-center justify-center rounded-md border border-dashed text-xs">
+				Advertisement
+			</div>
+		)
+	}
+</div>

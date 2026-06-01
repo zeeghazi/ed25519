@@ -1,0 +1,12 @@
+---
+interface Props {
+	class?: string
+}
+const { class: cls = '' } = Astro.props
+---
+
+<div
+	aria-hidden="true"
+	class={`mesh-gradient pointer-events-none absolute inset-0 -z-10 opacity-60 blur-3xl ${cls}`}
+>
+</div>

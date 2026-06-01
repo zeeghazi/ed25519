@@ -1,0 +1,16 @@
+---
+interface Props {
+	elevation?: 1 | 2 | 3 | 4
+	class?: string
+	id?: string
+}
+const { elevation = 3, class: cls = '', id } = Astro.props
+const shadow = {
+	1: 'shadow-[var(--shadow-e1)]',
+	2: 'shadow-[var(--shadow-e2)]',
+	3: 'shadow-[var(--shadow-e3)]',
+	4: 'shadow-[var(--shadow-e4)]',
+}[elevation]
+---
+
+<div id={id} class={`rounded-md bg-canvas p-6 ${shadow} ${cls}`}><slot /></div>
