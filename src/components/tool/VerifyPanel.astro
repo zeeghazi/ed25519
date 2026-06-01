@@ -1,0 +1,120 @@
+---
+import Card from '../ui/Card.astro'
+import Button from '../ui/Button.astro'
+import Icon from '../ui/Icon.astro'
+---
+
+<Card id="verify" class="scroll-mt-24">
+	<div class="flex items-center gap-2">
+		<Icon name="verify" class="text-ink h-5 w-5" />
+		<h3 class="display-md">Verify a signature.</h3>
+	</div>
+	<p class="text-body mt-2 text-sm">
+		Check a signature against the original message and a public key.
+	</p>
+
+	<div class="mt-5 space-y-4">
+		<div>
+			<label
+				for="verify-message"
+				class="text-mute font-mono text-xs tracking-wide uppercase"
+				>Original message</label
+			>
+			<textarea
+				id="verify-message"
+				rows="4"
+				class="border-hairline bg-canvas text-ink focus:border-hairline-strong mt-1 w-full rounded-sm border p-3 font-mono text-sm focus:outline-none"
+				placeholder="The exact message that was signed…"></textarea>
+		</div>
+		<div>
+			<label
+				for="verify-public"
+				class="text-mute font-mono text-xs tracking-wide uppercase"
+				>Public key · 64 hex</label
+			>
+			<input
+				id="verify-public"
+				type="text"
+				class="border-hairline bg-canvas text-ink focus:border-hairline-strong mt-1 w-full rounded-sm border p-3 font-mono text-xs focus:outline-none"
+				placeholder="Paste the 64-hex public key…"
+			/>
+		</div>
+		<div>
+			<label
+				for="verify-signature"
+				class="text-mute font-mono text-xs tracking-wide uppercase"
+				>Signature · 128 hex</label
+			>
+			<textarea
+				id="verify-signature"
+				rows="2"
+				class="border-hairline bg-canvas text-ink focus:border-hairline-strong mt-1 w-full rounded-sm border p-3 font-mono text-xs focus:outline-none"
+				placeholder="Paste the 128-hex signature…"></textarea>
+		</div>
+	</div>
+
+	<Button id="verify-btn" variant="primary" class="mt-5"
+		>Verify signature</Button
+	>
+
+	<div
+		id="verify-result"
+		class="border-hairline bg-canvas-soft text-mute mt-6 rounded-md border p-4 font-mono text-sm"
+	>
+		Result will appear here…
+	</div>
+</Card>
+
+<script>
+	import { verifySignature } from '../../lib/ed25519'
+	import { toast } from '../../lib/clipboard'
+
+	const btn = document.getElementById(
+		'verify-btn'
+	) as HTMLButtonElement | null
+	const msg = document.getElementById(
+		'verify-message'
+	) as HTMLTextAreaElement | null
+	const pub = document.getElementById(
+		'verify-public'
+	) as HTMLInputElement | null
+	const sig = document.getElementById(
+		'verify-signature'
+	) as HTMLTextAreaElement | null
+	const result = document.getElementById('verify-result')
+
+	btn?.addEventListener('click', async () => {
+		if (!msg?.value.trim() || !pub?.value.trim() || !sig?.value.trim()) {
+			toast('Fill message, public key, and signature', 'error')
+			return
+		}
+		btn.disabled = true
+		btn.textContent = 'Verifying…'
+		try {
+			const ok = await verifySignature(
+				sig.value.trim(),
+				msg.value,
+				pub.value.trim()
+			)
+			if (result) {
+				result.textContent = ok
+					? '✓ VALID — signature matches.'
+					: '✗ INVALID — signature does not match.'
+				result.className =
+					'mt-6 rounded-md border p-4 font-mono text-sm ' +
+					(ok
+						? 'border-success/40 bg-success/5 text-success'
+						: 'border-error/40 bg-error/5 text-error')
+			}
+			toast(
+				ok ? 'Signature valid' : 'Signature invalid',
+				ok ? 'success' : 'error'
+			)
+		} catch (e) {
+			toast(e instanceof Error ? e.message : 'Failed to verify', 'error')
+		} finally {
+			btn.disabled = false
+			btn.textContent = 'Verify signature'
+		}
+	})
+</script>

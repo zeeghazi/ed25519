@@ -1,0 +1,29 @@
+---
+import KeygenPanel from './KeygenPanel.astro'
+import SignPanel from './SignPanel.astro'
+import VerifyPanel from './VerifyPanel.astro'
+import Badge from '../ui/Badge.astro'
+import Icon from '../ui/Icon.astro'
+---
+
+<section
+	id="tool"
+	class="mx-auto max-w-[1200px] scroll-mt-20 px-4 py-16 sm:px-6"
+>
+	<div class="mx-auto max-w-2xl text-center">
+		<Badge>RFC 8032 · EdDSA</Badge>
+		<h2 class="display-lg mt-4">The complete Ed25519 workflow.</h2>
+		<p class="text-body mt-3 inline-flex items-center gap-2 text-sm">
+			<Icon name="shield" class="h-4 w-4" /> Everything runs in your browser.
+			Keys never leave your device.
+		</p>
+	</div>
+
+	<div class="mt-10 grid gap-6">
+		<KeygenPanel />
+		<div class="grid gap-6 lg:grid-cols-2">
+			<SignPanel />
+			<VerifyPanel />
+		</div>
+	</div>
+</section>

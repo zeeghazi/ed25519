@@ -1,0 +1,99 @@
+---
+import Card from '../ui/Card.astro'
+import Button from '../ui/Button.astro'
+import Icon from '../ui/Icon.astro'
+---
+
+<Card id="keygen" class="scroll-mt-24">
+	<div class="flex items-center gap-2">
+		<Icon name="key" class="text-ink h-5 w-5" />
+		<h3 class="display-md">Generate a keypair.</h3>
+	</div>
+	<p class="text-body mt-2 text-sm">
+		Creates a cryptographically secure Ed25519 keypair in your browser. The
+		private key never leaves this page.
+	</p>
+
+	<Button id="keygen-btn" variant="primary" class="mt-5"
+		>Generate keypair</Button
+	>
+
+	<div class="mt-6 space-y-4">
+		<div>
+			<label class="text-mute font-mono text-xs tracking-wide uppercase"
+				>Public key · 64 hex</label
+			>
+			<div
+				class="bg-ink text-on-primary mt-1 flex items-start gap-2 rounded-md p-3 font-mono text-xs"
+			>
+				<output id="keygen-public" class="block w-full break-all"
+					>—</output
+				>
+				<button
+					data-copy="#keygen-public"
+					class="text-on-primary/70 hover:text-on-primary shrink-0"
+					aria-label="Copy public key">copy</button
+				>
+			</div>
+		</div>
+		<div>
+			<label class="text-mute font-mono text-xs tracking-wide uppercase"
+				>Private key · 64 hex · keep secret</label
+			>
+			<div
+				class="bg-ink text-on-primary mt-1 flex items-start gap-2 rounded-md p-3 font-mono text-xs"
+			>
+				<output id="keygen-private" class="block w-full break-all"
+					>—</output
+				>
+				<button
+					data-copy="#keygen-private"
+					class="text-on-primary/70 hover:text-on-primary shrink-0"
+					aria-label="Copy private key">copy</button
+				>
+			</div>
+		</div>
+	</div>
+</Card>
+
+<script>
+	import { generateKeypair } from '../../lib/ed25519'
+	import { copyText, toast } from '../../lib/clipboard'
+
+	const btn = document.getElementById(
+		'keygen-btn'
+	) as HTMLButtonElement | null
+	const pub = document.getElementById('keygen-public')
+	const priv = document.getElementById('keygen-private')
+
+	btn?.addEventListener('click', async () => {
+		btn.disabled = true
+		btn.textContent = 'Generating…'
+		try {
+			const { privateKeyHex, publicKeyHex } = await generateKeypair()
+			if (pub) pub.textContent = publicKeyHex
+			if (priv) priv.textContent = privateKeyHex
+			toast('Keypair generated')
+		} catch {
+			toast('Failed to generate keypair', 'error')
+		} finally {
+			btn.disabled = false
+			btn.textContent = 'Generate keypair'
+		}
+	})
+
+	// Shared copy handler for all [data-copy] buttons across the tool panels.
+	document.querySelectorAll<HTMLButtonElement>('[data-copy]').forEach((b) => {
+		b.addEventListener('click', async () => {
+			const sel = b.dataset.copy
+			const text = sel
+				? document.querySelector(sel)?.textContent?.trim()
+				: ''
+			if (!text || text === '—') {
+				toast('Nothing to copy', 'error')
+				return
+			}
+			toast((await copyText(text)) ? 'Copied' : 'Copy failed', 'success')
+		})
+	})
+</script>

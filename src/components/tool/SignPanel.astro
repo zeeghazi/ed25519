@@ -1,0 +1,98 @@
+---
+import Card from '../ui/Card.astro'
+import Button from '../ui/Button.astro'
+import Icon from '../ui/Icon.astro'
+---
+
+<Card id="sign" class="scroll-mt-24">
+	<div class="flex items-center gap-2">
+		<Icon name="sign" class="text-ink h-5 w-5" />
+		<h3 class="display-md">Sign a message.</h3>
+	</div>
+	<p class="text-body mt-2 text-sm">
+		Produce an EdDSA signature with your private key.
+	</p>
+
+	<div class="mt-5 space-y-4">
+		<div>
+			<label
+				for="sign-message"
+				class="text-mute font-mono text-xs tracking-wide uppercase"
+				>Message</label
+			>
+			<textarea
+				id="sign-message"
+				rows="4"
+				class="border-hairline bg-canvas text-ink focus:border-hairline-strong mt-1 w-full rounded-sm border p-3 font-mono text-sm focus:outline-none"
+				placeholder="Type a message to sign…"></textarea>
+		</div>
+		<div>
+			<label
+				for="sign-private"
+				class="text-mute font-mono text-xs tracking-wide uppercase"
+				>Private key · 64 hex</label
+			>
+			<input
+				id="sign-private"
+				type="text"
+				class="border-hairline bg-canvas text-ink focus:border-hairline-strong mt-1 w-full rounded-sm border p-3 font-mono text-xs focus:outline-none"
+				placeholder="Paste your 64-hex private key…"
+			/>
+		</div>
+	</div>
+
+	<Button id="sign-btn" variant="primary" class="mt-5">Sign message</Button>
+
+	<div class="mt-6">
+		<label class="text-mute font-mono text-xs tracking-wide uppercase"
+			>Signature · 128 hex</label
+		>
+		<div
+			class="bg-ink text-on-primary mt-1 flex items-start gap-2 rounded-md p-3 font-mono text-xs"
+		>
+			<output id="sign-output" class="block w-full break-all">—</output>
+			<button
+				data-copy="#sign-output"
+				class="text-on-primary/70 hover:text-on-primary shrink-0"
+				aria-label="Copy signature">copy</button
+			>
+		</div>
+	</div>
+</Card>
+
+<script>
+	import { signMessage } from '../../lib/ed25519'
+	import { toast } from '../../lib/clipboard'
+
+	const btn = document.getElementById('sign-btn') as HTMLButtonElement | null
+	const msg = document.getElementById(
+		'sign-message'
+	) as HTMLTextAreaElement | null
+	const priv = document.getElementById(
+		'sign-private'
+	) as HTMLInputElement | null
+	const out = document.getElementById('sign-output')
+
+	btn?.addEventListener('click', async () => {
+		if (!msg?.value.trim()) {
+			toast('Enter a message', 'error')
+			return
+		}
+		if (!priv?.value.trim()) {
+			toast('Enter a private key', 'error')
+			return
+		}
+		btn.disabled = true
+		btn.textContent = 'Signing…'
+		try {
+			const sig = await signMessage(msg.value, priv.value.trim())
+			if (out) out.textContent = sig
+			toast('Message signed')
+		} catch (e) {
+			toast(e instanceof Error ? e.message : 'Failed to sign', 'error')
+		} finally {
+			btn.disabled = false
+			btn.textContent = 'Sign message'
+		}
+	})
+</script>
