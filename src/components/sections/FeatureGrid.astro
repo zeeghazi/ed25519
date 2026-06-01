@@ -34,55 +34,59 @@ const specs = [
 ] as const
 ---
 
-<section class="mx-auto max-w-[1100px] px-4 py-20 sm:px-6">
-	<div class="max-w-2xl">
-		<p class="text-mute font-mono text-xs tracking-[0.18em] uppercase">
-			// why ed25519
-		</p>
-		<h2 class="display-lg mt-3">
-			Cryptography you can trust, in the open.
-		</h2>
-	</div>
+<section class="px-4 py-20 sm:px-6">
+	<div class="mx-auto max-w-[1100px]">
+		<div class="max-w-2xl">
+			<p class="text-mute font-mono text-xs tracking-[0.18em] uppercase">
+				// why ed25519
+			</p>
+			<h2 class="display-lg mt-3">
+				Cryptography you can trust, in the open.
+			</h2>
+		</div>
 
-	<div
-		class="border-hairline bg-hairline mt-10 grid gap-px overflow-hidden rounded-[8px] border md:grid-cols-3"
-	>
-		{
-			features.map((f) => (
-				<article class="bg-canvas hover:bg-canvas-soft group flex flex-col p-7 transition-colors">
-					<div class="flex items-center justify-between">
-						<Illustration
-							name={f.art}
-							class="text-body group-hover:text-ink h-14 w-14 transition-colors"
-						/>
-						<span class="text-mute font-mono text-xs">{f.no}</span>
+		<div
+			class="border-hairline bg-hairline mt-10 grid gap-px overflow-hidden rounded-[8px] border md:grid-cols-3"
+		>
+			{
+				features.map((f) => (
+					<article class="bg-canvas hover:bg-canvas-soft group flex flex-col p-7 transition-colors">
+						<div class="flex items-center justify-between">
+							<Illustration
+								name={f.art}
+								class="text-body group-hover:text-ink h-14 w-14 transition-colors"
+							/>
+							<span class="text-mute font-mono text-xs">
+								{f.no}
+							</span>
+						</div>
+						<p class="text-mute mt-6 font-mono text-[11px] tracking-[0.14em] uppercase">
+							{f.tag}
+						</p>
+						<h3 class="mt-2 text-lg font-semibold tracking-tight">
+							{f.title}
+						</h3>
+						<p class="text-body mt-2 text-sm leading-relaxed">
+							{f.body}
+						</p>
+					</article>
+				))
+			}
+		</div>
+
+		<dl
+			class="border-hairline bg-hairline mt-6 grid grid-cols-2 gap-px overflow-hidden rounded-[8px] border sm:grid-cols-3 lg:grid-cols-5"
+		>
+			{
+				specs.map(([k, v]) => (
+					<div class="bg-canvas px-4 py-4">
+						<dt class="text-mute font-mono text-[11px] tracking-[0.14em] uppercase">
+							{k}
+						</dt>
+						<dd class="text-ink mt-1 font-mono text-sm">{v}</dd>
 					</div>
-					<p class="text-mute mt-6 font-mono text-[11px] tracking-[0.14em] uppercase">
-						{f.tag}
-					</p>
-					<h3 class="mt-2 text-lg font-semibold tracking-tight">
-						{f.title}
-					</h3>
-					<p class="text-body mt-2 text-sm leading-relaxed">
-						{f.body}
-					</p>
-				</article>
-			))
-		}
+				))
+			}
+		</dl>
 	</div>
-
-	<dl
-		class="border-hairline bg-hairline mt-6 grid grid-cols-2 gap-px overflow-hidden rounded-[8px] border sm:grid-cols-3 lg:grid-cols-5"
-	>
-		{
-			specs.map(([k, v]) => (
-				<div class="bg-canvas px-4 py-4">
-					<dt class="text-mute font-mono text-[11px] tracking-[0.14em] uppercase">
-						{k}
-					</dt>
-					<dd class="text-ink mt-1 font-mono text-sm">{v}</dd>
-				</div>
-			))
-		}
-	</dl>
 </section>
