@@ -1,8 +1,18 @@
 ---
 import Button from '../ui/Button.astro'
+
+interface Props {
+	standalone?: boolean
+}
+const { standalone = false } = Astro.props
 ---
 
-<div data-panel="verify" role="tabpanel" aria-labelledby="tab-verify" hidden>
+<div
+	data-panel="verify"
+	role={standalone ? undefined : 'tabpanel'}
+	aria-labelledby={standalone ? undefined : 'tab-verify'}
+	hidden={standalone ? undefined : true}
+>
 	<p class="font-mono text-xs text-[var(--color-term-dim)]">
 		<span class="text-[var(--color-term-prompt)]">$</span> ed25519 verify --pub
 		&lt;key&gt; --sig &lt;sig&gt;

@@ -1,8 +1,18 @@
 ---
 import Button from '../ui/Button.astro'
+
+interface Props {
+	standalone?: boolean
+}
+const { standalone = false } = Astro.props
 ---
 
-<div data-panel="sign" role="tabpanel" aria-labelledby="tab-sign" hidden>
+<div
+	data-panel="sign"
+	role={standalone ? undefined : 'tabpanel'}
+	aria-labelledby={standalone ? undefined : 'tab-sign'}
+	hidden={standalone ? undefined : true}
+>
 	<p class="font-mono text-xs text-[var(--color-term-dim)]">
 		<span class="text-[var(--color-term-prompt)]">$</span> ed25519 sign --key
 		&lt;priv&gt; --msg &lt;text&gt;

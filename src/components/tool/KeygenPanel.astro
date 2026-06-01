@@ -1,8 +1,17 @@
 ---
 import Button from '../ui/Button.astro'
+
+interface Props {
+	standalone?: boolean
+}
+const { standalone = false } = Astro.props
 ---
 
-<div data-panel="generate" role="tabpanel" aria-labelledby="tab-generate">
+<div
+	data-panel="generate"
+	role={standalone ? undefined : 'tabpanel'}
+	aria-labelledby={standalone ? undefined : 'tab-generate'}
+>
 	<p class="font-mono text-xs text-[var(--color-term-dim)]">
 		<span class="text-[var(--color-term-prompt)]">$</span> ed25519 keygen --new
 	</p>
