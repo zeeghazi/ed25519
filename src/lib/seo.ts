@@ -97,3 +97,22 @@ export function faqPageJsonLd(faqs: { q: string; a: string }[]) {
 		})),
 	}
 }
+
+export function howToJsonLd(opts: {
+	name: string
+	description: string
+	steps: { name: string; text: string }[]
+}) {
+	return {
+		'@context': 'https://schema.org',
+		'@type': 'HowTo',
+		name: opts.name,
+		description: opts.description,
+		step: opts.steps.map((s, i) => ({
+			'@type': 'HowToStep',
+			position: i + 1,
+			name: s.name,
+			text: s.text,
+		})),
+	}
+}
