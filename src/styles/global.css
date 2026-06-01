@@ -98,6 +98,20 @@
 		font-family: var(--font-sans);
 		-webkit-font-smoothing: antialiased;
 	}
+	/* Geist Mono renders `--`, `=>`, etc. as wide contextual glyphs whose left
+	   bearing overhangs the preceding space — so command lines like
+	   `./keygen --curve` visually lose the gap. Render literal characters for
+	   all mono/code text. */
+	.font-mono,
+	code,
+	kbd,
+	samp,
+	pre {
+		font-feature-settings:
+			'liga' 0,
+			'calt' 0;
+		font-variant-ligatures: none;
+	}
 	/* Tailwind v4 / browser default leaves interactive controls as the text
 	   cursor; restore the expected pointer on anything clickable. */
 	button:not(:disabled),

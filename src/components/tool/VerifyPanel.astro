@@ -5,6 +5,9 @@ interface Props {
 	standalone?: boolean
 }
 const { standalone = false } = Astro.props
+
+const command =
+	'[user@ubuntu ~]$ ./verify --signature=hex --public-key=hex --message=text'
 ---
 
 <div
@@ -13,9 +16,10 @@ const { standalone = false } = Astro.props
 	aria-labelledby={standalone ? undefined : 'tab-verify'}
 	hidden={standalone ? undefined : true}
 >
-	<p class="font-mono text-xs text-[var(--color-term-dim)]">
-		<span class="text-[var(--color-term-prompt)]">$</span> ed25519 verify --pub
-		&lt;key&gt; --sig &lt;sig&gt;
+	<p
+		class="font-mono text-xs leading-relaxed text-[var(--color-term-accent)]"
+	>
+		{command}
 	</p>
 	<p class="mt-2 max-w-prose text-sm text-[var(--color-term-dim)]">
 		Check a signature against the original message and a public key.

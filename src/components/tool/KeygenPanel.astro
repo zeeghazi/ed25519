@@ -5,6 +5,8 @@ interface Props {
 	standalone?: boolean
 }
 const { standalone = false } = Astro.props
+
+const command = '[user@ubuntu ~]$ ./keygen --curve=edwards25519 --format=hex'
 ---
 
 <div
@@ -12,8 +14,10 @@ const { standalone = false } = Astro.props
 	role={standalone ? undefined : 'tabpanel'}
 	aria-labelledby={standalone ? undefined : 'tab-generate'}
 >
-	<p class="font-mono text-xs text-[var(--color-term-dim)]">
-		<span class="text-[var(--color-term-prompt)]">$</span> ed25519 keygen --new
+	<p
+		class="font-mono text-xs leading-relaxed text-[var(--color-term-accent)]"
+	>
+		{command}
 	</p>
 	<p class="mt-2 max-w-prose text-sm text-[var(--color-term-dim)]">
 		Generates a cryptographically secure Ed25519 keypair locally via
