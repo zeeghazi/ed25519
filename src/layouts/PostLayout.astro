@@ -1,0 +1,95 @@
+---
+import BaseLayout from './BaseLayout.astro'
+import Prose from '../components/ui/Prose.astro'
+import { readingTime } from '../lib/reading-time'
+import { articleJsonLd, breadcrumbJsonLd } from '../lib/seo'
+
+interface Props {
+	title: string
+	description: string
+	path: string
+	pubDate: Date
+	updatedDate?: Date
+	author: string
+	tags: string[]
+	ogImage?: string
+	body: string
+}
+const {
+	title,
+	description,
+	path,
+	pubDate,
+	updatedDate,
+	author,
+	tags,
+	ogImage,
+	body,
+} = Astro.props
+
+const fmt = (d: Date) =>
+	d.toLocaleDateString('en-US', {
+		year: 'numeric',
+		month: 'long',
+		day: 'numeric',
+	})
+
+const jsonLd = [
+	articleJsonLd({
+		title,
+		description,
+		path,
+		pubDate,
+		updatedDate,
+		author,
+		ogImage,
+	}),
+	breadcrumbJsonLd([
+		{ name: 'Home', path: '/' },
+		{ name: 'Blog', path: '/blog' },
+		{ name: title, path },
+	]),
+]
+---
+
+<BaseLayout
+	title={title}
+	description={description}
+	path={path}
+	ogImage={ogImage}
+	jsonLd={jsonLd}
+>
+	<article class="px-4 pt-20 pb-24 sm:px-6">
+		<div class="mx-auto max-w-[760px]">
+			<a
+				href="/blog"
+				class="text-mute hover:text-ink font-mono text-xs tracking-wide uppercase"
+				>← Blog</a
+			>
+
+			<div
+				class="text-mute mt-6 flex flex-wrap items-center gap-3 font-mono text-[11px] tracking-[0.14em] uppercase"
+			>
+				<time datetime={pubDate.toISOString()}>{fmt(pubDate)}</time>
+				<span aria-hidden="true">·</span>
+				<span>{readingTime(body)}</span>
+				{
+					tags.map((t) => (
+						<span class="text-[var(--color-term-prompt)]">
+							#{t}
+						</span>
+					))
+				}
+			</div>
+
+			<h1 class="display-lg mt-3">{title}</h1>
+			<p class="text-body mt-3 text-lg leading-relaxed">{description}</p>
+
+			<hr class="border-hairline my-8" />
+
+			<Prose>
+				<slot />
+			</Prose>
+		</div>
+	</article>
+</BaseLayout>
