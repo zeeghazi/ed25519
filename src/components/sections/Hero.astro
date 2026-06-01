@@ -17,9 +17,12 @@ const facts = ['no signup', 'no server', '100% client-side', 'open source']
 			<h1 class="display-xl">
 				Cryptographic trust.<br />
 				Instantly <span
-					id="tw-word"
-					class="text-[var(--color-term-prompt)]">generate</span
-				><span class="term-caret" aria-hidden="true"></span>
+					id="tw-wrap"
+					class="inline-flex items-baseline text-left"
+					><span id="tw-word" class="text-[var(--color-term-prompt)]"
+						>generate</span
+					><span class="term-caret" aria-hidden="true"></span></span
+				>
 			</h1>
 			<p
 				class="text-body md:border-hairline max-w-md text-base leading-relaxed md:border-l md:pt-1.5 md:pl-8"
@@ -52,30 +55,46 @@ const facts = ['no signup', 'no server', '100% client-side', 'open source']
 
 <script>
 	// Typewriter cycle for the last headline word: generate → sign → verify → …
+	// The wrapper is pinned to the widest word's width so the line never reflows.
 	const el = document.getElementById('tw-word')
-	const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-	if (el && !reduce) {
-		const words = ['generate', 'sign', 'verify']
-		let wi = 0
-		let ci = words[0].length
-		let deleting = false
-		const tick = () => {
-			const word = words[wi]
-			if (!deleting && ci === word.length) {
-				deleting = true
-				setTimeout(tick, 1500)
-				return
-			}
-			if (deleting && ci === 0) {
-				deleting = false
-				wi = (wi + 1) % words.length
-				setTimeout(tick, 280)
-				return
-			}
-			ci += deleting ? -1 : 1
-			el.textContent = words[wi].slice(0, ci)
-			setTimeout(tick, deleting ? 55 : 100)
+	const wrap = document.getElementById('tw-wrap')
+	const words = ['generate', 'sign', 'verify']
+
+	if (el && wrap) {
+		// Reserve width = widest word so "sign"/"verify" don't shrink the line.
+		let max = 0
+		for (const w of words) {
+			el.textContent = w
+			max = Math.max(max, el.offsetWidth)
 		}
-		setTimeout(tick, 1500)
+		wrap.style.minWidth = `${Math.ceil(max) + 12}px`
+		el.textContent = words[0]
+
+		const reduce = window.matchMedia(
+			'(prefers-reduced-motion: reduce)'
+		).matches
+		if (!reduce) {
+			let wi = 0
+			let ci = words[0].length
+			let deleting = false
+			const tick = () => {
+				const word = words[wi]
+				if (!deleting && ci === word.length) {
+					deleting = true
+					setTimeout(tick, 1500)
+					return
+				}
+				if (deleting && ci === 0) {
+					deleting = false
+					wi = (wi + 1) % words.length
+					setTimeout(tick, 280)
+					return
+				}
+				ci += deleting ? -1 : 1
+				el.textContent = words[wi].slice(0, ci)
+				setTimeout(tick, deleting ? 55 : 100)
+			}
+			setTimeout(tick, 1500)
+		}
 	}
 </script>
