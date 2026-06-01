@@ -6,27 +6,30 @@ const facts = ['no signup', 'no server', '100% client-side', 'open source']
 
 <!--
 	Hero content only. The continuous grid + glow backdrop it sits on is a single
-	pinned layer shared with the tool (see index.astro), so the two read as one
-	background. This block scrolls over that pinned backdrop.
+	pinned layer shared with the tool (see index.astro). Editorial split layout:
+	headline left, description right; badge on top, facts row on the bottom.
 -->
 <section class="flex min-h-[60svh] items-center">
-	<div class="mx-auto w-full max-w-[940px] px-4 py-16 text-center sm:px-6">
+	<div class="mx-auto w-full max-w-[940px] px-4 sm:px-6">
 		<Badge dot>client-side EdDSA toolkit</Badge>
 
-		<h1 class="display-xl mx-auto mt-5 max-w-3xl text-balance">
-			Generate, sign &amp; verify Ed25519 keys.<span
-				class="term-caret"
-				aria-hidden="true"></span>
-		</h1>
-
-		<p class="text-body mx-auto mt-5 max-w-xl text-lg text-balance">
-			A fast, private toolkit for modern digital signatures — RFC 8032
-			EdDSA, computed entirely in your browser. Your private keys never
-			touch a server.
-		</p>
+		<div class="mt-7 grid gap-6 md:grid-cols-2 md:items-start md:gap-12">
+			<h1 class="display-xl text-balance">
+				Generate, sign &amp; verify Ed25519 keys.<span
+					class="term-caret"
+					aria-hidden="true"></span>
+			</h1>
+			<p
+				class="text-body md:border-hairline max-w-md text-base leading-relaxed md:border-l md:pt-1.5 md:pl-8"
+			>
+				A fast, private toolkit for modern digital signatures — RFC 8032
+				EdDSA, computed entirely in your browser. Your private keys
+				never touch a server.
+			</p>
+		</div>
 
 		<ul
-			class="text-mute mt-7 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 font-mono text-xs"
+			class="text-mute mt-9 flex flex-wrap items-center gap-x-5 gap-y-2 font-mono text-xs"
 		>
 			{
 				facts.map((f) => (
