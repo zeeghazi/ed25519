@@ -16,21 +16,26 @@ const faqs = [
 ] as const
 ---
 
-<section class="mx-auto max-w-3xl px-4 py-16 sm:px-6">
-	<h2 class="display-lg text-center">Questions, answered.</h2>
+<section class="mx-auto max-w-3xl px-4 py-20 sm:px-6">
+	<p
+		class="text-mute text-center font-mono text-xs tracking-[0.18em] uppercase"
+	>
+		// faq
+	</p>
+	<h2 class="display-lg mt-3 text-center">Questions, answered.</h2>
 	<div
-		class="divide-hairline border-hairline bg-canvas mt-8 divide-y rounded-lg border"
+		class="divide-hairline border-hairline bg-canvas mt-8 divide-y rounded-[8px] border"
 	>
 		{
 			faqs.map((f) => (
 				<details class="group p-5">
-					<summary class="text-ink flex cursor-pointer list-none items-center justify-between font-medium">
+					<summary class="text-ink flex cursor-pointer list-none items-center justify-between gap-4 font-medium">
 						{f.q}
-						<span class="text-mute transition-transform group-open:rotate-45">
+						<span class="text-mute border-hairline group-open:border-hairline-strong group-open:text-ink inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-[4px] border font-mono text-sm transition-transform group-open:rotate-45">
 							+
 						</span>
 					</summary>
-					<p class="text-body mt-3 text-sm">{f.a}</p>
+					<p class="text-body mt-3 text-sm leading-relaxed">{f.a}</p>
 				</details>
 			))
 		}

@@ -1,0 +1,63 @@
+---
+// Bespoke monoline illustrations tuned to the terminal aesthetic. The base
+// strokes use currentColor (so they adapt to light/dark via the parent text
+// color); a single accent stroke uses the terminal prompt color for emphasis.
+interface Props {
+	name: 'private' | 'fast' | 'standards'
+	class?: string
+}
+const { name, class: cls = 'h-16 w-16' } = Astro.props
+const accent = 'var(--color-term-prompt)'
+---
+
+<svg
+	class={cls}
+	viewBox="0 0 120 120"
+	fill="none"
+	stroke="currentColor"
+	stroke-width="2"
+	stroke-linecap="round"
+	stroke-linejoin="round"
+	aria-hidden="true"
+>
+	{
+		name === 'private' && (
+			<>
+				<path
+					class="text-hairline-strong"
+					d="M60 14 96 28v30c0 25-15 43-36 50-21-7-36-25-36-50V28L60 14Z"
+				/>
+				<path d="M48 58a12 12 0 1 1 24 0v6H48v-6Z" />
+				<rect x="44" y="64" width="32" height="26" rx="3" />
+				<circle cx="60" cy="74" r="3.5" stroke={accent} />
+				<path d="M60 77.5V83" stroke={accent} />
+			</>
+		)
+	}
+	{
+		name === 'fast' && (
+			<>
+				<path class="text-hairline-strong" d="M20 96h80M28 100V40" />
+				<path d="M28 84C44 84 48 44 66 44s24 36 40 18" />
+				<circle cx="50" cy="58" r="3.5" stroke={accent} fill="none" />
+				<circle cx="86" cy="56" r="3.5" stroke={accent} fill="none" />
+				<path d="M50 58 86 56" stroke={accent} stroke-dasharray="3 4" />
+				<path d="M92 36l8 4-4 8" stroke={accent} />
+			</>
+		)
+	}
+	{
+		name === 'standards' && (
+			<>
+				<path d="M34 20h38l16 16v52a6 6 0 0 1-6 6H34a6 6 0 0 1-6-6V26a6 6 0 0 1 6-6Z" />
+				<path class="text-hairline-strong" d="M72 20v16h16" />
+				<path
+					class="text-hairline-strong"
+					d="M40 52h28M40 62h36M40 72h20"
+				/>
+				<circle cx="78" cy="78" r="14" stroke={accent} />
+				<path d="M72 78l4 4 8-8" stroke={accent} />
+			</>
+		)
+	}
+</svg>

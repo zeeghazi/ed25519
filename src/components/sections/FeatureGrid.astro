@@ -1,35 +1,88 @@
 ---
-import Card from '../ui/Card.astro'
-import Icon from '../ui/Icon.astro'
+import Illustration from '../ui/Illustration.astro'
+
 const features = [
 	{
-		icon: 'shield',
+		no: '01',
+		art: 'private',
+		tag: 'private',
 		title: 'Private by design.',
-		body: 'All cryptography runs locally via WebCrypto. No keys, messages, or signatures are ever transmitted.',
+		body: 'All cryptography runs locally via the WebCrypto API. No keys, messages, or signatures are ever transmitted.',
 	},
 	{
-		icon: 'key',
+		no: '02',
+		art: 'fast',
+		tag: 'modern',
 		title: 'Modern & fast.',
-		body: 'Ed25519 is a state-of-the-art elliptic-curve signature scheme — small keys, fast verification, strong security.',
+		body: 'Ed25519 is a state-of-the-art elliptic-curve scheme on Curve25519 — small keys, fast verification, strong security.',
 	},
 	{
-		icon: 'verify',
+		no: '03',
+		art: 'standards',
+		tag: 'standard',
 		title: 'Standards-based.',
 		body: 'A faithful RFC 8032 EdDSA implementation built on the audited @noble/ed25519 library.',
 	},
 ] as const
+
+const specs = [
+	['key', '32 bytes'],
+	['signature', '64 bytes'],
+	['curve', 'Curve25519'],
+	['hash', 'SHA-512'],
+	['standard', 'RFC 8032'],
+] as const
 ---
 
-<section class="mx-auto max-w-[1200px] px-4 py-16 sm:px-6">
-	<div class="grid gap-6 md:grid-cols-3">
+<section class="mx-auto max-w-[1100px] px-4 py-20 sm:px-6">
+	<div class="max-w-2xl">
+		<p class="text-mute font-mono text-xs tracking-[0.18em] uppercase">
+			// why ed25519
+		</p>
+		<h2 class="display-lg mt-3">
+			Cryptography you can trust, in the open.
+		</h2>
+	</div>
+
+	<div
+		class="border-hairline bg-hairline mt-10 grid gap-px overflow-hidden rounded-[8px] border md:grid-cols-3"
+	>
 		{
 			features.map((f) => (
-				<Card elevation={2}>
-					<Icon name={f.icon} class="text-ink h-6 w-6" />
-					<h3 class="display-md mt-4">{f.title}</h3>
-					<p class="text-body mt-2 text-sm">{f.body}</p>
-				</Card>
+				<article class="bg-canvas hover:bg-canvas-soft group flex flex-col p-7 transition-colors">
+					<div class="flex items-center justify-between">
+						<Illustration
+							name={f.art}
+							class="text-body group-hover:text-ink h-14 w-14 transition-colors"
+						/>
+						<span class="text-mute font-mono text-xs">{f.no}</span>
+					</div>
+					<p class="text-mute mt-6 font-mono text-[11px] tracking-[0.14em] uppercase">
+						{f.tag}
+					</p>
+					<h3 class="mt-2 text-lg font-semibold tracking-tight">
+						{f.title}
+					</h3>
+					<p class="text-body mt-2 text-sm leading-relaxed">
+						{f.body}
+					</p>
+				</article>
 			))
 		}
 	</div>
+
+	<dl
+		class="border-hairline bg-hairline mt-6 grid grid-cols-2 gap-px overflow-hidden rounded-[8px] border sm:grid-cols-3 lg:grid-cols-5"
+	>
+		{
+			specs.map(([k, v]) => (
+				<div class="bg-canvas px-4 py-4">
+					<dt class="text-mute font-mono text-[11px] tracking-[0.14em] uppercase">
+						{k}
+					</dt>
+					<dd class="text-ink mt-1 font-mono text-sm">{v}</dd>
+				</div>
+			))
+		}
+	</dl>
 </section>

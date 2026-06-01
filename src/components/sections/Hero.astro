@@ -1,24 +1,51 @@
 ---
-import Button from '../ui/Button.astro'
 import Badge from '../ui/Badge.astro'
-import MeshGradient from '../ui/MeshGradient.astro'
+
+const facts = ['no signup', 'no server', '100% client-side', 'open source']
 ---
 
-<section class="relative overflow-hidden">
-	<MeshGradient class="h-[60%]" />
-	<div class="mx-auto max-w-[1200px] px-4 py-24 text-center sm:px-6 md:py-32">
-		<Badge>Free · Open · Client-side</Badge>
+<section class="relative isolate overflow-hidden">
+	<!-- Engineering grid + soft brand glow, both faint, fading at the edges. -->
+	<div class="grid-bg absolute inset-0 -z-20" aria-hidden="true"></div>
+	<div
+		class="mesh-gradient absolute inset-x-0 top-0 -z-10 h-[380px] opacity-15 blur-[90px]"
+		aria-hidden="true"
+	>
+	</div>
+
+	<div
+		class="mx-auto max-w-[940px] px-4 pt-14 pb-9 text-center sm:px-6 md:pt-20"
+	>
+		<Badge dot>client-side EdDSA toolkit</Badge>
+
 		<h1 class="display-xl mx-auto mt-5 max-w-3xl text-balance">
-			Generate, sign, and verify Ed25519 keys.
+			Generate, sign &amp; verify Ed25519 keys.<span
+				class="term-caret"
+				aria-hidden="true"></span>
 		</h1>
-		<p class="text-body mx-auto mt-5 max-w-xl text-lg">
-			A fast, private toolkit for modern digital signatures. RFC 8032
-			EdDSA, computed entirely in your browser — your private keys never
+
+		<p class="text-body mx-auto mt-5 max-w-xl text-lg text-balance">
+			A fast, private toolkit for modern digital signatures — RFC 8032
+			EdDSA, computed entirely in your browser. Your private keys never
 			touch a server.
 		</p>
-		<div class="mt-8 flex flex-wrap items-center justify-center gap-3">
-			<Button href="/#tool" variant="primary">Open the tool</Button>
-			<Button href="/blog" variant="secondary">Learn Ed25519</Button>
-		</div>
+
+		<ul
+			class="text-mute mt-7 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 font-mono text-xs"
+		>
+			{
+				facts.map((f) => (
+					<li class="inline-flex items-center gap-1.5">
+						<span
+							class="text-[var(--color-term-prompt)]"
+							aria-hidden="true"
+						>
+							✓
+						</span>
+						{f}
+					</li>
+				))
+			}
+		</ul>
 	</div>
 </section>
