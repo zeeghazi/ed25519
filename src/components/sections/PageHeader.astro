@@ -5,7 +5,7 @@ interface Props {
 	title: string
 	lead?: string
 	width?: 'wide' | 'narrow'
-	illustration?: 'private' | 'fast' | 'standards' | 'mail' | 'chat'
+	illustration?: 'private' | 'fast' | 'standards' | 'mail' | 'chat' | 'check'
 }
 const { title, lead, width = 'wide', illustration } = Astro.props
 const maxW = width === 'narrow' ? 'max-w-[760px]' : 'max-w-[1100px]'

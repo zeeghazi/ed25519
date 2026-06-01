@@ -1,0 +1,164 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import PageHeader from '../components/sections/PageHeader.astro'
+import ConsoleFrame from '../components/tool/ConsoleFrame.astro'
+import VerifyPanel from '../components/tool/VerifyPanel.astro'
+import FaqAccordion from '../components/ui/FaqAccordion.astro'
+import RelatedTools from '../components/sections/RelatedTools.astro'
+import { EXAMPLE } from '../lib/example-vector'
+import {
+	webApplicationJsonLd,
+	howToJsonLd,
+	faqPageJsonLd,
+	breadcrumbJsonLd,
+} from '../lib/seo'
+
+const path = '/ed25519-verify-signature'
+const title = 'Verify an Ed25519 signature'
+const description =
+	'Verify an Ed25519 signature against a message and public key, in your browser. Confirms authenticity and integrity. Nothing is sent to a server.'
+
+const steps = [
+	{
+		name: 'Enter the original message',
+		text: 'Paste the exact message that was signed — even a one-character difference fails.',
+	},
+	{
+		name: 'Paste the public key',
+		text: 'Provide the signer’s 64-hex public key.',
+	},
+	{
+		name: 'Paste the signature and verify',
+		text: 'Provide the 128-hex signature and click "Verify signature". You get a clear valid/invalid result.',
+	},
+]
+
+const faqs = [
+	{
+		q: 'What does a valid result prove?',
+		a: 'That the signature was produced by the private key matching the given public key, and the message is byte-for-byte unchanged.',
+	},
+	{
+		q: 'Do I need the private key to verify?',
+		a: 'No — verification only needs the message, the public key, and the signature. The private key is never required.',
+	},
+	{
+		q: 'Why did verification fail?',
+		a: 'Usually the message, public key, or signature differs from the originals — even a single changed character or byte makes a signature invalid.',
+	},
+]
+
+const jsonLd = [
+	webApplicationJsonLd(),
+	howToJsonLd({
+		name: 'How to verify an Ed25519 signature',
+		description,
+		steps,
+	}),
+	faqPageJsonLd(faqs),
+	breadcrumbJsonLd([
+		{ name: 'Home', path: '/' },
+		{ name: 'Verify a signature', path },
+	]),
+]
+---
+
+<BaseLayout title={title} description={description} path={path} jsonLd={jsonLd}>
+	<PageHeader
+		title="Verify an Ed25519 signature"
+		lead="Check a signature against the original message and a public key — all in your browser."
+		width="narrow"
+		illustration="check"
+	/>
+
+	<section class="px-4 pb-12 sm:px-6">
+		<div class="mx-auto max-w-[760px]">
+			<ConsoleFrame label="ed25519 — verify">
+				<div class="p-5 sm:p-7">
+					<VerifyPanel standalone />
+				</div>
+			</ConsoleFrame>
+		</div>
+	</section>
+
+	<section class="px-4 pb-4 sm:px-6">
+		<div class="mx-auto max-w-[760px]">
+			<h2 class="display-md">How to verify a signature</h2>
+			<ol
+				class="text-body mt-5 flex list-decimal flex-col gap-3 pl-5 leading-relaxed"
+			>
+				{steps.map((s) => <li>{s.text}</li>)}
+			</ol>
+		</div>
+	</section>
+
+	<section class="px-4 py-12 sm:px-6">
+		<div class="mx-auto max-w-[760px]">
+			<h2 class="display-md">Worked example</h2>
+			<p class="text-body mt-4 leading-relaxed">
+				These RFC 8032 values verify as <span
+					class="text-[var(--color-term-prompt)]">valid</span
+				>. Paste them into the tool above with the message <code
+					class="bg-canvas-soft-2 text-ink rounded-[4px] px-1.5 py-0.5 font-mono text-sm"
+					>{EXAMPLE.message}</code
+				> — then change one character of the message and watch it fail.
+			</p>
+			<dl class="mt-5 flex flex-col gap-3">
+				<div
+					class="rounded-[6px] border border-[var(--color-term-border)] bg-[var(--color-term-bg)] p-4"
+				>
+					<dt
+						class="font-mono text-[11px] tracking-[0.12em] text-[var(--color-term-dim)] uppercase"
+					>
+						Public key · 64 hex
+					</dt>
+					<dd
+						class="mt-1.5 font-mono text-xs break-all text-[var(--color-term-fg)]"
+					>
+						{EXAMPLE.publicKeyHex}
+					</dd>
+				</div>
+				<div
+					class="rounded-[6px] border border-[var(--color-term-border)] bg-[var(--color-term-bg)] p-4"
+				>
+					<dt
+						class="font-mono text-[11px] tracking-[0.12em] text-[var(--color-term-dim)] uppercase"
+					>
+						Signature · 128 hex
+					</dt>
+					<dd
+						class="mt-1.5 font-mono text-xs break-all text-[var(--color-term-prompt)]"
+					>
+						{EXAMPLE.signatureHex}
+					</dd>
+				</div>
+			</dl>
+		</div>
+	</section>
+
+	<section class="px-4 pb-12 sm:px-6">
+		<div class="mx-auto max-w-[760px]">
+			<h2 class="display-md">Good to know</h2>
+			<ul
+				class="text-body mt-5 flex list-disc flex-col gap-2 pl-5 leading-relaxed"
+			>
+				<li>
+					Verification proves both authenticity and integrity at once.
+				</li>
+				<li>You only need the public key — never the private key.</li>
+				<li>
+					Any change to the message or signature makes it invalid.
+				</li>
+			</ul>
+		</div>
+	</section>
+
+	<section class="px-4 pb-16 sm:px-6">
+		<div class="mx-auto max-w-[760px]">
+			<h2 class="display-md">FAQ</h2>
+			<div class="mt-5"><FaqAccordion faqs={faqs} /></div>
+		</div>
+	</section>
+
+	<RelatedTools current="verify" />
+</BaseLayout>

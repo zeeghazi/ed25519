@@ -50,6 +50,7 @@ src/consts.ts                                MODIFY: repoint footer "Tools" link
 ## Task 1: `howToJsonLd` builder
 
 **Files:**
+
 - Modify: `src/lib/seo.ts`
 
 - [ ] **Step 1: Append `howToJsonLd` after the existing `faqPageJsonLd` export** (keep tabs/single quotes/no semicolons):
@@ -95,6 +96,7 @@ git commit -m "feat: howToJsonLd structured-data builder"
 **Why:** The pages display a worked example. The values MUST actually verify (and never silently drift). We use the public **RFC 8032 §7.1 Test 2** vector. Its message is the single byte `0x72`, which is ASCII `'r'`; since the tool UTF-8-encodes the message, signing the text `"r"` in the live tool reproduces this exact signature. A unit test proves derive/sign/verify.
 
 **Files:**
+
 - Create: `src/lib/example-vector.ts`, `tests/example-vector.test.ts`
 
 - [ ] **Step 1: Write the failing test** — `tests/example-vector.test.ts`:
@@ -180,6 +182,7 @@ git commit -m "feat: RFC 8032 worked-example vector + verifying test (TDD)"
 ## Task 3: Extract `ConsoleFrame` + refactor `ToolSection` (behavior-preserving)
 
 **Files:**
+
 - Create: `src/components/tool/ConsoleFrame.astro`
 - Modify: `src/components/tool/ToolSection.astro`
 
@@ -191,8 +194,7 @@ interface Props {
 	label?: string
 	class?: string
 }
-const { label = 'ed25519 — secure key toolkit', class: cls = '' } =
-	Astro.props
+const { label = 'ed25519 — secure key toolkit', class: cls = '' } = Astro.props
 ---
 
 <div
@@ -209,7 +211,8 @@ const { label = 'ed25519 — secure key toolkit', class: cls = '' } =
 			<span class="h-3 w-3 rounded-full bg-[#f5a623]/70"></span>
 			<span class="h-3 w-3 rounded-full bg-[#2dd4a8]/80"></span>
 		</div>
-		<span class="font-mono text-xs text-[var(--color-term-dim)]">{label}</span
+		<span class="font-mono text-xs text-[var(--color-term-dim)]"
+			>{label}</span
 		>
 		<span
 			class="ml-auto inline-flex items-center gap-1.5 font-mono text-[11px] tracking-wide text-[var(--color-term-dim)] uppercase"
@@ -306,11 +309,13 @@ git commit -m "refactor: extract ConsoleFrame from ToolSection (behavior-preserv
 **Why:** Outside the tabbed `ToolSection`, a panel must render visible (not `hidden`) and must not claim `role="tabpanel"`/`aria-labelledby` pointing at tab buttons that don't exist on the page.
 
 **Files:**
+
 - Modify: `src/components/tool/KeygenPanel.astro`, `src/components/tool/SignPanel.astro`, `src/components/tool/VerifyPanel.astro`
 
 - [ ] **Step 1: `KeygenPanel.astro`** — add the prop and apply it to the wrapper. Change the frontmatter and the opening `<div>`:
 
 Frontmatter (replace the existing `---` block):
+
 ```astro
 ---
 import Button from '../ui/Button.astro'
@@ -323,17 +328,20 @@ const { standalone = false } = Astro.props
 ```
 
 Opening wrapper (replace `<div data-panel="generate" role="tabpanel" aria-labelledby="tab-generate">`):
+
 ```astro
 <div
 	data-panel="generate"
 	role={standalone ? undefined : 'tabpanel'}
 	aria-labelledby={standalone ? undefined : 'tab-generate'}
 >
+</div>
 ```
 
 - [ ] **Step 2: `SignPanel.astro`** — same pattern, but this panel also carries `hidden` in tabbed mode.
 
 Frontmatter:
+
 ```astro
 ---
 import Button from '../ui/Button.astro'
@@ -346,6 +354,7 @@ const { standalone = false } = Astro.props
 ```
 
 Opening wrapper (replace `<div data-panel="sign" role="tabpanel" aria-labelledby="tab-sign" hidden>`):
+
 ```astro
 <div
 	data-panel="sign"
@@ -353,11 +362,13 @@ Opening wrapper (replace `<div data-panel="sign" role="tabpanel" aria-labelledby
 	aria-labelledby={standalone ? undefined : 'tab-sign'}
 	hidden={standalone ? undefined : true}
 >
+</div>
 ```
 
 - [ ] **Step 3: `VerifyPanel.astro`** — same.
 
 Frontmatter:
+
 ```astro
 ---
 import Button from '../ui/Button.astro'
@@ -370,6 +381,7 @@ const { standalone = false } = Astro.props
 ```
 
 Opening wrapper (replace `<div data-panel="verify" role="tabpanel" aria-labelledby="tab-verify" hidden>`):
+
 ```astro
 <div
 	data-panel="verify"
@@ -377,6 +389,7 @@ Opening wrapper (replace `<div data-panel="verify" role="tabpanel" aria-labelled
 	aria-labelledby={standalone ? undefined : 'tab-verify'}
 	hidden={standalone ? undefined : true}
 >
+</div>
 ```
 
 - [ ] **Step 4: Build and verify the home tool still behaves**
@@ -399,6 +412,7 @@ git commit -m "feat: standalone prop on Keygen/Sign/Verify panels"
 **Why:** Each tool page has a mini-FAQ; `faq.astro` already has the accordion markup. Extract it so all four pages share one component (DRY).
 
 **Files:**
+
 - Create: `src/components/ui/FaqAccordion.astro`
 - Modify: `src/pages/faq.astro`
 
@@ -434,11 +448,11 @@ const { faqs } = Astro.props
 - [ ] **Step 2: Refactor `faq.astro`** — import the component and replace the inline `<div class="divide-hairline …">…</div>` block (the accordion) with `<FaqAccordion faqs={faqs} />`. Add `import FaqAccordion from '../components/ui/FaqAccordion.astro'` to the frontmatter. The FAQ section body becomes:
 
 ```astro
-	<section class="px-4 pb-24 sm:px-6">
-		<div class="mx-auto max-w-[760px]">
-			<FaqAccordion faqs={faqs} />
-		</div>
-	</section>
+<section class="px-4 pb-24 sm:px-6">
+	<div class="mx-auto max-w-[760px]">
+		<FaqAccordion faqs={faqs} />
+	</div>
+</section>
 ```
 
 (The `faqs` array and `faqPageJsonLd(faqs)` in `faq.astro` stay as-is.)
@@ -461,27 +475,33 @@ git commit -m "refactor: extract FaqAccordion, reuse in faq page"
 ## Task 6: `check` illustration + `RelatedTools` cross-links component
 
 **Files:**
+
 - Modify: `src/components/ui/Illustration.astro`
 - Create: `src/components/sections/RelatedTools.astro`
 
 - [ ] **Step 1: Add a `check` illustration.** In `Illustration.astro`, extend the `name` union and add the branch.
 
 Change the Props union to include `check`:
+
 ```ts
-	name: 'private' | 'fast' | 'standards' | 'mail' | 'chat' | 'check'
+name: 'private' | 'fast' | 'standards' | 'mail' | 'chat' | 'check'
 ```
 
 Add this block immediately before the closing `</svg>`:
+
 ```astro
-	{
-		name === 'check' && (
-			<>
-				<circle cx="60" cy="54" r="30" />
-				<path class="text-hairline-strong" d="M46 84 40 104 60 96 80 104 74 84" />
-				<path d="M47 55 56 64 74 44" stroke={accent} />
-			</>
-		)
-	}
+{
+	name === 'check' && (
+		<>
+			<circle cx="60" cy="54" r="30" />
+			<path
+				class="text-hairline-strong"
+				d="M46 84 40 104 60 96 80 104 74 84"
+			/>
+			<path d="M47 55 56 64 74 44" stroke={accent} />
+		</>
+	)
+}
 ```
 
 - [ ] **Step 2: Create `src/components/sections/RelatedTools.astro`** (links to the other two tool pages + the most relevant blog post; `current` hides the page you're on):
@@ -543,7 +563,8 @@ const tools = [
 			New to Ed25519? Start with
 			<a
 				href="/blog/what-is-ed25519/"
-				class="text-link underline underline-offset-2">the plain-English guide</a
+				class="text-link underline underline-offset-2"
+				>the plain-English guide</a
 			>.
 		</p>
 	</div>
@@ -568,6 +589,7 @@ git commit -m "feat: check illustration + RelatedTools cross-links component"
 ## Task 7: Key generator page — `/ed25519-key-generator`
 
 **Files:**
+
 - Create: `src/pages/ed25519-key-generator.astro`
 
 - [ ] **Step 1: Implement the page:**
@@ -638,12 +660,7 @@ const jsonLd = [
 ]
 ---
 
-<BaseLayout
-	title={title}
-	description={description}
-	path={path}
-	jsonLd={jsonLd}
->
+<BaseLayout title={title} description={description} path={path} jsonLd={jsonLd}>
 	<PageHeader
 		title="Ed25519 key generator"
 		lead="Create a fresh Ed25519 keypair in your browser. The private key is generated locally and never leaves this page."
@@ -719,14 +736,16 @@ const jsonLd = [
 			<ul
 				class="text-body mt-5 flex list-disc flex-col gap-2 pl-5 leading-relaxed"
 			>
-				<li>Keys are 32 bytes each, shown as 64 hexadecimal characters.</li>
 				<li>
-					Generation uses the operating system’s secure random source via
-					WebCrypto.
+					Keys are 32 bytes each, shown as 64 hexadecimal characters.
 				</li>
 				<li>
-					Nothing is stored or transmitted — reload the page and the keys
-					are gone unless you copied them.
+					Generation uses the operating system’s secure random source
+					via WebCrypto.
+				</li>
+				<li>
+					Nothing is stored or transmitted — reload the page and the
+					keys are gone unless you copied them.
 				</li>
 			</ul>
 		</div>
@@ -766,6 +785,7 @@ git commit -m "feat: /ed25519-key-generator page (embedded tool + HowTo/FAQ data
 ## Task 8: Sign message page — `/ed25519-sign-message`
 
 **Files:**
+
 - Create: `src/pages/ed25519-sign-message.astro`
 
 - [ ] **Step 1: Implement the page:**
@@ -823,7 +843,11 @@ const faqs = [
 
 const jsonLd = [
 	webApplicationJsonLd(),
-	howToJsonLd({ name: 'How to sign a message with Ed25519', description, steps }),
+	howToJsonLd({
+		name: 'How to sign a message with Ed25519',
+		description,
+		steps,
+	}),
 	faqPageJsonLd(faqs),
 	breadcrumbJsonLd([
 		{ name: 'Home', path: '/' },
@@ -832,12 +856,7 @@ const jsonLd = [
 ]
 ---
 
-<BaseLayout
-	title={title}
-	description={description}
-	path={path}
-	jsonLd={jsonLd}
->
+<BaseLayout title={title} description={description} path={path} jsonLd={jsonLd}>
 	<PageHeader
 		title="Sign a message with Ed25519"
 		lead="Produce an EdDSA signature with your private key — entirely in your browser."
@@ -873,8 +892,8 @@ const jsonLd = [
 				Sign the message <code
 					class="bg-canvas-soft-2 text-ink rounded-[4px] px-1.5 py-0.5 font-mono text-sm"
 					>{EXAMPLE.message}</code
-				> with the private key below and you get exactly this signature
-				(an RFC 8032 test vector — try it in the tool above).
+				> with the private key below and you get exactly this signature (an
+				RFC 8032 test vector — try it in the tool above).
 			</p>
 			<dl class="mt-5 flex flex-col gap-3">
 				<div
@@ -917,8 +936,8 @@ const jsonLd = [
 			>
 				<li>The signature is 64 bytes (128 hex characters).</li>
 				<li>
-					Change one character of the message and the signature changes
-					completely.
+					Change one character of the message and the signature
+					changes completely.
 				</li>
 				<li>The private key never leaves your browser.</li>
 			</ul>
@@ -958,6 +977,7 @@ git commit -m "feat: /ed25519-sign-message page (embedded tool + HowTo/FAQ data)
 ## Task 9: Verify signature page — `/ed25519-verify-signature`
 
 **Files:**
+
 - Create: `src/pages/ed25519-verify-signature.astro`
 
 - [ ] **Step 1: Implement the page:**
@@ -1028,12 +1048,7 @@ const jsonLd = [
 ]
 ---
 
-<BaseLayout
-	title={title}
-	description={description}
-	path={path}
-	jsonLd={jsonLd}
->
+<BaseLayout title={title} description={description} path={path} jsonLd={jsonLd}>
 	<PageHeader
 		title="Verify an Ed25519 signature"
 		lead="Check a signature against the original message and a public key — all in your browser."
@@ -1112,9 +1127,13 @@ const jsonLd = [
 			<ul
 				class="text-body mt-5 flex list-disc flex-col gap-2 pl-5 leading-relaxed"
 			>
-				<li>Verification proves both authenticity and integrity at once.</li>
+				<li>
+					Verification proves both authenticity and integrity at once.
+				</li>
 				<li>You only need the public key — never the private key.</li>
-				<li>Any change to the message or signature makes it invalid.</li>
+				<li>
+					Any change to the message or signature makes it invalid.
+				</li>
 			</ul>
 		</div>
 	</section>
@@ -1152,6 +1171,7 @@ git commit -m "feat: /ed25519-verify-signature page (embedded tool + HowTo/FAQ d
 ## Task 10: Repoint the footer "Tools" links
 
 **Files:**
+
 - Modify: `src/consts.ts`
 
 - [ ] **Step 1: Update the `FOOTER_SECTIONS` "Tools" section** so its links point to the new pages instead of home anchors. Replace the three links in the `title: 'Tools'` block with:
@@ -1195,10 +1215,12 @@ Expected: install clean; `check` `0 errors` (3 hints OK); all unit tests pass (P
 - [ ] **Step 2: Routes + sitemap**
 
 Confirm the three pages built and are in the sitemap:
+
 ```bash
 ls dist/client/ed25519-key-generator/index.html dist/client/ed25519-sign-message/index.html dist/client/ed25519-verify-signature/index.html
 grep -oE '<loc>[^<]+</loc>' dist/client/sitemap-0.xml | grep ed25519-
 ```
+
 Expected: all three HTML files exist; the sitemap lists all three URLs. Confirm `/api/contact` is still absent from the sitemap.
 
 - [ ] **Step 3: Structured data sanity**
@@ -1208,6 +1230,7 @@ for p in ed25519-key-generator ed25519-sign-message ed25519-verify-signature; do
 	echo "$p: HowTo=$(grep -c HowTo dist/client/$p/index.html) FAQPage=$(grep -c FAQPage dist/client/$p/index.html) Breadcrumb=$(grep -c BreadcrumbList dist/client/$p/index.html)"
 done
 ```
+
 Expected: each page → HowTo ≥ 1, FAQPage ≥ 1, BreadcrumbList ≥ 1.
 
 - [ ] **Step 4: Home tool regression**
@@ -1239,4 +1262,7 @@ The three keyword-rich tool pages are live: each embeds the working client-side 
 - **Type consistency:** `EXAMPLE` (T2) fields (`privateKeyHex`/`publicKeyHex`/`message`/`signatureHex`) are consumed verbatim in T7/T8/T9; `howToJsonLd({name,description,steps:[{name,text}]})` (T1) matches its callers; `RelatedTools` `current: 'generate'|'sign'|'verify'` (T6) matches the three page calls; the panels' `standalone?: boolean` (T4) matches `<…Panel standalone />` usage.
 - **Behavior-preserving refactors:** T3 keeps the `ToolSection` `<script>` untouched and re-verifies the home tabs/title bar; T4 keeps tabbed `hidden`/`role` via the `standalone` ternary and re-verifies; T5 keeps `faq.astro`'s `faqs` + `faqPageJsonLd` and re-verifies the 7 `<details>` + FAQPage.
 - **No placeholders:** every page is full content; the worked-example hex is a real RFC 8032 vector locked by the T2 test (with an explicit "library output is authoritative" correction path if a constant is off).
+
+```
+
 ```
