@@ -2,28 +2,134 @@
 import KeygenPanel from './KeygenPanel.astro'
 import SignPanel from './SignPanel.astro'
 import VerifyPanel from './VerifyPanel.astro'
-import Badge from '../ui/Badge.astro'
-import Icon from '../ui/Icon.astro'
+
+const tabs = [
+	{ id: 'generate', label: 'generate' },
+	{ id: 'sign', label: 'sign' },
+	{ id: 'verify', label: 'verify' },
+] as const
 ---
 
-<section
-	id="tool"
-	class="mx-auto max-w-[1200px] scroll-mt-20 px-4 py-16 sm:px-6"
->
-	<div class="mx-auto max-w-2xl text-center">
-		<Badge>RFC 8032 · EdDSA</Badge>
-		<h2 class="display-lg mt-4">The complete Ed25519 workflow.</h2>
-		<p class="text-body mt-3 inline-flex items-center gap-2 text-sm">
-			<Icon name="shield" class="h-4 w-4" /> Everything runs in your browser.
-			Keys never leave your device.
+<section id="tool" class="relative scroll-mt-20 px-4 pb-8 sm:px-6">
+	<div class="mx-auto max-w-[940px]">
+		<div
+			class="console-shadow overflow-hidden rounded-[10px] border border-[var(--color-term-border)] bg-[var(--color-term-bg)]"
+		>
+			<!-- Title bar -->
+			<div
+				class="flex h-11 items-center gap-3 border-b border-[var(--color-term-border)] bg-[var(--color-term-bg-2)] px-4"
+			>
+				<div class="flex items-center gap-2" aria-hidden="true">
+					<span class="h-3 w-3 rounded-full bg-[#ff6b81]/70"></span>
+					<span class="h-3 w-3 rounded-full bg-[#f5a623]/70"></span>
+					<span class="h-3 w-3 rounded-full bg-[#2dd4a8]/80"></span>
+				</div>
+				<span class="font-mono text-xs text-[var(--color-term-dim)]"
+					>ed25519 — secure key toolkit</span
+				>
+				<span
+					class="ml-auto inline-flex items-center gap-1.5 font-mono text-[11px] tracking-wide text-[var(--color-term-dim)] uppercase"
+				>
+					<span
+						class="h-1.5 w-1.5 rounded-full bg-[var(--color-term-prompt)]"
+					></span>
+					client-side
+				</span>
+			</div>
+
+			<!-- Tabs -->
+			<div
+				role="tablist"
+				aria-label="Ed25519 tools"
+				class="flex border-b border-[var(--color-term-border)] bg-[var(--color-term-bg-2)]/40"
+			>
+				{
+					tabs.map((t, i) => (
+						<button
+							role="tab"
+							id={`tab-${t.id}`}
+							data-tab={t.id}
+							aria-selected={i === 0 ? 'true' : 'false'}
+							aria-controls={t.id}
+							class="inline-flex h-10 items-center border-r border-[var(--color-term-border)] px-4 font-mono text-xs tracking-wide text-[var(--color-term-dim)] transition-colors hover:text-[var(--color-term-fg)] aria-selected:bg-[var(--color-term-bg)] aria-selected:text-[var(--color-term-fg)] aria-selected:shadow-[inset_0_-2px_0_0_var(--color-term-prompt)]"
+						>
+							{t.label}
+						</button>
+					))
+				}
+			</div>
+
+			<!-- Panels -->
+			<div class="p-5 sm:p-7">
+				<KeygenPanel />
+				<SignPanel />
+				<VerifyPanel />
+			</div>
+		</div>
+
+		<p
+			class="text-mute mt-3 text-center font-mono text-[11px] tracking-wide"
+		>
+			RFC 8032 · EdDSA · built on @noble/ed25519 — keys never leave your
+			browser
 		</p>
 	</div>
-
-	<div class="mt-10 grid gap-6">
-		<KeygenPanel />
-		<div class="grid gap-6 lg:grid-cols-2">
-			<SignPanel />
-			<VerifyPanel />
-		</div>
-	</div>
 </section>
+
+<script>
+	const tablist = document.querySelector<HTMLElement>('[role="tablist"]')
+	const tabEls = Array.from(
+		document.querySelectorAll<HTMLButtonElement>('[role="tab"]')
+	)
+	const panels = Array.from(
+		document.querySelectorAll<HTMLElement>('[data-panel]')
+	)
+
+	function activate(name: string, focus = false) {
+		if (!tabEls.some((t) => t.dataset.tab === name)) return
+		tabEls.forEach((t) => {
+			const selected = t.dataset.tab === name
+			t.setAttribute('aria-selected', String(selected))
+			if (selected && focus) t.focus()
+		})
+		panels.forEach((p) => {
+			p.hidden = p.dataset.panel !== name
+		})
+	}
+
+	tabEls.forEach((t) => {
+		t.addEventListener('click', () => activate(t.dataset.tab as string))
+	})
+
+	// Roving arrow-key navigation across the tablist.
+	tablist?.addEventListener('keydown', (e) => {
+		const i = tabEls.findIndex(
+			(t) => t.getAttribute('aria-selected') === 'true'
+		)
+		if (e.key === 'ArrowRight')
+			activate(
+				tabEls[(i + 1) % tabEls.length].dataset.tab as string,
+				true
+			)
+		if (e.key === 'ArrowLeft')
+			activate(
+				tabEls[(i - 1 + tabEls.length) % tabEls.length].dataset
+					.tab as string,
+				true
+			)
+	})
+
+	// Deep links: footer/nav anchors (#keygen/#sign/#verify) select a tab.
+	const hashToTab: Record<string, string> = {
+		'#keygen': 'generate',
+		'#generate': 'generate',
+		'#sign': 'sign',
+		'#verify': 'verify',
+	}
+	function syncFromHash() {
+		const tab = hashToTab[window.location.hash]
+		if (tab) activate(tab)
+	}
+	syncFromHash()
+	window.addEventListener('hashchange', syncFromHash)
+</script>

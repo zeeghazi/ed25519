@@ -1,15 +1,13 @@
 ---
-import Card from '../ui/Card.astro'
 import Button from '../ui/Button.astro'
-import Icon from '../ui/Icon.astro'
 ---
 
-<Card id="verify" class="scroll-mt-24">
-	<div class="flex items-center gap-2">
-		<Icon name="verify" class="text-ink h-5 w-5" />
-		<h3 class="display-md">Verify a signature.</h3>
-	</div>
-	<p class="text-body mt-2 text-sm">
+<div data-panel="verify" role="tabpanel" aria-labelledby="tab-verify" hidden>
+	<p class="font-mono text-xs text-[var(--color-term-dim)]">
+		<span class="text-[var(--color-term-prompt)]">$</span> ed25519 verify --pub
+		&lt;key&gt; --sig &lt;sig&gt;
+	</p>
+	<p class="mt-2 max-w-prose text-sm text-[var(--color-term-dim)]">
 		Check a signature against the original message and a public key.
 	</p>
 
@@ -17,53 +15,53 @@ import Icon from '../ui/Icon.astro'
 		<div>
 			<label
 				for="verify-message"
-				class="text-mute font-mono text-xs tracking-wide uppercase"
+				class="font-mono text-[11px] tracking-[0.12em] text-[var(--color-term-dim)] uppercase"
 				>Original message</label
 			>
 			<textarea
 				id="verify-message"
-				rows="4"
-				class="border-hairline bg-canvas text-ink focus:border-hairline-strong mt-1 w-full rounded-sm border p-3 font-mono text-sm focus:outline-none"
+				rows="3"
+				class="mt-1.5 w-full rounded-[4px] border border-[var(--color-term-border)] bg-[var(--color-term-bg-2)] p-3 font-mono text-sm text-[var(--color-term-fg)] placeholder:text-[var(--color-term-dim)] focus:border-[var(--color-term-accent)] focus:outline-none"
 				placeholder="The exact message that was signed…"></textarea>
 		</div>
 		<div>
 			<label
 				for="verify-public"
-				class="text-mute font-mono text-xs tracking-wide uppercase"
+				class="font-mono text-[11px] tracking-[0.12em] text-[var(--color-term-dim)] uppercase"
 				>Public key · 64 hex</label
 			>
 			<input
 				id="verify-public"
 				type="text"
-				class="border-hairline bg-canvas text-ink focus:border-hairline-strong mt-1 w-full rounded-sm border p-3 font-mono text-xs focus:outline-none"
+				class="mt-1.5 w-full rounded-[4px] border border-[var(--color-term-border)] bg-[var(--color-term-bg-2)] p-3 font-mono text-xs text-[var(--color-term-fg)] placeholder:text-[var(--color-term-dim)] focus:border-[var(--color-term-accent)] focus:outline-none"
 				placeholder="Paste the 64-hex public key…"
 			/>
 		</div>
 		<div>
 			<label
 				for="verify-signature"
-				class="text-mute font-mono text-xs tracking-wide uppercase"
+				class="font-mono text-[11px] tracking-[0.12em] text-[var(--color-term-dim)] uppercase"
 				>Signature · 128 hex</label
 			>
 			<textarea
 				id="verify-signature"
 				rows="2"
-				class="border-hairline bg-canvas text-ink focus:border-hairline-strong mt-1 w-full rounded-sm border p-3 font-mono text-xs focus:outline-none"
+				class="mt-1.5 w-full rounded-[4px] border border-[var(--color-term-border)] bg-[var(--color-term-bg-2)] p-3 font-mono text-xs text-[var(--color-term-fg)] placeholder:text-[var(--color-term-dim)] focus:border-[var(--color-term-accent)] focus:outline-none"
 				placeholder="Paste the 128-hex signature…"></textarea>
 		</div>
 	</div>
 
-	<Button id="verify-btn" variant="primary" class="mt-5"
+	<Button id="verify-btn" variant="prompt" class="mt-5"
 		>Verify signature</Button
 	>
 
 	<div
 		id="verify-result"
-		class="border-hairline bg-canvas-soft text-mute mt-6 rounded-md border p-4 font-mono text-sm"
+		class="mt-6 rounded-[4px] border border-[var(--color-term-border)] bg-[var(--color-term-bg-2)] p-4 font-mono text-sm text-[var(--color-term-dim)]"
 	>
-		Result will appear here…
+		<span class="text-[var(--color-term-dim)]">// awaiting input…</span>
 	</div>
-</Card>
+</div>
 
 <script>
 	import { verifySignature } from '../../lib/ed25519'
@@ -101,10 +99,10 @@ import Icon from '../ui/Icon.astro'
 					? '✓ VALID — signature matches.'
 					: '✗ INVALID — signature does not match.'
 				result.className =
-					'mt-6 rounded-md border p-4 font-mono text-sm ' +
+					'mt-6 rounded-[4px] border p-4 font-mono text-sm ' +
 					(ok
-						? 'border-success/40 bg-success/5 text-success'
-						: 'border-error/40 bg-error/5 text-error')
+						? 'border-[#2dd4a87a] bg-[#2dd4a814] text-[var(--color-term-prompt)]'
+						: 'border-[#ff6b817a] bg-[#ff6b8114] text-[var(--color-term-danger)]')
 			}
 			toast(
 				ok ? 'Signature valid' : 'Signature invalid',

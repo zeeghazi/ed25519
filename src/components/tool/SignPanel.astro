@@ -1,15 +1,13 @@
 ---
-import Card from '../ui/Card.astro'
 import Button from '../ui/Button.astro'
-import Icon from '../ui/Icon.astro'
 ---
 
-<Card id="sign" class="scroll-mt-24">
-	<div class="flex items-center gap-2">
-		<Icon name="sign" class="text-ink h-5 w-5" />
-		<h3 class="display-md">Sign a message.</h3>
-	</div>
-	<p class="text-body mt-2 text-sm">
+<div data-panel="sign" role="tabpanel" aria-labelledby="tab-sign" hidden>
+	<p class="font-mono text-xs text-[var(--color-term-dim)]">
+		<span class="text-[var(--color-term-prompt)]">$</span> ed25519 sign --key
+		&lt;priv&gt; --msg &lt;text&gt;
+	</p>
+	<p class="mt-2 max-w-prose text-sm text-[var(--color-term-dim)]">
 		Produce an EdDSA signature with your private key.
 	</p>
 
@@ -17,48 +15,57 @@ import Icon from '../ui/Icon.astro'
 		<div>
 			<label
 				for="sign-message"
-				class="text-mute font-mono text-xs tracking-wide uppercase"
+				class="font-mono text-[11px] tracking-[0.12em] text-[var(--color-term-dim)] uppercase"
 				>Message</label
 			>
 			<textarea
 				id="sign-message"
-				rows="4"
-				class="border-hairline bg-canvas text-ink focus:border-hairline-strong mt-1 w-full rounded-sm border p-3 font-mono text-sm focus:outline-none"
+				rows="3"
+				class="mt-1.5 w-full rounded-[4px] border border-[var(--color-term-border)] bg-[var(--color-term-bg-2)] p-3 font-mono text-sm text-[var(--color-term-fg)] placeholder:text-[var(--color-term-dim)] focus:border-[var(--color-term-accent)] focus:outline-none"
 				placeholder="Type a message to sign…"></textarea>
 		</div>
 		<div>
 			<label
 				for="sign-private"
-				class="text-mute font-mono text-xs tracking-wide uppercase"
+				class="font-mono text-[11px] tracking-[0.12em] text-[var(--color-term-dim)] uppercase"
 				>Private key · 64 hex</label
 			>
 			<input
 				id="sign-private"
 				type="text"
-				class="border-hairline bg-canvas text-ink focus:border-hairline-strong mt-1 w-full rounded-sm border p-3 font-mono text-xs focus:outline-none"
+				class="mt-1.5 w-full rounded-[4px] border border-[var(--color-term-border)] bg-[var(--color-term-bg-2)] p-3 font-mono text-xs text-[var(--color-term-fg)] placeholder:text-[var(--color-term-dim)] focus:border-[var(--color-term-accent)] focus:outline-none"
 				placeholder="Paste your 64-hex private key…"
 			/>
 		</div>
 	</div>
 
-	<Button id="sign-btn" variant="primary" class="mt-5">Sign message</Button>
+	<Button id="sign-btn" variant="prompt" class="mt-5">Sign message</Button>
 
 	<div class="mt-6">
-		<label class="text-mute font-mono text-xs tracking-wide uppercase"
+		<label
+			class="font-mono text-[11px] tracking-[0.12em] text-[var(--color-term-dim)] uppercase"
 			>Signature · 128 hex</label
 		>
 		<div
-			class="bg-ink text-on-primary mt-1 flex items-start gap-2 rounded-md p-3 font-mono text-xs"
+			class="mt-1.5 flex items-start gap-3 rounded-[4px] border border-[var(--color-term-border)] bg-[var(--color-term-bg-2)] p-3"
 		>
-			<output id="sign-output" class="block w-full break-all">—</output>
+			<span
+				class="mt-px shrink-0 font-mono text-xs text-[var(--color-term-prompt)]"
+				aria-hidden="true">sig</span
+			>
+			<output
+				id="sign-output"
+				class="block w-full font-mono text-xs break-all text-[var(--color-term-fg)]"
+				>—</output
+			>
 			<button
 				data-copy="#sign-output"
-				class="text-on-primary/70 hover:text-on-primary shrink-0"
+				class="shrink-0 font-mono text-[11px] text-[var(--color-term-dim)] uppercase hover:text-[var(--color-term-prompt)]"
 				aria-label="Copy signature">copy</button
 			>
 		</div>
 	</div>
-</Card>
+</div>
 
 <script>
 	import { signMessage } from '../../lib/ed25519'
