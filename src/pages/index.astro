@@ -10,35 +10,41 @@ import { webApplicationJsonLd, websiteJsonLd } from '../lib/seo'
 ---
 
 <BaseLayout path="/" jsonLd={[websiteJsonLd(), webApplicationJsonLd()]}>
-	<div class="relative">
-		<Hero />
-
+	<div class="relative isolate">
 		<!--
-			Content "sheet": sits above the pinned hero (z-10) and scrolls up to
-			cover it. Its top continues the hero's grid + glow so the tool reads
-			as floating on one continuous backdrop — no seam.
+			ONE continuous, pinned backdrop shared by the hero AND the tool. It
+			sticks to the top so the hero copy and the console scroll over the
+			same grid + glow — a single background with no seam. The opaque
+			content sheet below then rises and covers it.
 		-->
 		<div
-			class="bg-canvas-soft relative z-10 overflow-hidden rounded-t-[20px] shadow-[0_-28px_60px_-28px_rgba(0,0,0,0.28)]"
+			class="pointer-events-none sticky top-0 -z-10 h-[100svh] overflow-hidden"
+			aria-hidden="true"
 		>
+			<div class="grid-bg absolute inset-0"></div>
 			<div
-				class="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[720px]"
-				aria-hidden="true"
+				class="mesh-gradient absolute inset-x-0 top-0 h-[55%] opacity-15 blur-[90px]"
 			>
-				<div class="grid-bg absolute inset-0"></div>
-				<div
-					class="mesh-gradient absolute inset-x-0 top-0 h-[440px] opacity-15 blur-[90px]"
-				>
-				</div>
 			</div>
+		</div>
 
-			<div class="pt-12 sm:pt-14">
-				<ToolSection />
+		<!-- Pulled up to overlap the pinned backdrop. -->
+		<div class="-mt-[100svh]">
+			<Hero />
+			<ToolSection />
+
+			<!--
+				Opaque sheet: scrolls up over the pinned backdrop, covering it.
+				Rounded top + soft upward shadow give the "paper over hero" edge.
+			-->
+			<div
+				class="bg-canvas-soft relative z-10 mt-8 rounded-t-[22px] shadow-[0_-30px_60px_-30px_rgba(0,0,0,0.3)]"
+			>
+				<FeatureGrid />
+				<FaqTeaser />
+				<div class="px-4 pb-4 sm:px-6"><AdSlot /></div>
+				<CtaBand />
 			</div>
-			<FeatureGrid />
-			<FaqTeaser />
-			<div class="px-4 pb-4 sm:px-6"><AdSlot /></div>
-			<CtaBand />
 		</div>
 	</div>
 </BaseLayout>

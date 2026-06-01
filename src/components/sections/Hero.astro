@@ -5,22 +5,12 @@ const facts = ['no signup', 'no server', '100% client-side', 'open source']
 ---
 
 <!--
-	Pinned hero "stage": stays stuck at the top while the content sheet below
-	(tool + sections) scrolls up and covers it. The grid + brand glow continue
-	onto the sheet (see index.astro) so the backdrop reads as one gradient.
+	Hero content only. The continuous grid + glow backdrop it sits on is a single
+	pinned layer shared with the tool (see index.astro), so the two read as one
+	background. This block scrolls over that pinned backdrop.
 -->
-<section
-	class="sticky top-0 isolate z-0 flex min-h-[60vh] items-center overflow-hidden"
->
-	<!-- Engineering grid + soft brand glow, both faint, fading at the edges. -->
-	<div class="grid-bg absolute inset-0 -z-20" aria-hidden="true"></div>
-	<div
-		class="mesh-gradient absolute inset-x-0 top-0 -z-10 h-[460px] opacity-15 blur-[90px]"
-		aria-hidden="true"
-	>
-	</div>
-
-	<div class="mx-auto w-full max-w-[940px] px-4 py-14 text-center sm:px-6">
+<section class="flex min-h-[78svh] items-center">
+	<div class="mx-auto w-full max-w-[940px] px-4 py-16 text-center sm:px-6">
 		<Badge dot>client-side EdDSA toolkit</Badge>
 
 		<h1 class="display-xl mx-auto mt-5 max-w-3xl text-balance">
