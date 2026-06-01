@@ -31,6 +31,18 @@
 	--color-grad-ship-start: #ff4d4d;
 	--color-grad-ship-end: #f9cb28;
 
+	/* ---- Terminal surface — FIXED across light/dark (a real console). ----
+	   These intentionally do NOT live under .dark, so the tool's code surface
+	   stays a dark terminal in both themes instead of inverting with --ink. */
+	--color-term-bg: #0b0d12;
+	--color-term-bg-2: #12151c;
+	--color-term-fg: #e7e9ee;
+	--color-term-dim: #6b7280;
+	--color-term-border: #232833;
+	--color-term-prompt: #2dd4a8; /* green-teal $ prompt + success */
+	--color-term-accent: #4cc2ff; /* cyan active tab / focus */
+	--color-term-danger: #ff6b81; /* soft red invalid */
+
 	/* ---- Fonts ---- */
 	--font-sans: 'Geist Variable', Inter, system-ui, -apple-system, sans-serif;
 	--font-mono:
@@ -86,9 +98,17 @@
 		font-family: var(--font-sans);
 		-webkit-font-smoothing: antialiased;
 	}
+	/* Tailwind v4 / browser default leaves interactive controls as the text
+	   cursor; restore the expected pointer on anything clickable. */
+	button:not(:disabled),
+	[role='button']:not([aria-disabled='true']),
+	summary,
+	label[for] {
+		cursor: pointer;
+	}
 	::selection {
-		background-color: #171717;
-		color: #f2f2f2;
+		background-color: var(--color-term-prompt);
+		color: var(--color-term-bg);
 	}
 	@media (prefers-reduced-motion: reduce) {
 		*,
@@ -118,6 +138,61 @@
 	font-size: 24px;
 	line-height: 32px;
 	letter-spacing: -0.96px;
+}
+
+/* Blinking block caret for the terminal prompt. */
+@keyframes term-blink {
+	0%,
+	49% {
+		opacity: 1;
+	}
+	50%,
+	100% {
+		opacity: 0;
+	}
+}
+@utility term-caret {
+	display: inline-block;
+	width: 0.6em;
+	height: 1.05em;
+	margin-left: 0.1em;
+	vertical-align: text-bottom;
+	background-color: var(--color-term-prompt);
+	animation: term-blink 1.1s steps(1) infinite;
+}
+
+/* Faint engineering grid — section atmosphere, masked to fade at edges. */
+@utility grid-bg {
+	background-image:
+		linear-gradient(
+			to right,
+			color-mix(in srgb, var(--color-hairline) 70%, transparent) 1px,
+			transparent 1px
+		),
+		linear-gradient(
+			to bottom,
+			color-mix(in srgb, var(--color-hairline) 70%, transparent) 1px,
+			transparent 1px
+		);
+	background-size: 38px 38px;
+	-webkit-mask-image: radial-gradient(
+		ellipse 80% 70% at 50% 0%,
+		#000 40%,
+		transparent 100%
+	);
+	mask-image: radial-gradient(
+		ellipse 80% 70% at 50% 0%,
+		#000 40%,
+		transparent 100%
+	);
+}
+
+/* Depth shadow for the console window (works on the fixed-dark surface). */
+@utility console-shadow {
+	box-shadow:
+		0 1px 0 0 #ffffff0d inset,
+		0 30px 60px -20px #00000080,
+		0 12px 24px -12px #00000066;
 }
 
 /* Brand mesh gradient — hero scale only. Never miniaturise (DESIGN.md). */

@@ -1,11 +1,18 @@
 ---
 interface Props {
 	class?: string
+	dot?: boolean
 }
-const { class: cls = '' } = Astro.props
+const { class: cls = '', dot = false } = Astro.props
 ---
 
 <span
-	class={`inline-flex items-center rounded-full bg-canvas-soft px-2 py-0.5 font-mono text-xs text-body ${cls}`}
-	><slot /></span
+	class={`inline-flex items-center gap-1.5 rounded-[4px] border border-hairline bg-canvas px-2 py-0.5 font-mono text-[11px] uppercase tracking-[0.12em] text-body ${cls}`}
 >
+	{
+		dot && (
+			<span class="h-1.5 w-1.5 rounded-full bg-[var(--color-term-prompt)]" />
+		)
+	}
+	<slot />
+</span>

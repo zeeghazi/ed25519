@@ -13,4 +13,9 @@ const shadow = {
 }[elevation]
 ---
 
-<div id={id} class={`rounded-md bg-canvas p-6 ${shadow} ${cls}`}><slot /></div>
+<div
+	id={id}
+	class={`rounded-[6px] border border-hairline bg-canvas p-6 ${shadow} ${cls}`}
+>
+	<slot />
+</div>
