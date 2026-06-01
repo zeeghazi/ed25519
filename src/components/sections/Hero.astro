@@ -4,18 +4,23 @@ import Badge from '../ui/Badge.astro'
 const facts = ['no signup', 'no server', '100% client-side', 'open source']
 ---
 
-<section class="relative isolate overflow-hidden">
+<!--
+	Pinned hero "stage": stays stuck at the top while the content sheet below
+	(tool + sections) scrolls up and covers it. The grid + brand glow continue
+	onto the sheet (see index.astro) so the backdrop reads as one gradient.
+-->
+<section
+	class="sticky top-0 isolate z-0 flex min-h-[60vh] items-center overflow-hidden"
+>
 	<!-- Engineering grid + soft brand glow, both faint, fading at the edges. -->
 	<div class="grid-bg absolute inset-0 -z-20" aria-hidden="true"></div>
 	<div
-		class="mesh-gradient absolute inset-x-0 top-0 -z-10 h-[380px] opacity-15 blur-[90px]"
+		class="mesh-gradient absolute inset-x-0 top-0 -z-10 h-[460px] opacity-15 blur-[90px]"
 		aria-hidden="true"
 	>
 	</div>
 
-	<div
-		class="mx-auto max-w-[940px] px-4 pt-14 pb-9 text-center sm:px-6 md:pt-20"
-	>
+	<div class="mx-auto w-full max-w-[940px] px-4 py-14 text-center sm:px-6">
 		<Badge dot>client-side EdDSA toolkit</Badge>
 
 		<h1 class="display-xl mx-auto mt-5 max-w-3xl text-balance">

@@ -10,10 +10,35 @@ import { webApplicationJsonLd, websiteJsonLd } from '../lib/seo'
 ---
 
 <BaseLayout path="/" jsonLd={[websiteJsonLd(), webApplicationJsonLd()]}>
-	<Hero />
-	<ToolSection />
-	<FeatureGrid />
-	<FaqTeaser />
-	<div class="px-4 pb-4 sm:px-6"><AdSlot /></div>
-	<CtaBand />
+	<div class="relative">
+		<Hero />
+
+		<!--
+			Content "sheet": sits above the pinned hero (z-10) and scrolls up to
+			cover it. Its top continues the hero's grid + glow so the tool reads
+			as floating on one continuous backdrop — no seam.
+		-->
+		<div
+			class="bg-canvas-soft relative z-10 overflow-hidden rounded-t-[20px] shadow-[0_-28px_60px_-28px_rgba(0,0,0,0.28)]"
+		>
+			<div
+				class="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[720px]"
+				aria-hidden="true"
+			>
+				<div class="grid-bg absolute inset-0"></div>
+				<div
+					class="mesh-gradient absolute inset-x-0 top-0 h-[440px] opacity-15 blur-[90px]"
+				>
+				</div>
+			</div>
+
+			<div class="pt-12 sm:pt-14">
+				<ToolSection />
+			</div>
+			<FeatureGrid />
+			<FaqTeaser />
+			<div class="px-4 pb-4 sm:px-6"><AdSlot /></div>
+			<CtaBand />
+		</div>
+	</div>
 </BaseLayout>
