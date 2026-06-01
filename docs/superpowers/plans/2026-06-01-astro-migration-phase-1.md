@@ -1456,7 +1456,8 @@ import Button from '../ui/Button.astro'
 			<ThemeToggle />
 			<div class="hidden md:block">
 				<Button href="/#tool" variant="primary" class="h-9 px-4 text-sm"
-					>Open tool</Button>
+					>Open tool</Button
+				>
 			</div>
 			<button
 				id="nav-open"
