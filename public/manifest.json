@@ -1,21 +1,17 @@
 {
-	"name": "Ed25519 Crypto Suite - Digital Signature Tools",
-	"short_name": "Ed25519 Suite",
-	"description": "Professional Ed25519 cryptographic tools for key generation, message signing, and signature verification",
+	"name": "Ed25519.com — Generate, Sign & Verify",
+	"short_name": "Ed25519",
+	"description": "Free in-browser Ed25519 tools: generate keypairs, sign messages, and verify signatures.",
+	"start_url": "/",
+	"display": "standalone",
+	"background_color": "#0a0a0a",
+	"theme_color": "#0a0a0a",
 	"icons": [
-		{
-			"src": "/favicon.svg",
-			"sizes": "any",
-			"type": "image/svg+xml"
-		},
+		{ "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" },
 		{
 			"src": "/apple-touch-icon.png",
 			"sizes": "180x180",
 			"type": "image/png"
 		}
-	],
-	"start_url": "https://ed25519.com/",
-	"display": "standalone",
-	"theme_color": "#1a1a1a",
-	"background_color": "#111827"
+	]
 }
