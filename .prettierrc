@@ -1,8 +1,9 @@
 {
-  "plugins": ["prettier-plugin-tailwindcss"],
+  "plugins": ["prettier-plugin-astro", "prettier-plugin-tailwindcss"],
   "semi": false,
   "singleQuote": true,
   "trailingComma": "es5",
   "useTabs": true,
-  "tabWidth": 4
+  "tabWidth": 4,
+  "overrides": [{ "files": "*.astro", "options": { "parser": "astro" } }]
 }

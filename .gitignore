@@ -9,7 +9,9 @@ lerna-debug.log*
 
 node_modules
 pnpm-lock.yaml
+dist
 dist-ssr
+.astro
 *.local
 
 # Editor directories and files
