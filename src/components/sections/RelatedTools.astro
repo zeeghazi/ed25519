@@ -1,0 +1,62 @@
+---
+interface Props {
+	current: 'generate' | 'sign' | 'verify'
+}
+const { current } = Astro.props
+
+const tools = [
+	{
+		key: 'generate',
+		label: 'Key generator',
+		href: '/ed25519-key-generator',
+		blurb: 'Create a fresh Ed25519 keypair in your browser.',
+	},
+	{
+		key: 'sign',
+		label: 'Sign a message',
+		href: '/ed25519-sign-message',
+		blurb: 'Produce a signature with your private key.',
+	},
+	{
+		key: 'verify',
+		label: 'Verify a signature',
+		href: '/ed25519-verify-signature',
+		blurb: 'Check a signature against a public key.',
+	},
+].filter((t) => t.key !== current)
+---
+
+<section class="px-4 pb-24 sm:px-6">
+	<div class="mx-auto max-w-[760px]">
+		<h2 class="text-ink text-lg font-semibold tracking-tight">
+			Explore the rest of the toolkit
+		</h2>
+		<div
+			class="border-hairline bg-hairline mt-4 grid gap-px overflow-hidden rounded-[8px] border sm:grid-cols-2"
+		>
+			{
+				tools.map((t) => (
+					<a
+						href={t.href}
+						class="bg-canvas hover:bg-canvas-soft group flex flex-col p-6 transition-colors"
+					>
+						<span class="text-ink font-semibold tracking-tight group-hover:underline">
+							{t.label}
+						</span>
+						<span class="text-body mt-1.5 text-sm leading-relaxed">
+							{t.blurb}
+						</span>
+					</a>
+				))
+			}
+		</div>
+		<p class="text-mute mt-4 text-sm">
+			New to Ed25519? Start with
+			<a
+				href="/blog/what-is-ed25519/"
+				class="text-link underline underline-offset-2"
+				>the plain-English guide</a
+			>.
+		</p>
+	</div>
+</section>
