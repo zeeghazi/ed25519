@@ -15,6 +15,10 @@
 	"compatibility_date": "2026-06-01",
 	"compatibility_flags": ["nodejs_compat"],
 	"assets": { "directory": "./dist/client", "binding": "ASSETS" },
+	// Recipient for the contact form, read at runtime as env.CONTACT_TO_EMAIL.
+	// Shipped in-config (not a dashboard var) so it survives every `wrangler deploy`,
+	// which otherwise resets plain-text vars. Must match the send_email destination.
+	"vars": { "CONTACT_TO_EMAIL": "zeeshan.ghazi49@gmail.com" },
 	"send_email": [
 		{ "name": "SEB", "destination_address": "zeeshan.ghazi49@gmail.com" },
 	],
