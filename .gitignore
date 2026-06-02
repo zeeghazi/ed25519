@@ -15,6 +15,15 @@ dist-ssr
 .wrangler
 *.local
 
+# Local env files — never commit (real values live here + in the host build env)
+.env
+.env.*
+!.env.example
+
+# Generated Open Graph images (rebuilt by scripts/generate-og.ts on every build)
+public/og/*
+!public/og/default.png
+
 # Editor directories and files
 !.vscode/extensions.json
 .idea

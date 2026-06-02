@@ -63,16 +63,22 @@ const jsonLd = [
 ]
 ---
 
-<BaseLayout title={title} description={description} path={path} jsonLd={jsonLd}>
+<BaseLayout
+	title={title}
+	description={description}
+	path={path}
+	ogImage="/og/ed25519-key-generator.png"
+	jsonLd={jsonLd}
+>
 	<PageHeader
 		title="Ed25519 key generator"
 		lead="Create a fresh Ed25519 keypair in your browser. The private key is generated locally and never leaves this page."
-		width="narrow"
+		width="wide"
 		illustration="private"
 	/>
 
 	<section class="px-4 pb-12 sm:px-6">
-		<div class="mx-auto max-w-[760px]">
+		<div class="mx-auto max-w-[1200px]">
 			<ConsoleFrame label="ed25519 — key generator">
 				<div class="p-5 sm:p-7">
 					<KeygenPanel standalone />
@@ -82,7 +88,7 @@ const jsonLd = [
 	</section>
 
 	<section class="px-4 pb-4 sm:px-6">
-		<div class="mx-auto max-w-[760px]">
+		<div class="mx-auto max-w-[1200px]">
 			<h2 class="display-lg">How to generate a keypair</h2>
 			<ol
 				class="text-body mt-5 flex list-decimal flex-col gap-3 pl-5 leading-relaxed"
@@ -93,7 +99,7 @@ const jsonLd = [
 	</section>
 
 	<section class="px-4 py-12 sm:px-6">
-		<div class="mx-auto max-w-[760px]">
+		<div class="mx-auto max-w-[1200px]">
 			<h2 class="display-lg">Worked example</h2>
 			<p class="text-body mt-4 leading-relaxed">
 				A real keypair from the RFC 8032 test vectors. The public key is
@@ -134,7 +140,7 @@ const jsonLd = [
 	</section>
 
 	<section class="px-4 pb-12 sm:px-6">
-		<div class="mx-auto max-w-[760px]">
+		<div class="mx-auto max-w-[1200px]">
 			<h2 class="display-lg">Good to know</h2>
 			<ul
 				class="text-body mt-5 flex list-disc flex-col gap-2 pl-5 leading-relaxed"
@@ -150,12 +156,21 @@ const jsonLd = [
 					Nothing is stored or transmitted — reload the page and the
 					keys are gone unless you copied them.
 				</li>
+				<li>
+					Need an <strong>SSH</strong> key? Generate it locally with ssh-keygen
+					instead — see the
+					<a
+						href="/ed25519-ssh-key"
+						class="text-link underline underline-offset-2"
+						>Ed25519 SSH key guide</a
+					>.
+				</li>
 			</ul>
 		</div>
 	</section>
 
 	<section class="px-4 pb-16 sm:px-6">
-		<div class="mx-auto max-w-[760px]">
+		<div class="mx-auto max-w-[1200px]">
 			<h2 class="display-lg">FAQ</h2>
 			<div class="mt-5"><FaqAccordion faqs={faqs} /></div>
 		</div>

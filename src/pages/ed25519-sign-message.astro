@@ -63,16 +63,22 @@ const jsonLd = [
 ]
 ---
 
-<BaseLayout title={title} description={description} path={path} jsonLd={jsonLd}>
+<BaseLayout
+	title={title}
+	description={description}
+	path={path}
+	ogImage="/og/ed25519-sign-message.png"
+	jsonLd={jsonLd}
+>
 	<PageHeader
 		title="Sign a message with Ed25519"
 		lead="Produce an EdDSA signature with your private key — entirely in your browser."
-		width="narrow"
+		width="wide"
 		illustration="standards"
 	/>
 
 	<section class="px-4 pb-12 sm:px-6">
-		<div class="mx-auto max-w-[760px]">
+		<div class="mx-auto max-w-[1200px]">
 			<ConsoleFrame label="ed25519 — sign">
 				<div class="p-5 sm:p-7">
 					<SignPanel standalone />
@@ -82,7 +88,7 @@ const jsonLd = [
 	</section>
 
 	<section class="px-4 pb-4 sm:px-6">
-		<div class="mx-auto max-w-[760px]">
+		<div class="mx-auto max-w-[1200px]">
 			<h2 class="display-lg">How to sign a message</h2>
 			<ol
 				class="text-body mt-5 flex list-decimal flex-col gap-3 pl-5 leading-relaxed"
@@ -93,7 +99,7 @@ const jsonLd = [
 	</section>
 
 	<section class="px-4 py-12 sm:px-6">
-		<div class="mx-auto max-w-[760px]">
+		<div class="mx-auto max-w-[1200px]">
 			<h2 class="display-lg">Worked example</h2>
 			<p class="text-body mt-4 leading-relaxed">
 				Sign the message <code
@@ -136,7 +142,7 @@ const jsonLd = [
 	</section>
 
 	<section class="px-4 pb-12 sm:px-6">
-		<div class="mx-auto max-w-[760px]">
+		<div class="mx-auto max-w-[1200px]">
 			<h2 class="display-lg">Good to know</h2>
 			<ul
 				class="text-body mt-5 flex list-disc flex-col gap-2 pl-5 leading-relaxed"
@@ -152,7 +158,7 @@ const jsonLd = [
 	</section>
 
 	<section class="px-4 pb-16 sm:px-6">
-		<div class="mx-auto max-w-[760px]">
+		<div class="mx-auto max-w-[1200px]">
 			<h2 class="display-lg">FAQ</h2>
 			<div class="mt-5"><FaqAccordion faqs={faqs} /></div>
 		</div>

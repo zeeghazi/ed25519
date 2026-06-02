@@ -11,6 +11,7 @@ const { post } = Astro.props
 const { Content } = await render(post)
 const path = `/blog/${post.id}/`
 const body = post.body ?? ''
+const ogImage = post.data.ogImage ?? `/og/blog/${post.id}.png`
 ---
 
 <PostLayout
@@ -21,7 +22,7 @@ const body = post.body ?? ''
 	updatedDate={post.data.updatedDate}
 	author={post.data.author}
 	tags={post.data.tags}
-	ogImage={post.data.ogImage}
+	ogImage={ogImage}
 	body={body ?? ''}
 >
 	<Content />
