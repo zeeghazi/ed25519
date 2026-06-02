@@ -35,7 +35,8 @@ Uses **pnpm**.
   is tool-first: a slim hero over a tabbed terminal **console** (generate/sign/verify), on one
   continuous grid+glow backdrop, with the footer as a separate block.
 - **The tool** (`src/components/tool/*`) is vanilla TS in `.astro` `<script>` blocks — no UI
-  framework ships to the browser. All sections share a single `max-w-[1100px]` column.
+  framework ships to the browser. All sections AND the chrome (Nav/Footer) share a
+  single `max-w-[1200px]` column, so content edges align across every page.
 
 ## Hosting
 

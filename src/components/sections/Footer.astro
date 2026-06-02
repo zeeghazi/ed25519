@@ -3,9 +3,9 @@ import { SITE, FOOTER_SECTIONS, SOCIAL_LINKS } from '../../consts'
 const year = new Date().getFullYear()
 ---
 
-<footer class="border-hairline bg-canvas border-t">
+<footer class="border-hairline bg-canvas border-t px-4 sm:px-6">
 	<div
-		class="mx-auto grid max-w-[1200px] gap-10 px-4 py-16 sm:px-6 md:grid-cols-[1.5fr_repeat(3,1fr)]"
+		class="mx-auto grid max-w-[1200px] gap-10 py-16 md:grid-cols-[1.5fr_repeat(3,1fr)]"
 	>
 		<div>
 			<p class="text-ink font-mono text-sm font-medium">{SITE.name}</p>
@@ -34,7 +34,7 @@ const year = new Date().getFullYear()
 		}
 	</div>
 	<div
-		class="border-hairline mx-auto flex max-w-[1200px] flex-col items-center justify-between gap-3 border-t px-4 py-6 sm:flex-row sm:px-6"
+		class="border-hairline mx-auto flex max-w-[1200px] flex-col items-center justify-between gap-3 border-t py-6 sm:flex-row"
 	>
 		<p class="text-mute text-xs">
 			© {year}

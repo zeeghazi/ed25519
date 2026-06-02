@@ -7,9 +7,15 @@ import FaqTeaser from '../components/sections/FaqTeaser.astro'
 import CtaBand from '../components/sections/CtaBand.astro'
 import AdSlot from '../components/ui/AdSlot.astro'
 import { webApplicationJsonLd, websiteJsonLd } from '../lib/seo'
+
+const adsenseId = import.meta.env.PUBLIC_ADSENSE_ID
 ---
 
-<BaseLayout path="/" jsonLd={[websiteJsonLd(), webApplicationJsonLd()]}>
+<BaseLayout
+	path="/"
+	ogImage="/og/index.png"
+	jsonLd={[websiteJsonLd(), webApplicationJsonLd()]}
+>
 	<!--
 		One continuous background spans the whole content column — hero, tool, and
 		every section — fading out just above the footer, which stays its own solid
@@ -31,7 +37,13 @@ import { webApplicationJsonLd, websiteJsonLd } from '../lib/seo'
 		<ToolSection />
 		<FeatureGrid />
 		<FaqTeaser />
-		<div class="px-4 pb-4 sm:px-6"><AdSlot /></div>
+		{
+			adsenseId && (
+				<div class="px-4 pb-4 sm:px-6">
+					<AdSlot />
+				</div>
+			)
+		}
 		<CtaBand />
 	</div>
 </BaseLayout>
