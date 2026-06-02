@@ -6,8 +6,7 @@ export const SITE = {
 	url: 'https://ed25519.com',
 	locale: 'en_US',
 	author: 'Ed25519.com',
-	email: 'hello@ed25519.com', // PLACEHOLDER — replace before launch
-	twitter: '@ed25519', // PLACEHOLDER
+	email: 'hello@ed25519.com',
 } as const
 
 export const NAV_LINKS = [
@@ -18,7 +17,7 @@ export const NAV_LINKS = [
 ] as const
 
 export const SOCIAL_LINKS = [
-	{ label: 'GitHub', href: 'https://github.com/' }, // PLACEHOLDER
+	{ label: 'GitHub', href: 'https://github.com/zeeghazi/ed25519' },
 ] as const
 
 export const FOOTER_SECTIONS = [
@@ -33,6 +32,7 @@ export const FOOTER_SECTIONS = [
 	{
 		title: 'Learn',
 		links: [
+			{ label: 'Ed25519 SSH keys', href: '/ed25519-ssh-key' },
 			{ label: 'Blog', href: '/blog' },
 			{ label: 'FAQ', href: '/faq' },
 			{ label: 'About', href: '/about' },

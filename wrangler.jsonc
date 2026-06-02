@@ -16,6 +16,6 @@
 	"compatibility_flags": ["nodejs_compat"],
 	"assets": { "directory": "./dist/client", "binding": "ASSETS" },
 	"send_email": [
-		{ "name": "SEB", "destination_address": "hello@ed25519.com" },
+		{ "name": "SEB", "destination_address": "zeeshan.ghazi49@gmail.com" },
 	],
 }

@@ -35,7 +35,7 @@ The contact route emails the site owner through the `send_email` binding `SEB`. 
    Cloudflare auto-adds the required MX/TXT records.
 2. Add and **verify** a destination address (your inbox) — click the link Cloudflare emails you.
 3. In `wrangler.jsonc`, set the `send_email` `destination_address` to that verified address
-   (currently the placeholder `hello@ed25519.com`).
+   (set to `zeeshan.ghazi49@gmail.com`).
 4. Set the env var **`CONTACT_TO_EMAIL`** (below) to the same verified address.
 5. Ensure the sender domain (`noreply@ed25519.com`) belongs to the verified zone.
 
@@ -48,9 +48,8 @@ response — that is expected; real sending is verified on deploy.
 
 | Name                  | Value                 | Notes                                 |
 | --------------------- | --------------------- | ------------------------------------- |
-| `PUBLIC_SITE_URL`     | https://ed25519.com   | canonical / OG base                   |
 | `PUBLIC_ADSENSE_ID`   | (your pub-id)         | optional; enables AdSense             |
-| `PUBLIC_ANALYTICS_ID` | (GA4 / Plausible id)  | optional                              |
+| `PUBLIC_ANALYTICS_ID` | `G-5M0SH29206` (GA4)  | enables Google Analytics              |
 | `CONTACT_TO_EMAIL`    | your verified address | required for the contact form to send |
 
 ## Custom domain
