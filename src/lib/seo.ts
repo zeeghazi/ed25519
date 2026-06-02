@@ -16,8 +16,16 @@ export interface ResolvedSeo {
 	noindex: boolean
 }
 
+// The site serves trailing-slash URLs (Astro redirects no-slash → slash), so the
+// canonical must match — otherwise it points at a 307 redirect. Normalize here so every
+// caller's path gets a trailing slash (root stays '/').
+function withTrailingSlash(path: string): string {
+	if (path === '/' || path.endsWith('/')) return path
+	return `${path}/`
+}
+
 export function resolveSeo(input: SeoInput = {}): ResolvedSeo {
-	const path = input.path ?? '/'
+	const path = withTrailingSlash(input.path ?? '/')
 	return {
 		title: input.title ? `${input.title} — ${SITE.name}` : SITE.title,
 		description: input.description ?? SITE.description,
@@ -63,8 +71,8 @@ export function articleJsonLd(opts: {
 		'@type': 'BlogPosting',
 		headline: opts.title,
 		description: opts.description,
-		url: new URL(opts.path, SITE.url).href,
-		mainEntityOfPage: new URL(opts.path, SITE.url).href,
+		url: new URL(withTrailingSlash(opts.path), SITE.url).href,
+		mainEntityOfPage: new URL(withTrailingSlash(opts.path), SITE.url).href,
 		datePublished: opts.pubDate.toISOString(),
 		dateModified: (opts.updatedDate ?? opts.pubDate).toISOString(),
 		author: { '@type': 'Organization', name: opts.author ?? SITE.author },
@@ -81,7 +89,7 @@ export function breadcrumbJsonLd(items: { name: string; path: string }[]) {
 			'@type': 'ListItem',
 			position: i + 1,
 			name: item.name,
-			item: new URL(item.path, SITE.url).href,
+			item: new URL(withTrailingSlash(item.path), SITE.url).href,
 		})),
 	}
 }
