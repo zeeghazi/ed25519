@@ -53,6 +53,29 @@ const command = '[user@ubuntu ~]$ ./keygen --curve=edwards25519 --format=hex'
 		<div>
 			<label
 				class="font-mono text-xs tracking-[0.12em] text-[var(--color-term-dim)] uppercase"
+				>OpenSSH public key · authorized_keys</label
+			>
+			<div
+				class="mt-1.5 flex items-start gap-3 rounded-[4px] border border-[var(--color-term-border)] bg-[var(--color-term-bg-2)] p-3"
+			>
+				<span
+					class="mt-px shrink-0 font-mono text-sm text-[var(--color-term-prompt)]"
+					aria-hidden="true">ssh</span
+				>
+				<output
+					id="keygen-openssh"
+					class="block w-full font-mono text-sm break-all text-[var(--color-term-fg)]"
+					>—</output
+				>
+				<CopyButton
+					target="#keygen-openssh"
+					label="Copy OpenSSH public key"
+				/>
+			</div>
+		</div>
+		<div>
+			<label
+				class="font-mono text-xs tracking-[0.12em] text-[var(--color-term-dim)] uppercase"
 				>Private key · 64 hex · <span
 					class="text-[var(--color-term-danger)]">keep secret</span
 				></label
@@ -77,12 +100,15 @@ const command = '[user@ubuntu ~]$ ./keygen --curve=edwards25519 --format=hex'
 
 <script>
 	import { generateKeypair } from '../../lib/ed25519'
+	import { publicKeyToOpenSSH } from '../../lib/openssh'
+	import { hexToBytes } from '../../lib/hex'
 	import { toast } from '../../lib/clipboard'
 
 	const btn = document.getElementById(
 		'keygen-btn'
 	) as HTMLButtonElement | null
 	const pub = document.getElementById('keygen-public')
+	const ssh = document.getElementById('keygen-openssh')
 	const priv = document.getElementById('keygen-private')
 
 	btn?.addEventListener('click', async () => {
@@ -91,6 +117,8 @@ const command = '[user@ubuntu ~]$ ./keygen --curve=edwards25519 --format=hex'
 		try {
 			const { privateKeyHex, publicKeyHex } = await generateKeypair()
 			if (pub) pub.textContent = publicKeyHex
+			if (ssh)
+				ssh.textContent = publicKeyToOpenSSH(hexToBytes(publicKeyHex))
 			if (priv) priv.textContent = privateKeyHex
 			toast('Keypair generated')
 		} catch {
