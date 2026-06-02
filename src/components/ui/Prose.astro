@@ -39,6 +39,16 @@
 	.prose :global(code) {
 		@apply bg-canvas-soft-2 text-ink rounded-[4px] px-1.5 py-0.5 font-mono text-sm;
 	}
+	.prose :global(pre) {
+		@apply mt-4 overflow-x-auto rounded-[6px] p-4 font-mono text-sm leading-relaxed;
+		background-color: var(--color-term-bg);
+		color: var(--color-term-fg);
+		border: 1px solid var(--color-term-border);
+	}
+	.prose :global(pre code) {
+		@apply bg-transparent p-0 text-sm;
+		color: inherit;
+	}
 	.prose :global(table) {
 		@apply mt-6 w-full border-collapse text-sm;
 	}

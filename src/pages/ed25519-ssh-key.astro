@@ -1,0 +1,279 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import PageHeader from '../components/sections/PageHeader.astro'
+import Prose from '../components/ui/Prose.astro'
+import FaqAccordion from '../components/ui/FaqAccordion.astro'
+import { howToJsonLd, faqPageJsonLd, breadcrumbJsonLd } from '../lib/seo'
+
+const path = '/ed25519-ssh-key'
+const title = 'Ed25519 SSH keys: generate with ssh-keygen'
+const description =
+	'How to generate an Ed25519 SSH key with ssh-keygen, add it to GitHub or a server, and why Ed25519 beats RSA for SSH. Copy-paste commands and FAQ.'
+
+const steps = [
+	{
+		name: 'Run ssh-keygen',
+		text: 'In a terminal, run: ssh-keygen -t ed25519 -C "your_email@example.com". The -t flag selects the Ed25519 key type and -C adds a label comment.',
+	},
+	{
+		name: 'Choose where to save it',
+		text: 'Press Enter to accept the default path ~/.ssh/id_ed25519. This writes the private key to id_ed25519 and the public key to id_ed25519.pub.',
+	},
+	{
+		name: 'Set a passphrase',
+		text: 'Type a strong passphrase when prompted. It encrypts the private key on disk so a stolen file cannot be used directly.',
+	},
+	{
+		name: 'Add the key to ssh-agent',
+		text: 'Start the agent with eval "$(ssh-agent -s)" and load the key with ssh-add ~/.ssh/id_ed25519 so you are not prompted every time.',
+	},
+	{
+		name: 'Install the public key',
+		text: 'Copy the contents of ~/.ssh/id_ed25519.pub and add it to GitHub (Settings → SSH and GPG keys) or a server with ssh-copy-id -i ~/.ssh/id_ed25519.pub user@host.',
+	},
+]
+
+const faqs = [
+	{
+		q: 'What is an Ed25519 SSH key?',
+		a: 'An Ed25519 SSH key is an SSH key pair that uses the Ed25519 signature scheme (EdDSA on Curve25519) instead of RSA or ECDSA. The private key authenticates you to a server; the matching public key is installed on that server. Ed25519 keys are small (a 256-bit private key) and fast to verify.',
+	},
+	{
+		q: 'How do I generate an Ed25519 SSH key?',
+		a: 'Run ssh-keygen -t ed25519 -C "your_email@example.com", accept the default file location, and set a passphrase. This creates ~/.ssh/id_ed25519 (private) and ~/.ssh/id_ed25519.pub (public).',
+	},
+	{
+		q: 'Can Ed25519 be used for SSH?',
+		a: 'Yes. OpenSSH has supported Ed25519 keys since version 6.5 (2014), and every current SSH client and server supports them. GitHub, GitLab, and major cloud providers all accept Ed25519 public keys.',
+	},
+	{
+		q: 'Is Ed25519 better than RSA for SSH?',
+		a: 'For new keys, yes. Ed25519 is faster, has a much smaller key and signature, and avoids the weak-randomness pitfalls of ECDSA. Keep an RSA key (3072 bits or more) only if you must connect to an old server that predates Ed25519 support.',
+	},
+	{
+		q: 'Is Ed25519 the default key type in ssh-keygen?',
+		a: 'Yes, since OpenSSH 9.5 (October 2023) ssh-keygen generates Ed25519 keys by default. On older OpenSSH versions the default is RSA, so pass -t ed25519 explicitly to be sure.',
+	},
+	{
+		q: 'Why are Ed25519 SSH keys so short?',
+		a: 'Elliptic-curve keys reach the same security as a much larger RSA key. An Ed25519 private key is a fixed 256 bits, so the -b (bit length) flag is ignored, and the public key in id_ed25519.pub is a single short line.',
+	},
+	{
+		q: 'Where is the Ed25519 SSH key stored?',
+		a: 'By default in your ~/.ssh directory: the private key is id_ed25519 and the public key is id_ed25519.pub. Keep the private file secret (permissions 600); the .pub file is safe to share.',
+	},
+]
+
+const jsonLd = [
+	howToJsonLd({
+		name: 'How to generate an Ed25519 SSH key with ssh-keygen',
+		description,
+		steps,
+	}),
+	faqPageJsonLd(faqs),
+	breadcrumbJsonLd([
+		{ name: 'Home', path: '/' },
+		{ name: 'Ed25519 SSH key', path },
+	]),
+]
+---
+
+<BaseLayout
+	title={title}
+	description={description}
+	path={path}
+	ogImage="/og/ed25519-ssh-key.png"
+	jsonLd={jsonLd}
+>
+	<PageHeader
+		title="Ed25519 SSH keys"
+		lead="How to generate an Ed25519 SSH key with ssh-keygen, load it into ssh-agent, and add it to GitHub or a server — plus how Ed25519 compares to RSA for SSH."
+		width="wide"
+		illustration="private"
+	/>
+
+	<article class="px-4 pb-12 sm:px-6">
+		<div class="mx-auto max-w-[1200px]">
+			<Prose>
+				<p>
+					<strong>To generate an Ed25519 SSH key, run</strong>
+					<code
+						>ssh-keygen -t ed25519 -C "your_email@example.com"</code
+					>, accept the default file location, and set a passphrase.
+					That creates a private key at <code>~/.ssh/id_ed25519</code> and
+					a public key at <code>~/.ssh/id_ed25519.pub</code>. Add the
+					public key to GitHub or your server and you are done. The
+					rest of this guide explains each step, plus why Ed25519 is
+					the recommended SSH key type today.
+				</p>
+
+				<h2>Generate an Ed25519 SSH key</h2>
+				<p>Open a terminal and run:</p>
+				<pre><code>ssh-keygen -t ed25519 -C "your_email@example.com"</code></pre>
+				<p>
+					<code>-t ed25519</code> selects the Ed25519 key type;
+					<code>-C</code> adds a comment (an email or machine name) so you
+					can tell keys apart later. <code>ssh-keygen</code> then asks two
+					questions:
+				</p>
+				<ul>
+					<li>
+						<strong>File location.</strong> Press Enter to accept the
+						default, <code>~/.ssh/id_ed25519</code>. Choose a
+						different name (for example <code
+							>~/.ssh/id_ed25519_github</code
+						>) if you keep a separate key per service.
+					</li>
+					<li>
+						<strong>Passphrase.</strong> Type a strong passphrase. It
+						encrypts the private key on disk, so a copied
+						<code>id_ed25519</code> file is useless without it. You can
+						leave it empty for automation, but a passphrase plus
+						<code>ssh-agent</code> is the safer default.
+					</li>
+				</ul>
+				<p>
+					You now have two files: the private key
+					<code>id_ed25519</code> (keep it secret) and the public key
+					<code>id_ed25519.pub</code> (safe to share). For a deeper look
+					at these two files, see
+					<a href="/blog/id_ed25519/">what id_ed25519 is</a>.
+				</p>
+
+				<h3>Optional: harder-to-crack passphrase storage</h3>
+				<p>
+					Add <code>-a 100</code> to raise the number of key-derivation
+					rounds, which makes a brute-force attack on the passphrase slower:
+				</p>
+				<pre><code>ssh-keygen -t ed25519 -a 100 -C "your_email@example.com"</code></pre>
+				<p>
+					Note that <code>-b</code> (bit length) has no effect on Ed25519:
+					the key is always 256 bits. That is why these keys are so short
+					compared to RSA.
+				</p>
+
+				<h2>Load the key into ssh-agent</h2>
+				<p>
+					So you only type your passphrase once per session, start the
+					agent and add the key:
+				</p>
+				<pre><code>eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_ed25519</code></pre>
+				<p>
+					On macOS, <code
+						>ssh-add --apple-use-keychain ~/.ssh/id_ed25519</code
+					>
+					also stores the passphrase in the Keychain.
+				</p>
+
+				<h2>Add the public key to GitHub or a server</h2>
+				<p>Print the public key and copy the whole line:</p>
+				<pre><code>cat ~/.ssh/id_ed25519.pub</code></pre>
+				<p>It looks like this (one line):</p>
+				<pre><code>ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAA... your_email@example.com</code></pre>
+				<ul>
+					<li>
+						<strong>GitHub / GitLab:</strong> paste it into Settings →
+						SSH and GPG keys → New SSH key.
+					</li>
+					<li>
+						<strong>A server:</strong> install it in one command with
+						<code>ssh-copy-id</code>:
+					</li>
+				</ul>
+				<pre><code>ssh-copy-id -i ~/.ssh/id_ed25519.pub user@host</code></pre>
+				<p>
+					Test the connection with <code>ssh -T git@github.com</code> or
+					<code>ssh user@host</code>. The first time you connect you
+					will be asked to confirm the server's host key — if that
+					server is GitHub, check the value against
+					<a href="/blog/github-ssh-host-key-fingerprint-ed25519/"
+						>GitHub's Ed25519 host key fingerprint</a
+					>.
+				</p>
+
+				<h2>Ed25519 vs RSA for SSH</h2>
+				<p>
+					Ed25519 is the recommended default for new SSH keys. It is
+					faster, far smaller, and harder to misuse than the
+					alternatives.
+				</p>
+				<table>
+					<thead>
+						<tr>
+							<th></th>
+							<th>Ed25519</th>
+							<th>RSA</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>Private key size</td>
+							<td>256 bits (fixed)</td>
+							<td>3072–4096 bits</td>
+						</tr>
+						<tr>
+							<td>Public key line</td>
+							<td>~68 characters</td>
+							<td>several hundred</td>
+						</tr>
+						<tr>
+							<td>Speed</td>
+							<td>Very fast</td>
+							<td>Slower</td>
+						</tr>
+						<tr>
+							<td>Compatibility</td>
+							<td>OpenSSH 6.5+ (2014)</td>
+							<td>Universal</td>
+						</tr>
+					</tbody>
+				</table>
+				<p>
+					Keep an RSA key (at least 3072 bits) only for legacy servers
+					that predate Ed25519. For a full breakdown, read
+					<a href="/blog/ed25519-vs-rsa/">Ed25519 vs RSA</a>.
+				</p>
+
+				<h2>Is Ed25519 the default in ssh-keygen?</h2>
+				<p>
+					Since <strong>OpenSSH 9.5 (October 2023)</strong>,
+					<code>ssh-keygen</code> generates Ed25519 keys by default when
+					you run it with no <code>-t</code> flag. OpenSSH first added Ed25519
+					support back in version 6.5 (2014). On anything older than 9.5
+					the default is still RSA, so it is good practice to pass <code
+						>-t ed25519</code
+					> explicitly.
+				</p>
+
+				<h2>Experiment with raw Ed25519 keys</h2>
+				<p>
+					SSH private keys should always be generated locally with
+					<code>ssh-keygen</code> — never in a browser. But if you want
+					to
+					<em>understand</em> the raw Ed25519 keypair and signatures that
+					sit underneath, you can generate and sign with one in our in-browser
+					tool, where keys never leave your device.
+				</p>
+				<ul>
+					<li>
+						<a href="/ed25519-key-generator/"
+							>Ed25519 key generator</a
+						> — create a raw 32-byte keypair.
+					</li>
+					<li>
+						<a href="/ed25519-sign-message/">Sign a message</a> and
+						<a href="/ed25519-verify-signature/"
+							>verify a signature</a
+						>.
+					</li>
+				</ul>
+			</Prose>
+
+			<section class="mt-12">
+				<h2 class="display-lg">FAQ</h2>
+				<div class="mt-5"><FaqAccordion faqs={faqs} /></div>
+			</section>
+		</div>
+	</article>
+</BaseLayout>
