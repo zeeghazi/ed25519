@@ -75,7 +75,7 @@ export function articleJsonLd(opts: {
 		mainEntityOfPage: new URL(withTrailingSlash(opts.path), SITE.url).href,
 		datePublished: opts.pubDate.toISOString(),
 		dateModified: (opts.updatedDate ?? opts.pubDate).toISOString(),
-		author: { '@type': 'Organization', name: opts.author ?? SITE.author },
+		author: { '@type': 'Person', name: opts.author ?? SITE.author },
 		publisher: { '@type': 'Organization', name: SITE.name },
 		image: new URL(opts.ogImage ?? '/og/default.png', SITE.url).href,
 	}
