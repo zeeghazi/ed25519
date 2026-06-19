@@ -48,10 +48,10 @@ import Button from '../ui/Button.astro'
 				aria-label="Open menu"
 				aria-expanded="false"
 				aria-controls="mobile-menu"
-				class="border-hairline inline-flex h-9 w-9 items-center justify-center rounded-[4px] border md:hidden"
+				class="border-hairline inline-flex h-8 w-8 items-center justify-center rounded-[4px] border md:hidden"
 			>
 				<svg
-					class="h-5 w-5"
+					class="h-4 w-4"
 					viewBox="0 0 24 24"
 					fill="none"
 					stroke="currentColor"
@@ -63,51 +63,51 @@ import Button from '../ui/Button.astro'
 			</button>
 		</div>
 	</nav>
-
-	<div id="mobile-menu" hidden class="bg-canvas fixed inset-0 z-50 md:hidden">
-		<div class="flex h-16 items-center justify-between px-4">
-			<span
-				class="inline-flex items-center gap-2 font-mono text-sm font-semibold tracking-[0.06em]"
-			>
-				<span
-					class="h-3.5 w-3.5 rounded-[2px] bg-[var(--color-term-prompt)]"
-					aria-hidden="true"></span>
-				ED25519
-			</span>
-			<button
-				id="nav-close"
-				type="button"
-				aria-label="Close menu"
-				class="border-hairline inline-flex h-9 w-9 items-center justify-center rounded-[4px] border"
-			>
-				<svg
-					class="h-5 w-5"
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					stroke-width="2"
-					aria-hidden="true"
-					><path stroke-linecap="round" d="M6 6l12 12M18 6 6 18"
-					></path></svg
-				>
-			</button>
-		</div>
-		<ul class="flex flex-col gap-1 px-4 pt-4">
-			{
-				NAV_LINKS.map((l) => (
-					<li>
-						<a
-							href={l.href}
-							class="text-ink hover:bg-canvas-soft-2 block rounded-md px-3 py-3 text-lg"
-						>
-							{l.label}
-						</a>
-					</li>
-				))
-			}
-		</ul>
-	</div>
 </header>
+
+<div id="mobile-menu" hidden class="bg-canvas fixed inset-0 z-50 md:hidden">
+	<div class="flex h-16 items-center justify-between px-4">
+		<span
+			class="inline-flex items-center gap-2 font-mono text-sm font-semibold tracking-[0.06em]"
+		>
+			<span
+				class="h-3.5 w-3.5 rounded-[2px] bg-[var(--color-term-prompt)]"
+				aria-hidden="true"></span>
+			ED25519
+		</span>
+		<button
+			id="nav-close"
+			type="button"
+			aria-label="Close menu"
+			class="border-hairline inline-flex h-8 w-8 items-center justify-center rounded-[4px] border"
+		>
+			<svg
+				class="h-4 w-4"
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="2"
+				aria-hidden="true"
+				><path stroke-linecap="round" d="M6 6l12 12M18 6 6 18"
+				></path></svg
+			>
+		</button>
+	</div>
+	<ul class="flex flex-col gap-1 px-4 pt-4">
+		{
+			NAV_LINKS.map((l) => (
+				<li>
+					<a
+						href={l.href}
+						class="text-ink hover:bg-canvas-soft-2 block rounded-md px-3 py-3 text-lg"
+					>
+						{l.label}
+					</a>
+				</li>
+			))
+		}
+	</ul>
+</div>
 
 <script>
 	const menu = document.getElementById('mobile-menu') as HTMLElement | null
